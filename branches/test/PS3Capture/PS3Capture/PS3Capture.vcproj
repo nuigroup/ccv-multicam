@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Include"
+				AdditionalIncludeDirectories="..\Include;..\Include\opencv"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\Lib\CLEyeMulticam.lib"
+				AdditionalDependencies="..\Lib\CLEyeMulticam.lib ..\Lib\opencv_core220d.lib ..\Lib\opencv_highgui220d.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
