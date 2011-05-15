@@ -14,6 +14,7 @@
 #include "CLEyeMulticam.h"
 #include <string>
 #include <sstream>
+#include <iostream>
 #include <cv.h>
 #include <highgui.h>
 
@@ -80,6 +81,21 @@ public:
 	//! Set the window title
 	void SetWindowTitle( string title );
 
+	//! Set Horizontal flip
+	bool SetHFlip( bool flip = true );
+
+	//! Set Vertical flip
+	bool SetVFlip( bool flip = true );
+
+	//! Set the debug mode value
+	void SetDebugMode( bool debug );
+
+	//! Get the frame count
+	int GetFrameCount() const;
+
+	//! Clear frame count
+	void ClearFrameCount();
+
 	//! Get the pixels of frame
 	unsigned char* GetPixels();
 
@@ -114,10 +130,26 @@ private:
 	//! Handle of capture thread
 	HANDLE _hThread;
 
+	//! Image capture buffer point
 	unsigned char* _pCapBuffer;
 
 	//! Is initialized
 	bool _bInitialized;
+
+	//! Horizontal flip
+	bool _bHFlip;
+
+	//! Vertical flip
+	bool _bVFlip;
+
+	//! Window name
+	const char* _sWindowName;
+
+	//! Debug Mode
+	bool _bDebugMode;
+
+	//! Frame count
+	int _frameCount;
 
 };
 #endif

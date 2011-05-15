@@ -9,6 +9,12 @@ PS3::PS3(){
 	_bShow = true;
 	_bRunning = false;
 	_bInitialized = false;
+	_bHFlip = false;
+	_bVFlip = false;
+	_bDebugMode = false;
+	_bCapture = false;
+
+	_frameCount = 0;
 
 	_pCapBuffer = NULL;
 };
@@ -102,9 +108,14 @@ void PS3::Run() {
 	//! Set some camera parameters
 	CLEyeSetCameraParameter( _cam, CLEYE_GAIN, 0 );
 	CLEyeSetCameraParameter( _cam, CLEYE_EXPOSURE, 511 );
+	CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, _bHFlip );
+	CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, _bVFlip );
 
 	//! Start capturing
-	CLEyeCameraStart( _cam );
+	if ( !CLEyeCameraStart( _cam ) ) {
+		std::cout << "Could not start camera!\n" << std::endl;
+		return;
+	}
 
 	//! Get the image from captured buffer
 	cvGetImageRawData( pCapImage, &_pCapBuffer );
@@ -112,9 +123,13 @@ void PS3::Run() {
 	//! Image capturing loop
 	while ( _bRunning ) {
 		if ( _bCapture ) {
-			CLEyeCameraGetFrame( _cam, _pCapBuffer );
+			if ( CLEyeCameraGetFrame( _cam, _pCapBuffer ) ) {
+				++_frameCount;
+				//std::cout << "ok capture!\n" << std::flush;
+			}
+
 			if ( _bShow ) {
-				cvShowImage( _windowTitle.c_str(), pCapImage );
+				cvShowImage( _sWindowName, pCapImage );
 			}
 		}
 	}
@@ -158,13 +173,16 @@ bool PS3::StartCamera() {
 	}
 
 	_bRunning = true;
+	_bCapture = true;
 
 	//! Show window or not
 	if ( _bShow ) {
 		if ( _windowTitle.empty() ) {
 			_windowTitle = "GUID: " + GUID2String( _camGUID );
 		}
-		cvNamedWindow( _windowTitle.c_str(), CV_WINDOW_AUTOSIZE );
+		_sWindowName = _windowTitle.c_str();
+		cvNamedWindow( _sWindowName, CV_WINDOW_AUTOSIZE );
+		//cvNamedWindow( _windowTitle.c_str(), CV_WINDOW_AUTOSIZE );
 	}
 
 	// Start the capture thread
@@ -231,13 +249,13 @@ bool PS3::ShowWindow( bool bShow ) {
 
 	if ( bShow && !_bShow ) {
 		_bShow = true;
-		// WaitForSingleObject(_hThread, 1000);
+		WaitForSingleObject(_hThread, 1000);
 		cvNamedWindow( _windowTitle.c_str(), CV_WINDOW_AUTOSIZE );
 
 		return true;
 	} else if ( !bShow && _bShow ) {
 		_bShow = false;
-		// WaitForSingleObject(_hThread, 1000);
+		WaitForSingleObject(_hThread, 1000);
 		cvDestroyWindow( _windowTitle.c_str() );
 
 		return true;
@@ -256,4 +274,41 @@ void PS3::SetWindowTitle( string title ) {
 
 unsigned char* PS3::GetPixels() {
 	return _pCapBuffer;
+}
+
+bool PS3::SetHFlip( bool flip ) {
+	//! Camera must be created
+	if ( _cam == NULL ) {
+		return false;
+	}
+	if ( CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, flip ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+bool PS3::SetVFlip( bool flip ) {
+	//! Camera must be created
+	if ( _cam == NULL ) {
+		return false;
+	}
+
+	if ( CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, flip ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+void PS3::SetDebugMode( bool debug ) {
+	_bDebugMode = debug;
+}
+
+int PS3::GetFrameCount() const {
+	return _frameCount;
+}
+
+void PS3::ClearFrameCount() {
+	_frameCount = 0;
 }
