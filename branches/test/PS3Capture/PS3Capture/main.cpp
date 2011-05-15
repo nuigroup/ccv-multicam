@@ -78,7 +78,7 @@ int main( int argc, char** ) {
 			guid,	//!< Camera with this guid you want to create
 			CLEYE_COLOR_PROCESSED, //!< Color mode
 			CLEYE_VGA,	//!< Resolution of camera VGA(640x480) or QVGA(320x240)
-			3	//!< Framerate
+			30	//!< Framerate
 			);
 		//! Show window to display the capture images
 		cams[i]->SetShow( true );
