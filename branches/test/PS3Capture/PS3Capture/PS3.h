@@ -99,6 +99,15 @@ public:
 	//! Get the pixels of frame
 	unsigned char* GetPixels();
 
+	//! Get the width of frame
+	int GetWidth();
+
+	//! Get the height of frame
+	int GetHeight();
+
+	//! Get the FPS
+	int GetFPS();
+
 private:
 	//! GUID of camera
 	GUID _camGUID;
@@ -150,6 +159,9 @@ private:
 
 	//! Frame count
 	int _frameCount;
+
+	//! The really fps, not the framerate
+	int _fps;
 
 };
 #endif

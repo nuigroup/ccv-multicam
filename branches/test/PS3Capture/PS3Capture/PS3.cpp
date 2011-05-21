@@ -15,6 +15,7 @@ PS3::PS3(){
 	_bCapture = false;
 
 	_frameCount = 0;
+	_fps = 0;
 
 	_pCapBuffer = NULL;
 };
@@ -120,11 +121,25 @@ void PS3::Run() {
 	//! Get the image from captured buffer
 	cvGetImageRawData( pCapImage, &_pCapBuffer );
 
+	double now = GetTickCount();
+	double lastFPSlog = now;
+	int frame = 0;
+
 	//! Image capturing loop
 	while ( _bRunning ) {
 		if ( _bCapture ) {
 			if ( CLEyeCameraGetFrame( _cam, _pCapBuffer ) ) {
 				++_frameCount;
+
+				//! Calculate the FPS
+				++frame;
+				now = GetTickCount();
+				if ( now >= lastFPSlog + 1000 ) {
+					_fps = frame;
+					frame = 0;
+					lastFPSlog = now;
+				}
+
 				//std::cout << "ok capture!\n" << std::flush;
 			}
 
@@ -311,4 +326,32 @@ int PS3::GetFrameCount() const {
 
 void PS3::ClearFrameCount() {
 	_frameCount = 0;
+}
+
+int PS3::GetWidth() {
+	//! Camera must be init
+	if ( _cam == NULL ) {
+		return -1;
+	}
+
+	int width, height;
+	CLEyeCameraGetFrameDimensions( _cam, width, height );
+
+	return width;
+}
+
+int PS3::GetHeight() {
+	//! Camera must be init
+	if ( _cam == NULL ) {
+		return -1;
+	}
+
+	int width, height;
+	CLEyeCameraGetFrameDimensions( _cam, width, height );
+
+	return height;
+}
+
+int PS3::GetFPS() {
+	return _fps;
 }

@@ -30,6 +30,7 @@ void PrintHelp( int camCount = 1 ) {
 		"  [SPACE] - Stop display capture image[developing]\n"
 		"        h - Horizontal flip\n"
 		"        v - Vertical flip\n"
+		"        i - Information about camera\n"
 		);
 }
 
@@ -121,7 +122,9 @@ int main( int argc, char** ) {
 		if ( key >= '0' && key <= '9' ) {
 			if ( SelectCamera( key, camCount ) ) {
 				printf( "Select Camera #%d\n", camIndex );
-			}			
+			} else {
+				printf( "Wrong selecting!\n" );
+			}
 			continue;
 		}
 
@@ -153,6 +156,20 @@ int main( int argc, char** ) {
 					} else {
 						printf( "Could not %s camera #%d capture image\n", bShow ? "show" : "hide", camIndex );
 					}
+					break;
+
+				//! Print camera information
+				case 'i':	case 'I':
+					printf(
+						"Camera #%d Information:\n"
+						"\tResolution(width x height): %dx%d\n"
+						"\tFPS: %d\n"
+						,
+						camIndex,
+						pCam->GetWidth(),
+						pCam->GetHeight(),
+						pCam->GetFPS()
+						);
 					break;
 				default:
 					break;
