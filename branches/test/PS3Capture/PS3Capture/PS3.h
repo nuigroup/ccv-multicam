@@ -41,6 +41,8 @@ public:
 	*/
 	static std::string GUID2String( GUID guid, char delimiter = '-', bool uppercase = false );
 
+	static std::string Int2String( int val );
+
 	//! Get camera GUID by camera Id
 	static GUID GetGUID( int camId );
 
@@ -108,6 +110,15 @@ public:
 	//! Get the FPS
 	int GetFPS();
 
+	//! Print the camera informations
+	void PrintInfo();
+
+	//! Is the camera color mode
+	bool IsColorMode();
+
+	//! Is the camera get new frame
+	bool IsFrameNew();
+
 private:
 	//! GUID of camera
 	GUID _camGUID;
@@ -159,6 +170,9 @@ private:
 
 	//! Frame count
 	int _frameCount;
+
+	//! Old frame count
+	int _oldFrameCount;
 
 	//! The really fps, not the framerate
 	int _fps;

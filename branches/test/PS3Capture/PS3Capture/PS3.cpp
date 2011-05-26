@@ -15,6 +15,7 @@ PS3::PS3(){
 	_bCapture = false;
 
 	_frameCount = 0;
+	_oldFrameCount = 0;
 	_fps = 0;
 
 	_pCapBuffer = NULL;
@@ -75,6 +76,13 @@ std::string PS3::GUID2String( GUID guid, char delimiter, bool uppercase ) {
 	return ss.str();
 }
 
+
+std::string PS3::Int2String( int val ) {
+	std::stringstream ss;
+	ss << val;
+
+	return ss.str();
+}
 //! The thread for capture
 /*! Copy from CLEyeMulticamTest.cpp */
 DWORD WINAPI PS3::CaptureThread( LPVOID instance ) {
@@ -354,4 +362,36 @@ int PS3::GetHeight() {
 
 int PS3::GetFPS() {
 	return _fps;
+}
+
+void PS3::PrintInfo() {
+	std::cout << "GUID:\t" << GUID2String( GetGUID(), '-', true ) << std::endl;
+	std::cout << "Framerate:\t" << _frameRate << std::endl;
+	std::cout << "Running:\t" << _bRunning << std::endl;
+	std::cout << "Capturing:\t" << _bCapture << std::endl;
+	std::cout << "Window title:\t" << _windowTitle << std::endl;
+	std::cout << "Horizontal flip:\t" << _bHFlip << std::endl;
+	std::cout << "Vertical flip:\t" << _bVFlip << std::endl;
+	std::cout << "FPS:\t" << GetFPS() << std::endl;
+	std::cout << "Width:\t" << GetWidth() << std::endl;
+	std::cout << "Height:\t" << GetHeight() << std::endl;
+	std::cout << "FrameCount:\t" << GetFrameCount() << std::endl;
+}
+
+bool PS3::IsColorMode() {
+	if ( _camColorMode == CLEYE_COLOR_PROCESSED ||
+		_camColorMode == CLEYE_COLOR_RAW ) {
+		return true;
+	}
+
+	return false;
+}
+
+bool PS3::IsFrameNew() {
+	if ( _oldFrameCount < _frameCount ) {
+		_oldFrameCount = _frameCount;
+		return true;
+	}
+
+	return false;
 }
