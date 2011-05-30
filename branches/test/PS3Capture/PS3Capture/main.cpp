@@ -1,7 +1,11 @@
 //! Main cpp file
+/*!
 // Update: 2011-05-14	by Yishi Guo
 //         Add the multi-thread capture and show function
-// --------------------------------------------------------
+//
+//         2011-05-30	by Yishi Guo
+//         Add GAIN parameter setting function
+// -------------------------------------------------------- */
 
 #include "PS3.h"
 #include "CamSplice.h"
@@ -34,6 +38,8 @@ bool bSpliceMode = false;
 //!
 CamSplice* splice;
 
+//! Parameter for control
+int param = -1;
 
 
 //! Print help information
@@ -56,6 +62,9 @@ void PrintHelp( int camCount = 1 ) {
 		"        i - Information about camera\n"
 		"        s - Camera settings\n"
 		"        S - Camera Splice(setting camera first)\n"
+		"        g - Set parameter to GAIN\n"
+		"        - - Decrease the value of parameter\n"
+		"        + - Increase the value of parameter\n"
 		);
 }
 
@@ -144,7 +153,7 @@ bool CameraSettings() {
 		_camVec = camVec;
 
 		printf( "Settings saved!\n" );
-		printf( "Press S to see the result\n")
+		printf( "Press S to see the result\n");
 	} else {
 		printf( "Settings ignored!\n" );
 		return false;
@@ -326,6 +335,19 @@ int main( int argc, char** ) {
 					break;
 				case 'S':
 					CameraSplice();
+					break;
+				//! Used when the image is too dark
+				case 'g': case 'G':
+					printf( "Param gain.\n" );
+					param = CLEYE_GAIN;
+					break;
+				//! Decrease the current parameter
+				case '-':
+					pCam->DecrementParam( param );
+					break;
+				//! Increase the current parameter
+				case '+':
+					pCam->IncrementParam( param );
 					break;
 				default:
 					break;

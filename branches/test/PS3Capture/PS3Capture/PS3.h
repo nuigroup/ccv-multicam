@@ -6,6 +6,8 @@
 // Create Date: 2011-05-12
 // Update:	2011-05-14	by Yishi Guo
 //          Add capture and show functions
+// Update:  2011-05-30  by Yishi Guo
+//          Add IncrementParam() and DecrementParam()
 // --------------------------------------------------------
 
 #ifndef _PS3_H_
@@ -118,6 +120,12 @@ public:
 
 	//! Is the camera get new frame
 	bool IsFrameNew();
+
+	//! Decrease the value of parameter
+	bool DecrementParam( int param );
+
+	//! Increase the value of parameter
+	bool IncrementParam( int param );
 
 private:
 	//! GUID of camera

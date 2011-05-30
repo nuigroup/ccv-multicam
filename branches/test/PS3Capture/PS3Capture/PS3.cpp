@@ -395,3 +395,28 @@ bool PS3::IsFrameNew() {
 
 	return false;
 }
+
+bool PS3::DecrementParam( int  param ) {
+	if ( !_cam ) {
+		return false;
+	}
+	int nowValue = CLEyeGetCameraParameter( _cam, (CLEyeCameraParameter)param );
+	printf( "CLEyeGetParameter %d\n", nowValue );
+	
+	//! We decrease value by 10
+	CLEyeSetCameraParameter( _cam, (CLEyeCameraParameter)param, nowValue - 10);
+
+	return true;
+}
+
+bool PS3::IncrementParam( int param ) {
+	if ( !_cam ) {
+		return false;
+	}
+
+	int nowValue = CLEyeGetCameraParameter( _cam , (CLEyeCameraParameter)param );
+	printf( "CLEyeGetParameter %d\n", nowValue );
+	
+	//! We increase it by 10
+	CLEyeSetCameraParameter( _cam, (CLEyeCameraParameter)param, nowValue + 10 );
+}
