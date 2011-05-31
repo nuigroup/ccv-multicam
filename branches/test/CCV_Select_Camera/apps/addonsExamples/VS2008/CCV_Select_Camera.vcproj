@@ -797,6 +797,26 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="MultiCams"
+						>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\MultiCams.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\MultiCams.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\SetDevices.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\SetDevices.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

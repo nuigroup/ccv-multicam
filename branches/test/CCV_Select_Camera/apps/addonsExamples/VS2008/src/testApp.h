@@ -14,6 +14,8 @@ class testApp : public ofBaseApp, public TouchListener
 public:
 	testApp(int argc, char *argv[]) 
 	{
+
+
 		debug = false;
 		TouchEvents.addListener(this);
 		if(argc==2)
@@ -27,6 +29,8 @@ public:
 	}
 	ofxNCoreVision * ccv;
 	bool debug;
+
+	MultiCams * cams;
 
 	void setup();
 	void update();

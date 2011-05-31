@@ -4,7 +4,8 @@
 //--------------------------------------------------------------
 void testApp::setup()
 {
-	ccv = new ofxNCoreVision(debug);
+	// ccv = new ofxNCoreVision(debug);
+	cams = new MultiCams(debug);
 }
 
 //--------------------------------------------------------------

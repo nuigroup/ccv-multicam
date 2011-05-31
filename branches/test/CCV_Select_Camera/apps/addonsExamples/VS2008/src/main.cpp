@@ -12,4 +12,5 @@ int main(int argc, char *argv[])
 	// can be OF_WINDOW or OF_FULLSCREEN
 	// pass in width and height too:
 	ofRunApp(new testApp(argc,argv));
+
 }

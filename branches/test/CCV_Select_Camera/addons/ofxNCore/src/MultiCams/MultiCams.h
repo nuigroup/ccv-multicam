@@ -19,7 +19,7 @@ class MultiCams : public ofxGuiListener {
 	};
 public:
 	//! Constructor
-	MultiCams( bool bDebug );
+	MultiCams( bool bDebug = false );
 	//! Destructor
 	~MultiCams();
 
@@ -58,8 +58,29 @@ public:
 	 *                 PRIVATE STUFF
 	 **********************************************************/
 private:
+
+	///////////////////
+	// TEST STUFF
+	int testInt;
+
 	//! debug mode
-	bool _bDebugMode;
+	bool bDebugMode;
+
+	//! Full display mode
+	bool bFullMode;
+
+	//! Show interface
+	bool bShowInterface;
+	bool bShowConfiguration;
+
+
+	//! window
+	string windowTitle;
+	int winWidth;
+	int winHeight;
+
+	//! Fonts
+	ofTrueTypeFont		testFont;
 
 	///////////////////////////
 	// XML Settings

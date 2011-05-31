@@ -361,7 +361,10 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				}
 			}
 			break;
+		/////////////////////////////////////////////
+		// MultiCams Settings
 		case propertiesPanel_settings:
+			printf( "properitesPanel_settings\n" );
 			if(length == sizeof(bool))
 			{
 				if(*(bool*)data && bcamera)
@@ -374,6 +377,10 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
      //               #else
      //               	vidGrabber->videoSettings();
      //               #endif
+
+					//MultiCams cams = new MultiCams();
+					SetDevices devices = new SetDevices();
+					printf ("data value: %d\n", *(bool*)data );
 				}
 			}
 			break;
@@ -389,6 +396,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 			break;
 		//Source
 		case propertiesPanel_flipH:
+			printf( "propertiesPanel_flipH\n" );
 			if(length == sizeof(bool))
 				filter->bHorizontalMirror = *(bool*)data;
 				filter_fiducial->bHorizontalMirror = *(bool*)data;

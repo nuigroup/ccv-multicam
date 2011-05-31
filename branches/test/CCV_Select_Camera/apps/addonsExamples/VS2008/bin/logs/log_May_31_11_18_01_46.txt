@@ -1,0 +1,72 @@
+
+***** VIDEOINPUT LIBRARY - 0.1995 - TFW07 *****
+
+
+VIDEOINPUT SPY MODE!
+
+SETUP: Looking For Capture Devices
+SETUP: 0) HP Webcam [2 MP Fixed] 
+SETUP: 1) PS3Eye Camera 
+SETUP: 2 Device(s) found
+
+SETUP: Setting up device 0
+SETUP: HP Webcam [2 MP Fixed]
+SETUP: Couldn't find preview pin using SmartTee
+SETUP: Default Format is set to 640 by 480 
+SETUP: trying format RGB24 @ 320 by 240
+SETUP: Capture callback set
+SETUP: Device is setup and ready to capture.
+
+Video Grabber Camera Mode
+Asked for 320 by 240 - actual size is 320 by 240 
+
+Camera(s)/Video Initialised...
+Calibration: 613.000000, 54.000000
+Calibration: 425.000000, 40.000000
+Calibration: 211.000000, 37.000000
+Calibration: 17.000000, 43.000000
+Calibration: 605.000000, 188.000000
+Calibration: 418.000000, 184.000000
+Calibration: 212.000000, 181.000000
+Calibration: 21.000000, 181.000000
+Calibration: 588.000000, 320.000000
+Calibration: 411.000000, 325.000000
+Calibration: 217.000000, 324.000000
+Calibration: 35.000000, 317.000000
+Calibration: 567.000000, 430.000000
+Calibration: 401.000000, 442.000000
+Calibration: 219.000000, 440.000000
+Calibration: 47.000000, 423.000000
+Calibration is setup!
+
+Starting in standalone mode...
+
+Starting in full mode...
+
+Community Core Vision is setup!
+
+properitesPanel_settings
+data value: 1
+properitesPanel_settings
+properitesPanel_settings
+data value: 1
+properitesPanel_settings
+
+SETUP: Disconnecting device 0
+SETUP: freeing Grabber Callback
+SETUP: freeing Grabber  
+SETUP: freeing Control   
+SETUP: freeing Media Type  
+SETUP: removing filter NullRenderer...
+SETUP: filter removed NullRenderer  
+SETUP: removing filter Sample Grabber...
+SETUP: filter removed Sample Grabber  
+SETUP: removing filter Smart Tee...
+SETUP: filter removed Smart Tee  
+SETUP: removing filter HP Webcam [2 MP Fixed]...
+SETUP: filter removed HP Webcam [2 MP Fixed]  
+SETUP: freeing Capture Graph 
+SETUP: freeing Main Graph 
+SETUP: Device 0 disconnected and freed
+
+Vision module has exited!

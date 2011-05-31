@@ -70,4 +70,9 @@
 //#include "Modules/ofxNCoreBase.h" // Baseline Module Elements
 #include "Modules/ofxNCoreVision.h" // Extended Module for Vision Processing
 
+
+// MultiCams Support by Yishi Guo
+#include "MultiCams/MultiCams.h"
+#include "MultiCams/SetDevices.h"
+
 #endif

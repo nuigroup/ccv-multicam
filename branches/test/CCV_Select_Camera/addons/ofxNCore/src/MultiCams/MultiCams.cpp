@@ -24,7 +24,9 @@ MultiCams::MultiCams( bool bDebug) {
 	ofAddListener( ofEvents.keyReleased, this, &MultiCams::_keyReleased );
 
 
-	_bDebugMode = bDebug;
+	bDebugMode = bDebug;
+	bFullMode = true;	//! show all controls
+	_xmlFileName = "multicams.xml";
 }
 
 MultiCams::~MultiCams() {
@@ -32,21 +34,48 @@ MultiCams::~MultiCams() {
 }
 
 void MultiCams::_setup( ofEventArgs &e ) {
-	// Set the title
-	ofSetWindowTitle( "Multiple Camera Settings" );
+	//! Load the settings first
+	this->loadXMLSettings();
 
-	if ( _bDebugMode ) {
+	// Set the title
+	ofSetWindowTitle( windowTitle );
+
+	//! Setup window properties
+	ofSetWindowShape( winWidth, winHeight );
+	ofSetVerticalSync( false );
+
+	//! Load font
+	testFont.loadFont( "verdana.ttf", 8, true, true );
+
+	//! GUI controls
+	controls = ofxGui::Instance( this );
+	setupControls();
+
+
+	if ( bDebugMode ) {
 		// TODO
 	}
+
+	if ( bFullMode ) {
+		bShowInterface = true;
+	}
+
+	ofLog( OF_LOG_VERBOSE, "Multiple Cameras Configuration is setup!\n\n" );
 
 }
 
 void MultiCams::_update( ofEventArgs &e ) {
-
+	testInt++;
 }
 
 void MultiCams::_draw( ofEventArgs &e ) {
-
+	if ( bShowConfiguration ) {
+		if ( bShowInterface ) {
+			testFont.drawString( ofToString( testInt ),
+			ofGetWidth()/2,
+			ofGetHeight()/2 );
+		}
+	}
 }
 
 void MultiCams::_exit( ofEventArgs &e ) {
@@ -77,6 +106,10 @@ void MultiCams::handleGui(int parameterId, int task, void* data, int length) {
 
 }
 
+void MultiCams::setupControls() {
+
+}
+
 
 /*******************************************************
 *      Load/Save Settings to XML File
@@ -88,8 +121,18 @@ void MultiCams::loadXMLSettings() {
 	} else {
 		ofLog( OF_LOG_VERBOSE, "No Settings Found...\n\n" );
 	}
+
+	this->windowTitle	= XML.getValue( "CONFIG:APPLICATION:TITLE", "Multiple Camera Settings" );
+	this->bDebugMode	= XML.getValue( "CONFIG:BOOLEAN:DEBUG", 0 );
+	this->winWidth		= XML.getValue( "CONFIG:WINDOW:WIDTH", 950 );
+	this->winHeight		= XML.getValue( "CONFIG:WINDOW:HEIGHT", 600 );
+
 }
 
 void MultiCams::SaveXMLSettings() {
+	//! Set values
+	XML.setValue( "CONFIG:APPLICATION:TITLE", windowTitle );
 
+	//! Save the file
+	XML.saveFile( _xmlFileName );
 }
