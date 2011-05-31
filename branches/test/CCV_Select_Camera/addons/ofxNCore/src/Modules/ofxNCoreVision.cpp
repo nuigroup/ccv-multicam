@@ -1172,3 +1172,9 @@ void ofxNCoreVision::_exit(ofEventArgs &e)
 	printf("Vision module has exited!\n");
 }
 
+/*****************************************************************************
+* MULTIPLE CAMERAS
+*****************************************************************************/
+void MultiCamSettings() {
+
+}

@@ -217,6 +217,9 @@ public:
 
 	void drawFiducials();
 
+	// Multiple cameras settings
+	void MultiCamSettings();
+
 
 
 	//Load/save settings

@@ -55,8 +55,10 @@ void ofxNCoreVision::setupControls()
 	controls->mGlobals->mSliderColor.b = 0;
 	controls->mGlobals->mSliderColor.a = .8;
 
+	// Camera Properties
 	ofxGuiPanel* propPanel = controls->addPanel(appPtr->propertiesPanel, "Camera Properties", 740, 140, 12, OFXGUI_PANEL_SPACING);
-	propPanel->addButton(appPtr->propertiesPanel_settings, "Camera Settings (v)", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Trigger);
+	//! Change for multicam
+	propPanel->addButton(appPtr->propertiesPanel_settings, "Multiple cameras (v)", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Trigger);
 	propPanel->addButton(appPtr->propertiesPanel_flipV, "Flip Vertical (j)", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Switch);
 	propPanel->addButton(appPtr->propertiesPanel_flipH, "Flip Horizontal (h)", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Switch);
 	propPanel->mObjWidth = 200;
@@ -364,14 +366,14 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 			{
 				if(*(bool*)data && bcamera)
 				{
-                   #ifdef TARGET_WIN32
-					if(PS3)
-						PS3->showSettings();
-					else if(vidGrabber)
-						vidGrabber->videoSettings();
-                    #else
-                    	vidGrabber->videoSettings();
-                    #endif
+     //              #ifdef TARGET_WIN32
+					//if(PS3)
+					//	PS3->showSettings();
+					//else if(vidGrabber)
+					//	vidGrabber->videoSettings();
+     //               #else
+     //               	vidGrabber->videoSettings();
+     //               #endif
 				}
 			}
 			break;
