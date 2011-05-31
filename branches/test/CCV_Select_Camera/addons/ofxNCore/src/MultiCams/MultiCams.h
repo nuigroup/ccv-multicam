@@ -13,6 +13,63 @@
 
 class MultiCams : public ofxGuiListener {
 
+	//! ofxGUI stuff
+	enum {
+		
+	};
+public:
+	//! Constructor
+	MultiCams( bool bDebug );
+	//! Destructor
+	~MultiCams();
+
+
+	/**********************************************************
+	 *                 PUBLIC METHODS
+	 **********************************************************/
+	// BASIC EVENTS
+	void _setup( ofEventArgs &e );
+	void _update( ofEventArgs &e );
+	void _draw( ofEventArgs &e );
+	void _exit( ofEventArgs &e );
+
+	// MOUSE EVENTS
+	void _mousePressed( ofMouseEventArgs &e );
+	void _mouseDragged( ofMouseEventArgs &e );
+	void _mouseReleased( ofMouseEventArgs &e );
+
+	// KEY EVENTS
+	void _keyPressed( ofKeyEventArgs &e );
+	void _keyReleased( ofKeyEventArgs &e );
+
+	// GUI
+	void handleGui(int parameterId, int task, void* data, int length);
+	void setupControls();
+	ofxGui* controls;
+
+	// DRAWING
+	void drawFullMode();
+
+	// LOAD/SAVE XML SETTINGS
+	void loadXMLSettings();
+	void SaveXMLSettings();
+
+	/**********************************************************
+	 *                 PRIVATE STUFF
+	 **********************************************************/
+private:
+	//! debug mode
+	bool _bDebugMode;
+
+	///////////////////////////
+	// XML Settings
+
+	//! config file name
+	string _xmlFileName;
+
+	//! XML load/save
+	ofxXmlSettings XML;
+
 };
 
 #endif 
