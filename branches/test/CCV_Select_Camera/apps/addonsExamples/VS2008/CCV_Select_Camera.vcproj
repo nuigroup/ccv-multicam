@@ -96,7 +96,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="adding DLLs and creating data folder"
-				CommandLine="xcopy /e /i /y &quot;$(ProjectDir)\..\..\..\other\dlls\*.dll&quot; bin&#x0D;&#x0A;if not exist &quot;bin\data&quot; mkdir  &quot;bin\data&quot;&#x0D;&#x0A;"
+				CommandLine="xcopy /e /i /y &quot;$(ProjectDir)\..\..\..\export\vs2008\*.dll&quot; bin&#x0D;&#x0A;if not exist &quot;bin\data&quot; mkdir  &quot;bin\data&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -179,7 +179,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="adding DLLs and creating data folder"
-				CommandLine="xcopy /e /i /y &quot;$(ProjectDir)\..\..\..\other\dlls\*.dll&quot; bin&#x0D;&#x0A;if not exist &quot;bin\data&quot; mkdir  &quot;bin\data&quot;&#x0D;&#x0A;"
+				CommandLine="xcopy /e /i /y &quot;$(ProjectDir)\..\..\..\export\vs2008\*.dll&quot; bin&#x0D;&#x0A;if not exist &quot;bin\data&quot; mkdir  &quot;bin\data&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
