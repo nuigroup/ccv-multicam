@@ -390,5 +390,8 @@ public:
 
 	MultiCams*			multiCams;
 
+	void				removePanels();
+	void				addPanels();
+
 };
 #endif

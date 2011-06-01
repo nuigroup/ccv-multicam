@@ -13,12 +13,22 @@
 #include "ofxXmlSettings.h"
 #include "Controls/ofxGuiTypes.h"
 #include "Controls/ofxGui.h"
+// #include "Modules/ofxNCoreVision.h"
+class ofxNCoreVision;
 
 class MultiCams : public ofxGuiListener {
 
 	//! ofxGUI stuff
 	enum {
-		
+		camerasDisplayPanel,
+
+		generalSettingsPanel,
+		generalSettingsPanel_save,
+		generalSettingsPanel_cancel,
+
+		devicesListPanel,
+
+		informationPanel,
 	};
 public:
 	//! Constructor
@@ -46,6 +56,11 @@ public:
 	// GUI
 	void handleGui(int parameterId, int task, void* data, int length);
 	void setupControls();
+	void addPanels();
+	void removePanels();
+
+	// PASS IN
+	void passInCoreVision( ofxNCoreVision * core );
 
 	// DRAWING
 	void draw();
@@ -65,6 +80,9 @@ public:
 	 *                 PRIVATE STUFF
 	 **********************************************************/
 private:
+
+	//! NCoreVision pointer
+	ofxNCoreVision* _coreVision;
 
 	///////////////////
 	// TEST STUFF
