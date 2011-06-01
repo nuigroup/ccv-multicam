@@ -166,6 +166,17 @@ ofxGuiPanel* ofxGui::addPanel(int id, string name, int x, int y, int border, int
 }
 
 //	----------------------------------------------------------------------------------------------------
+// Ref: http://forum.openframeworks.cc/index.php?topic=1161.0
+// Added by Yishi Guo
+void ofxGui::removePanel( int id ) {
+	for ( vector<ofxGuiObject*>::iterator it = mObjects.begin(); it < mObjects.end(); it++ ) {
+		if ( (*it)->mParamId == id ) {
+			mObjects.erase( it );
+			break;
+		}
+	}
+}
+//	----------------------------------------------------------------------------------------------------
 
 bool ofxGui::buildFromXml(string file)
 {
