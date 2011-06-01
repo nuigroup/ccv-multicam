@@ -64,6 +64,10 @@
 #include "Controls/ofxGui.h"
 #include "Controls/ofxGuiTypes.h"
 
+// MultiCams Support by Yishi Guo
+#include "MultiCams/MultiCams.h"
+#include "MultiCams/SetDevices.h"
+
 //#include "Camera/Camera.h"
 
 // Modules (Audio/Visual/Physical) Custom modules that fall in each category...
@@ -71,8 +75,6 @@
 #include "Modules/ofxNCoreVision.h" // Extended Module for Vision Processing
 
 
-// MultiCams Support by Yishi Guo
-#include "MultiCams/MultiCams.h"
-#include "MultiCams/SetDevices.h"
+
 
 #endif

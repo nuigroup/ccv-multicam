@@ -80,6 +80,13 @@ void ofxNCoreVision::_setup(ofEventArgs &e)
 	setupControls();
 
 	//printf("Controls Loaded...\n");
+	/**********************************************
+	 * MultiCams
+	 **********************************************/
+	if ( multiCams == NULL ) {
+		multiCams = new MultiCams();
+		multiCams->setup();
+	}
 
 	//Setup Calibration
 	calib.setup(camWidth, camHeight, &tracker);
@@ -640,10 +647,12 @@ void ofxNCoreVision::_draw(ofEventArgs &e)
 				ofSetColor(0, 0, 255);
 				ofRect(maxRect.x, maxRect.y, maxRect.width, maxRect.height);
 			}
-		}
 
-		//draw gui controls
-		if (!bCalibration && !bMiniMode) {controls->draw();}
+			//draw gui controls
+			controls->draw();
+		} else if ( bMultiCamsInterface ) {
+			multiCams->draw();
+		}
 	}
 }
 
@@ -1074,24 +1083,25 @@ void ofxNCoreVision::_keyReleased(ofKeyEventArgs &e)
 *****************************************************************************/
 void ofxNCoreVision::_mouseDragged(ofMouseEventArgs &e)
 {
-	if (showConfiguration)
+	if (showConfiguration) {
 		controls->mouseDragged(e.x, e.y, e.button); //guilistener
-	if(contourFinder.bTrackObjects)
-	{
-		if( e.x > 385 && e.x < 705 && e.y > 30 && e.y < 270 )
+		if(contourFinder.bTrackObjects)
 		{
-			if( e.x < rect.x || e.y < rect.y )
+			if( e.x > 385 && e.x < 705 && e.y > 30 && e.y < 270 )
 			{
-				rect.width = rect.x - e.x;
-				rect.height = rect.y - e.y;
+				if( e.x < rect.x || e.y < rect.y )
+				{
+					rect.width = rect.x - e.x;
+					rect.height = rect.y - e.y;
 
-				rect.x = e.x;
-				rect.y =  e.y;
-			}
-			else
-			{
-				rect.width = e.x - rect.x;
-				rect.height = e.y - rect.y;
+					rect.x = e.x;
+					rect.y =  e.y;
+				}
+				else
+				{
+					rect.width = e.x - rect.x;
+					rect.height = e.y - rect.y;
+				}
 			}
 		}
 	}
@@ -1121,14 +1131,15 @@ void ofxNCoreVision::_mousePressed(ofMouseEventArgs &e)
 
 void ofxNCoreVision::_mouseReleased(ofMouseEventArgs &e)
 {
-	if (showConfiguration)
+	if (showConfiguration) {
 		controls->mouseReleased(e.x, e.y, 0); //guilistener
-	if( e.x > 385 && e.x < 705 && e.y > 30 && e.y < 270 )
-	{
-		if	( contourFinder.bTrackObjects && isSelecting )
+		if( e.x > 385 && e.x < 705 && e.y > 30 && e.y < 270 )
 		{
-			minRect = rect;
-			maxRect = rect;
+			if	( contourFinder.bTrackObjects && isSelecting )
+			{
+				minRect = rect;
+				maxRect = rect;
+			}
 		}
 	}
 }
@@ -1175,6 +1186,9 @@ void ofxNCoreVision::_exit(ofEventArgs &e)
 /*****************************************************************************
 * MULTIPLE CAMERAS
 *****************************************************************************/
-void MultiCamSettings() {
-
+void ofxNCoreVision::switchMultiCamsGUI( bool showCams ) {
+	if ( showCams ) {
+		bMultiCamsInterface = true;
+		bShowInterface = false;
+	}
 }

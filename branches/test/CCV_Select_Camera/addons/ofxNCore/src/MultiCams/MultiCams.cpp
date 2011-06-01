@@ -9,78 +9,38 @@
 
 #include "MultiCams.h"
 
-MultiCams::MultiCams( bool bDebug) {
-	// Add listeners
-	ofAddListener( ofEvents.setup, this, &MultiCams::_setup );
-	ofAddListener( ofEvents.update, this, &MultiCams::_update );
-	ofAddListener( ofEvents.draw ,this, &MultiCams::_draw );
-	ofAddListener( ofEvents.exit, this, &MultiCams::_exit );
+//MultiCams::MultiCams( bool bDebug) {
+//	// Add listeners
+//	//ofAddListener( ofEvents.setup, this, &MultiCams::_setup );
+//	//ofAddListener( ofEvents.update, this, &MultiCams::_update );
+//	//ofAddListener( ofEvents.draw ,this, &MultiCams::_draw );
+//	//ofAddListener( ofEvents.exit, this, &MultiCams::_exit );
+//
+//	ofAddListener( ofEvents.mousePressed, this, &MultiCams::_mousePressed );
+//	ofAddListener( ofEvents.mouseDragged, this, &MultiCams::_mouseDragged );
+//	ofAddListener( ofEvents.mouseReleased, this, &MultiCams::_mouseReleased );
+//
+//	ofAddListener( ofEvents.keyPressed, this, &MultiCams::_keyPressed );
+//	ofAddListener( ofEvents.keyReleased, this, &MultiCams::_keyReleased );
+//
+//
+//	bDebugMode = bDebug;
+//	bFullMode = true;	//! show all controls
+//	_xmlFileName = "multicams.xml";
+//}
 
-	ofAddListener( ofEvents.mousePressed, this, &MultiCams::_mousePressed );
-	ofAddListener( ofEvents.mouseDragged, this, &MultiCams::_mouseDragged );
-	ofAddListener( ofEvents.mouseReleased, this, &MultiCams::_mouseReleased );
+MultiCams::MultiCams() {
 
-	ofAddListener( ofEvents.keyPressed, this, &MultiCams::_keyPressed );
-	ofAddListener( ofEvents.keyReleased, this, &MultiCams::_keyReleased );
-
-
-	bDebugMode = bDebug;
-	bFullMode = true;	//! show all controls
-	_xmlFileName = "multicams.xml";
 }
 
 MultiCams::~MultiCams() {
 
 }
 
-void MultiCams::_setup( ofEventArgs &e ) {
-	//! Load the settings first
-	this->loadXMLSettings();
-
-	// Set the title
-	ofSetWindowTitle( windowTitle );
-
-	//! Setup window properties
-	ofSetWindowShape( winWidth, winHeight );
-	ofSetVerticalSync( false );
-
-	//! Load font
-	testFont.loadFont( "verdana.ttf", 8, true, true );
-
-	//! GUI controls
-	controls = ofxGui::Instance( this );
-	setupControls();
-
-
-	if ( bDebugMode ) {
-		// TODO
-	}
-
-	if ( bFullMode ) {
-		bShowInterface = true;
-	}
-
-	ofLog( OF_LOG_VERBOSE, "Multiple Cameras Configuration is setup!\n\n" );
-
+void MultiCams::setup() {
+	testFont.loadFont( "verdana.ttf", 50, true, true );
 }
 
-void MultiCams::_update( ofEventArgs &e ) {
-	testInt++;
-}
-
-void MultiCams::_draw( ofEventArgs &e ) {
-	if ( bShowConfiguration ) {
-		if ( bShowInterface ) {
-			testFont.drawString( ofToString( testInt ),
-			ofGetWidth()/2,
-			ofGetHeight()/2 );
-		}
-	}
-}
-
-void MultiCams::_exit( ofEventArgs &e ) {
-
-}
 
 void MultiCams::_mousePressed( ofMouseEventArgs &e ) {
 
@@ -107,6 +67,25 @@ void MultiCams::handleGui(int parameterId, int task, void* data, int length) {
 }
 
 void MultiCams::setupControls() {
+
+}
+
+void MultiCams::draw() {
+	ofSetColor( 0x123456 );
+	ofFill();
+	ofRect( 0, 0, ofGetWidth(), ofGetHeight() );
+
+	string testStr = ofToString( testInt++ );
+
+	// Set the font color to white.
+	ofSetColor( 0xFFFFFF );
+
+	//! Draw the test string
+	testFont.drawString(
+		testStr,
+		ofGetWidth()/2 - testFont.stringWidth( testStr )/2,
+		ofGetHeight()/2 - testFont.stringHeight( testStr )/2
+	);
 
 }
 

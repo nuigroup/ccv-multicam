@@ -33,7 +33,11 @@ void ofxGuiPanel::init(int id, string name, int x, int y, int border, int spacin
 	mBorder			= border;
 	mSpacing		= spacing;
 	
-	adjustToNewContent(roundInt(mGlobals->mHeadFont.stringWidth(name)), textHeight);
+	adjustToNewContent(
+		roundInt(
+		mGlobals->mHeadFont.stringWidth(name)
+		),
+		textHeight);
 }
 
 //	----------------------------------------------------------------------------------------------------

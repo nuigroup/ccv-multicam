@@ -9,7 +9,10 @@
 #ifndef MULTI_CAMS_H_
 #define MULTI_CAMS_H_
 
-#include "ofxNCore.h"
+#include "ofMain.h"
+#include "ofxXmlSettings.h"
+#include "Controls/ofxGuiTypes.h"
+#include "Controls/ofxGui.h"
 
 class MultiCams : public ofxGuiListener {
 
@@ -19,7 +22,8 @@ class MultiCams : public ofxGuiListener {
 	};
 public:
 	//! Constructor
-	MultiCams( bool bDebug = false );
+	//MultiCams( bool bDebug = false );
+	MultiCams();
 	//! Destructor
 	~MultiCams();
 
@@ -27,11 +31,8 @@ public:
 	/**********************************************************
 	 *                 PUBLIC METHODS
 	 **********************************************************/
-	// BASIC EVENTS
-	void _setup( ofEventArgs &e );
-	void _update( ofEventArgs &e );
-	void _draw( ofEventArgs &e );
-	void _exit( ofEventArgs &e );
+	// SETUP
+	void setup();
 
 	// MOUSE EVENTS
 	void _mousePressed( ofMouseEventArgs &e );
@@ -45,14 +46,20 @@ public:
 	// GUI
 	void handleGui(int parameterId, int task, void* data, int length);
 	void setupControls();
-	ofxGui* controls;
 
 	// DRAWING
-	void drawFullMode();
+	void draw();
 
 	// LOAD/SAVE XML SETTINGS
 	void loadXMLSettings();
 	void SaveXMLSettings();
+
+	/**********************************************************
+	 *                 PUBLIC STUFF
+	 **********************************************************/
+public:
+	//! Controls
+	ofxGui* controls;
 
 	/**********************************************************
 	 *                 PRIVATE STUFF

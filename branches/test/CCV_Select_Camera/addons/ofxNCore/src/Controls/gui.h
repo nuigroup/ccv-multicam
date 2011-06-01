@@ -238,85 +238,88 @@ void ofxNCoreVision::setupControls()
 
 void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int length)
 {
-	switch(parameterId)
-	{
+	if ( bMultiCamsInterface ) {
+		// TODO
+	} else {
+		switch(parameterId)
+		{
 		case sourcePanel_cam:
 			if(length == sizeof(bool))
 			{
 				if(*(bool*)data)
 				{
-						if( vidPlayer != NULL ) {
-                            vidPlayer->close();
-                        }
-						if( vidGrabber != NULL ) {
-							vidGrabber->listDevices();
-							vidGrabber->setDeviceID(deviceID);
-							vidGrabber->setVerbose(false);
-							vidGrabber->initGrabber(camWidth,camHeight);
-							filter->exposureStartTime = ofGetElapsedTimeMillis();
-							filter_fiducial->exposureStartTime = ofGetElapsedTimeMillis();
-						}
+					if( vidPlayer != NULL ) {
+						vidPlayer->close();
+					}
+					if( vidGrabber != NULL ) {
+						vidGrabber->listDevices();
+						vidGrabber->setDeviceID(deviceID);
+						vidGrabber->setVerbose(false);
+						vidGrabber->initGrabber(camWidth,camHeight);
+						filter->exposureStartTime = ofGetElapsedTimeMillis();
+						filter_fiducial->exposureStartTime = ofGetElapsedTimeMillis();
+					}
 
-						bcamera = true;
+					bcamera = true;
+					//reset gpu textures and filters
+					if(!cameraInited)
+					{
+						initDevice();
+					}
+					processedImg.clear();
+					processedImg.allocate(camWidth, camHeight); //Processed Image
+					processedImg.setUseTexture(false);
+
+					processedImg_fiducial.clear();
+					processedImg_fiducial.allocate(camWidth, camHeight);
+					processedImg_fiducial.setUseTexture(false);
+
+					sourceImg.clear();
+					sourceImg.allocate(camWidth, camHeight);    //Source Image
+					sourceImg.setUseTexture(false);
+					filter->allocate(camWidth, camHeight);
+					filter_fiducial->allocate(camWidth, camHeight);
+				}
+				else
+				{
+					bcamera = false;
+
+					if( vidPlayer == NULL ) {
+						vidPlayer = new ofVideoPlayer();
+					}
+					if( vidGrabber != NULL ) {
+						vidGrabber->close();
+					}
+
+					vidPlayer->loadMovie(videoFileName);
+					vidPlayer->play();
+					vidPlayer->setLoopState(OF_LOOP_NORMAL);
+					filter->exposureStartTime = ofGetElapsedTimeMillis();
+					filter_fiducial->exposureStartTime = ofGetElapsedTimeMillis();
+					printf("Video Mode\n");
+
+					bool bReallocate = true;
+					if(camWidth == vidPlayer->width && camHeight == vidPlayer->height)
+					{
+						bReallocate = false;
+					}
+
+					camHeight = vidPlayer->height;
+					camWidth = vidPlayer->width;
+
+					if(bReallocate){
 						//reset gpu textures and filters
-						if(!cameraInited)
-						{
-							initDevice();
-						}
 						processedImg.clear();
 						processedImg.allocate(camWidth, camHeight); //Processed Image
 						processedImg.setUseTexture(false);
-
 						processedImg_fiducial.clear();
 						processedImg_fiducial.allocate(camWidth, camHeight);
 						processedImg_fiducial.setUseTexture(false);
-
 						sourceImg.clear();
 						sourceImg.allocate(camWidth, camHeight);    //Source Image
 						sourceImg.setUseTexture(false);
 						filter->allocate(camWidth, camHeight);
 						filter_fiducial->allocate(camWidth, camHeight);
-				}
-				else
-				{
-						bcamera = false;
-
-						if( vidPlayer == NULL ) {
-                            vidPlayer = new ofVideoPlayer();
-                        }
-						if( vidGrabber != NULL ) {
-							vidGrabber->close();
-                        }
-
-                        vidPlayer->loadMovie(videoFileName);
-                        vidPlayer->play();
-                        vidPlayer->setLoopState(OF_LOOP_NORMAL);
-						filter->exposureStartTime = ofGetElapsedTimeMillis();
-						filter_fiducial->exposureStartTime = ofGetElapsedTimeMillis();
-                        printf("Video Mode\n");
-
-						bool bReallocate = true;
-						if(camWidth == vidPlayer->width && camHeight == vidPlayer->height)
-						{
-							bReallocate = false;
-						}
-
-                        camHeight = vidPlayer->height;
-                        camWidth = vidPlayer->width;
-
-						if(bReallocate){
-							//reset gpu textures and filters
-							processedImg.clear();
-							processedImg.allocate(camWidth, camHeight); //Processed Image
-							processedImg.setUseTexture(false);
-							processedImg_fiducial.clear();
-							processedImg_fiducial.allocate(camWidth, camHeight);
-							processedImg_fiducial.setUseTexture(false);
-							sourceImg.clear();
-							sourceImg.allocate(camWidth, camHeight);    //Source Image
-							sourceImg.setUseTexture(false);
-							filter->allocate(camWidth, camHeight);
-							filter_fiducial->allocate(camWidth, camHeight);
 					}
 				}
 			}
@@ -328,7 +331,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				{
 					if(bcamera && vidGrabber != NULL){
 						deviceID += 1;
-                      	vidGrabber->close();
+						vidGrabber->close();
 						vidGrabber->setDeviceID(deviceID);
 						vidGrabber->setVerbose(false);
 						vidGrabber->initGrabber(camWidth,camHeight);
@@ -361,53 +364,53 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				}
 			}
 			break;
-		/////////////////////////////////////////////
-		// MultiCams Settings
+			/////////////////////////////////////////////
+			// MultiCams Settings
 		case propertiesPanel_settings:
 			printf( "properitesPanel_settings\n" );
 			if(length == sizeof(bool))
 			{
 				if(*(bool*)data && bcamera)
 				{
-     //              #ifdef TARGET_WIN32
+					//              #ifdef TARGET_WIN32
 					//if(PS3)
 					//	PS3->showSettings();
 					//else if(vidGrabber)
 					//	vidGrabber->videoSettings();
-     //               #else
-     //               	vidGrabber->videoSettings();
-     //               #endif
+					//               #else
+					//               	vidGrabber->videoSettings();
+					//               #endif
 
 					//MultiCams cams = new MultiCams();
-					SetDevices devices = new SetDevices();
+					switchMultiCamsGUI();
 					printf ("data value: %d\n", *(bool*)data );
 				}
 			}
 			break;
-		//Calibration
+			//Calibration
 		case calibrationPanel_calibrate:
-				bShowInterface = false;
-				//Enter/Exit Calibration
-				bCalibration = true;
-				calib.calibrating = true;
-				tracker.isCalibrating = true;
-				if (bFullscreen == false) ofToggleFullscreen();
-				bFullscreen = true;
+			bShowInterface = false;
+			//Enter/Exit Calibration
+			bCalibration = true;
+			calib.calibrating = true;
+			tracker.isCalibrating = true;
+			if (bFullscreen == false) ofToggleFullscreen();
+			bFullscreen = true;
 			break;
-		//Source
+			//Source
 		case propertiesPanel_flipH:
 			printf( "propertiesPanel_flipH\n" );
 			if(length == sizeof(bool))
 				filter->bHorizontalMirror = *(bool*)data;
-				filter_fiducial->bHorizontalMirror = *(bool*)data;
+			filter_fiducial->bHorizontalMirror = *(bool*)data;
 			break;
 		case propertiesPanel_flipV:
 			if(length == sizeof(bool))
 				filter->bVerticalMirror = *(bool*)data;
-				filter_fiducial->bVerticalMirror = *(bool*)data;
+			filter_fiducial->bVerticalMirror = *(bool*)data;
 			break;
 
-		//Tracking Panel
+			//Tracking Panel
 		case trackingPanel_trackFingers:
 			if(length == sizeof(bool))
 				contourFinder.bTrackFingers=*(bool*)data;
@@ -432,30 +435,30 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				contourFinder.bTrackFiducials=*(bool*)data;
 			}
 			break;
-		//Communication
+			//Communication
 		case optionPanel_tuio_osc:
 			if(length == sizeof(bool))
 				myTUIO.bOSCMode = *(bool*)data;
 			//	bTUIOMode = *(bool*)data;
-				//set tcp to opposite
+			//set tcp to opposite
 			//	myTUIO.bTCPMode = false;
 			//	controls->update(appPtr->optionPanel_tuio_tcp, kofxGui_Set_Bool, &appPtr->myTUIO.bTCPMode, sizeof(bool));
 			//	myTUIO.bBinaryMode = false;
 			//	controls->update(appPtr->optionPanel_bin_tcp, kofxGui_Set_Bool, &appPtr->myTUIO.bBinaryMode, sizeof(bool));
-				//clear blobs
-//				myTUIO.blobs.clear();
+			//clear blobs
+			//				myTUIO.blobs.clear();
 			break;
 		case optionPanel_tuio_tcp:
 			if(length == sizeof(bool))
 				myTUIO.bTCPMode = *(bool*)data;
 			//	bTUIOMode = *(bool*)data;
-				//set osc to opposite
+			//set osc to opposite
 			//	myTUIO.bOSCMode = false;
 			//	controls->update(appPtr->optionPanel_tuio_osc, kofxGui_Set_Bool, &appPtr->myTUIO.bOSCMode, sizeof(bool));
 			//	myTUIO.bBinaryMode = false;
 			//	controls->update(appPtr->optionPanel_bin_tcp, kofxGui_Set_Bool, &appPtr->myTUIO.bBinaryMode, sizeof(bool));
-				//clear blobs
-//				myTUIO.blobs.clear();
+			//clear blobs
+			//				myTUIO.blobs.clear();
 			break;
 		case optionPanel_bin_tcp:
 			if(length == sizeof(bool))
@@ -467,28 +470,28 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 			myTUIO.bOSCMode = false;
 			controls->update(appPtr->optionPanel_tuio_osc, kofxGui_Set_Bool, &appPtr->myTUIO.bOSCMode, sizeof(bool));
 			//clear blobs
-//				myTUIO.blobs.clear();
+			//				myTUIO.blobs.clear();
 			break;
-// 		case optionPanel_tuio_height_width:
-// 			if(length == sizeof(bool))
-// 				myTUIO.bHeightWidth = *(bool*)data;
-// 			break;
-		//Background
+			// 		case optionPanel_tuio_height_width:
+			// 			if(length == sizeof(bool))
+			// 				myTUIO.bHeightWidth = *(bool*)data;
+			// 			break;
+			//Background
 		case backgroundPanel_dynamic:
 			if(length == sizeof(bool))
 				filter->bDynamicBG = *(bool*)data;
-				filter_fiducial->bDynamicBG = *(bool*)data;
+			filter_fiducial->bDynamicBG = *(bool*)data;
 			break;
 		case backgroundPanel_remove:
 			if(length == sizeof(bool))
 				filter->bLearnBakground = *(bool*)data;
-				filter_fiducial->bLearnBakground = *(bool*)data;
+			filter_fiducial->bLearnBakground = *(bool*)data;
 			break;
 		case backgroundPanel_learn_rate:
 			if(length == sizeof(float))
 				backgroundLearnRate = *(float*)data;
 			break;
-		//Highpass
+			//Highpass
 		case highpassPanel_use:
 			if(length == sizeof(bool))
 			{
@@ -528,7 +531,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				}
 			}
 			break;
-		//Amplify
+			//Amplify
 		case amplifyPanel_use:
 			if(length == sizeof(bool))
 			{
@@ -601,7 +604,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 			if(length == sizeof(bool))
 				bShowLabels = *(bool*)data;
 			break;
-		//smooth
+			//smooth
 		case smoothPanel_smooth:
 			if(length == sizeof(float))
 			{
@@ -628,14 +631,14 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				}
 			}
 			break;
-		//Template Area Sliders
+			//Template Area Sliders
 		case TemplatePanel_minArea:
 			if(length == sizeof(float))
 			{
 				minTempArea = *(float*)data;
 				float smallArea = rect.height*rect.width-minTempArea; //The area of the small rectangle
 				float _w = sqrt(smallArea*rect.width/rect.height); // Width of small rectangle, as the width and height
-																   //will be proportional to the original rectangle
+				//will be proportional to the original rectangle
 				float _h = sqrt(smallArea*rect.height/rect.width);
 				minRect.x =rect.x + (rect.width - _w)/2 ;
 				minRect.y = rect.y + (rect.height - _h)/2 ;
@@ -649,7 +652,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				maxTempArea = *(float*)data;
 				float bigArea = rect.height*rect.width+maxTempArea; //The area of the big rectangle
 				float _w = sqrt(bigArea*rect.width/rect.height); // Width of big rectangle, as the width and height
-																 //will be proportional to the original rectangle
+				//will be proportional to the original rectangle
 				float _h = sqrt(bigArea*rect.height/rect.width);
 				maxRect.x =rect.x - (_w - rect.width)/2 ;
 				maxRect.y = rect.y - (_h - rect.height)/2 ;
@@ -657,7 +660,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				maxRect.height = _h ;
 			}
 			break;
-		//Save Settings
+			//Save Settings
 		case kParameter_SaveXml:
 			if(length == sizeof(bool))
 			{
@@ -689,7 +692,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 				}
 			}
 			break;
-
+		}
 	}
 }
 #endif //GUI_CONTROLS_H

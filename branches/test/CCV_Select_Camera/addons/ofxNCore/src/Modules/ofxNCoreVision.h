@@ -28,6 +28,7 @@
 #include "ofxFiducialTracker.h"
 
 // Our Addon
+//#include "MultiCams/MultiCams.h"
 #include "ofxNCore.h"
 
 // height and width of the source/tracked draw window
@@ -166,6 +167,12 @@ public:
         #else
             bStandaloneMode = false;
         #endif
+
+		//////////////////////////////
+		// MultiCams
+		//////////////////////////////
+		bMultiCamsInterface = 0;	// Do not show the interface
+		multiCams = NULL;
 	}
 
 	~ofxNCoreVision()
@@ -203,6 +210,7 @@ public:
 	void setupControls();
 	void		handleGui(int parameterId, int task, void* data, int length);
 	ofxGui*		controls;
+	ofxGui*		pControls;
 
 	//image processing stuff
 	void initDevice();
@@ -216,10 +224,6 @@ public:
 	void drawFullMode();
 
 	void drawFiducials();
-
-	// Multiple cameras settings
-	void MultiCamSettings();
-
 
 
 	//Load/save settings
@@ -375,5 +379,16 @@ public:
 	struct tm *			timeinfo;
 	char				fileName [80];
 	FILE *				stream ;
+
+	/****************************************************************
+	 *						MultiCams Stuff
+	 ****************************************************************/
+public:
+	bool				bMultiCamsInterface;
+
+	void				switchMultiCamsGUI( bool showCams = true );
+
+	MultiCams*			multiCams;
+
 };
 #endif
