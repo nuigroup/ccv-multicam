@@ -69,6 +69,8 @@ enum
 	kofxGui_Object_Knob,
 	kofxGui_Object_Radar,
 	kofxGui_Object_Switch,
+
+	kofxGui_Object_Text,	//< added by Yishi Guo
 };
 
 enum

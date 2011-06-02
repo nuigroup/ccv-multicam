@@ -330,6 +330,20 @@ ofxGuiObject* ofxGuiPanel::addSwitch(int id, string name, int width, int height,
 
 //	----------------------------------------------------------------------------------------------------
 
+ofxGuiObject* ofxGuiPanel::addLabel( int id, string name, int width, int height, string text, ofRGBA fontColor, string fontName, int fontSize ) {
+	int offset = (mObjects.size() == 0 && mParamName == "" ) ? 0 : mSpacing;
+
+	ofxGuiLabel* label = new ofxGuiLabel();
+	label->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height, text, fontName, fontSize, fontColor );
+	mObjects.push_back( label );
+
+	adjustToNewContent( label->mObjWidth, label->mObjHeight + offset );
+
+	return label;
+}
+
+//	----------------------------------------------------------------------------------------------------
+
 void ofxGuiPanel::adjustToNewContent(int width, int height)
 {
 	if(width > mObjWidth - mBorder * 2)

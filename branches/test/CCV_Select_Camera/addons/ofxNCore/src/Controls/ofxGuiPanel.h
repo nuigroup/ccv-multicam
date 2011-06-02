@@ -28,6 +28,9 @@
 #include "ofxGuiRadar.h"
 #include "ofxGuiSwitch.h"
 
+//! Added by Yishi Guo for MultiCams
+#include "ofxGuiLabel.h"
+
 //	----------------------------------------------------------------------------------------------------
 
 class ofxGuiPanel : public ofxGuiObject
@@ -57,7 +60,10 @@ public:
 	ofxGuiObject*	addKnob(int id, string name, int width, int height, float min, float max, float value, int display, int steps);
 	ofxGuiObject*	addRadar(int id, string name, int width, int height, float min, float max, float value, int display, int steps);
 	ofxGuiObject*	addSwitch(int id, string name, int width, int height,  int min, int max, int value, const string* paramStrings);
-	
+
+	//! Added by Yishi Guo
+	ofxGuiObject*	addLabel( int id, string name, int width, int height, string text, ofRGBA fontColor, string fontName = "verdana.ttf", int fontSize = 8 );
+
 	void			adjustToNewContent(int w, int h);
 
 	void			buildFromXml();
