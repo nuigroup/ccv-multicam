@@ -16,6 +16,13 @@
 // #include "Modules/ofxNCoreVision.h"
 class ofxNCoreVision;
 
+#define GENERAL_AREA_X 760
+#define GENERAL_AREA_Y 30
+#define GENERAL_AREA_WIDTH 160
+#define GENERAL_AREA_HEIGHT 160
+#define GENERAL_AREA_SLIDER_WIDTH 140
+#define GENERAL_AREA_SLIDER_HEIGHT 10
+
 class MultiCams : public ofxGuiListener {
 
 	//! ofxGUI stuff
@@ -23,12 +30,28 @@ class MultiCams : public ofxGuiListener {
 		camerasDisplayPanel,
 
 		generalSettingsPanel,
+		generalSettingsPanel_start,
 		generalSettingsPanel_save,
 		generalSettingsPanel_cancel,
 
 		devicesListPanel,
 
 		informationPanel,
+
+		step1Panel,
+		step1Panel_Xaxis,
+		step1Panel_Yaxis,
+		step1Panel_previous,
+		step1Panel_next,
+
+
+		step2Panel,
+		step2Panel_previous,
+		step2Panel_next,
+
+		step3Panel,
+
+		step4Panel,
 	};
 public:
 	//! Constructor
@@ -57,7 +80,9 @@ public:
 	void handleGui(int parameterId, int task, void* data, int length);
 	void setupControls();
 	void addPanels();
+	void addPanel( int id );
 	void removePanels();
+	void removePanel( int id);
 
 	// PASS IN
 	void passInCoreVision( ofxNCoreVision * core );
