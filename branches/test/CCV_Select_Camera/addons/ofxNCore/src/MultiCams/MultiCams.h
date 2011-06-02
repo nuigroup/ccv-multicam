@@ -22,6 +22,14 @@ class ofxNCoreVision;
 #define GENERAL_AREA_HEIGHT 160
 #define GENERAL_AREA_SLIDER_WIDTH 140
 #define GENERAL_AREA_SLIDER_HEIGHT 10
+#define GENERAL_AREA_LABEL_WIDTH 140
+#define GENERAL_AREA_LABEL_HEIGHT 5
+#define GENERAL_AREA_MATRIX_WIDTH 140
+#define GENERAL_AREA_MATRIX_HEIGHT 60
+#define GENERAL_AREA_PREV_X 10
+#define GENERAL_AREA_PREV_Y 140
+#define GENERAL_AREA_NEXT_X 110
+#define GENERAL_AREA_NEXT_Y 140
 
 class MultiCams : public ofxGuiListener {
 
@@ -33,25 +41,36 @@ class MultiCams : public ofxGuiListener {
 		generalSettingsPanel_start,
 		generalSettingsPanel_save,
 		generalSettingsPanel_cancel,
+		generalSettingsPanel_label1,
 
 		devicesListPanel,
 
 		informationPanel,
 
 		step1Panel,
+		step1Panel_tip,
 		step1Panel_Xaxis,
 		step1Panel_Yaxis,
 		step1Panel_previous,
 		step1Panel_next,
 
-
 		step2Panel,
+		step2Panel_tip,
+		step2Panel_setDevices,
 		step2Panel_previous,
 		step2Panel_next,
 
 		step3Panel,
+		step3Panel_tip,
+		step3Panel_matrix,
+		step3Panel_previous,
+		step3Panel_next,
 
 		step4Panel,
+		step4Panel_tip,
+		step4Panel_calibration,
+		step4Panel_previous,
+		step4Panel_finish,
 	};
 public:
 	//! Constructor
@@ -108,6 +127,10 @@ private:
 
 	//! NCoreVision pointer
 	ofxNCoreVision* _coreVision;
+
+	//! Horizontal and vertical camera count
+	int XAxis;
+	int YAxis;
 
 	///////////////////
 	// TEST STUFF

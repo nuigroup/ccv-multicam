@@ -613,6 +613,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiLabel.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiLabel.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiMatrix.cpp"
 							>
 						</File>
