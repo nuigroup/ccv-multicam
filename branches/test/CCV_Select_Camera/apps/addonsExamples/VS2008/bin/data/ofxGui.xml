@@ -1,7 +1,7 @@
 <UI>
     <VERSION>0.10</VERSION>
     <ISACTIVE>1</ISACTIVE>
-    <DOUPDATE>0</DOUPDATE>
+    <DOUPDATE>1</DOUPDATE>
     <STYLE>
         <HEADFONT>verdana.ttf</HEADFONT>
         <HEADSIZE>10</HEADSIZE>
@@ -130,7 +130,7 @@
         </OBJECT>
     </OBJECT>
     <OBJECT>
-        <ID>5</ID>
+        <ID>42</ID>
         <TYPE>PANEL</TYPE>
         <NAME>Track</NAME>
         <LEFT>740.000000</LEFT>
@@ -355,7 +355,7 @@
             <HEIGHT>10.000000</HEIGHT>
             <DISPLAY>2</DISPLAY>
             <STEPS>0</STEPS>
-            <VALUE>1</VALUE>
+            <VALUE>0</VALUE>
         </OBJECT>
         <OBJECT>
             <ID>41</ID>
@@ -367,7 +367,7 @@
             <HEIGHT>10.000000</HEIGHT>
             <DISPLAY>2</DISPLAY>
             <STEPS>0</STEPS>
-            <VALUE>1</VALUE>
+            <VALUE>0</VALUE>
         </OBJECT>
         <OBJECT>
             <ID>13</ID>
@@ -495,7 +495,7 @@
             <STEPS>0</STEPS>
             <MIN>1.000000</MIN>
             <MAX>500.000000</MAX>
-            <VALUE>0.010000</VALUE>
+            <VALUE>55.436363</VALUE>
         </OBJECT>
     </OBJECT>
     <OBJECT>
@@ -520,7 +520,7 @@
             <HEIGHT>12.000000</HEIGHT>
             <DISPLAY>2</DISPLAY>
             <STEPS>0</STEPS>
-            <VALUE>1</VALUE>
+            <VALUE>0</VALUE>
         </OBJECT>
         <OBJECT>
             <ID>25</ID>
@@ -559,7 +559,7 @@
             <HEIGHT>12.000000</HEIGHT>
             <DISPLAY>2</DISPLAY>
             <STEPS>0</STEPS>
-            <VALUE>1</VALUE>
+            <VALUE>0</VALUE>
         </OBJECT>
         <OBJECT>
             <ID>31</ID>
@@ -612,7 +612,7 @@
             <HEIGHT>12.000000</HEIGHT>
             <DISPLAY>2</DISPLAY>
             <STEPS>0</STEPS>
-            <VALUE>1</VALUE>
+            <VALUE>0</VALUE>
         </OBJECT>
         <OBJECT>
             <ID>28</ID>

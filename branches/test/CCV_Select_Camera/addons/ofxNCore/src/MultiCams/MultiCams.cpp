@@ -31,15 +31,20 @@
 //}
 
 MultiCams::MultiCams() {
-	ofAddListener( ofEvents.mousePressed, this, &MultiCams::_mousePressed );
-	ofAddListener( ofEvents.mouseDragged, this, &MultiCams::_mouseDragged );
-	ofAddListener( ofEvents.mouseReleased, this, &MultiCams::_mouseReleased );
+	//ofAddListener( ofEvents.mousePressed, this, &MultiCams::_mousePressed );
+	//ofAddListener( ofEvents.mouseDragged, this, &MultiCams::_mouseDragged );
+	//ofAddListener( ofEvents.mouseReleased, this, &MultiCams::_mouseReleased );
 
 	ofAddListener( ofEvents.keyPressed, this, &MultiCams::_keyPressed );
 	ofAddListener( ofEvents.keyReleased, this, &MultiCams::_keyReleased );
 
 	XAxis = 1;
 	YAxis = 1;
+
+	//////////////////////////
+	// SetDevices
+	setDevices = NULL;
+	bDevicesConfiguration = false;
 }
 //--------------------------------------------------------------
 
@@ -54,6 +59,12 @@ void MultiCams::setup() {
 
 	controls = ofxGui::Instance( this );
 	setupControls();
+
+	//! SetDevices
+	if (setDevices == NULL ) {
+		setDevices = new SetDevices();
+		setDevices->setup();
+	}
 }
 //--------------------------------------------------------------
 
@@ -86,141 +97,158 @@ void MultiCams::_keyReleased( ofKeyEventArgs &e ) {
 *      GUI
 ********************************************************/
 void MultiCams::handleGui(int parameterId, int task, void* data, int length) {
+	if ( bDevicesConfiguration ) {
+		setDevices->handleGui( parameterId, task, data, length );
+	} else {
+		_handleGui( parameterId, task, data, length );
+	}
+}
+//--------------------------------------------------------------
+void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) {
 	// DEBUG
 	printf( "MultiCams::handGui\n" );
 	switch( parameterId ) {
 		////////////////////////////////////
 		// GENERAL SETTINGS
 		//! Start settings
-		case generalSettingsPanel_start:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( generalSettingsPanel );
-					addPanel( step1Panel );
-				}
-			}
-			break;
-		//! Save settings and exit
-		case generalSettingsPanel_save:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					// TODO save the settings to XML file
-					if( _coreVision != NULL ) {
-						_coreVision->switchMultiCamsGUI( false );
+			case generalSettingsPanel_start:
+				if ( length == sizeof(bool) ) {
+					if (*(bool*)data) {
+						removePanel( generalSettingsPanel );
+						addPanel( step1Panel );
 					}
 				}
-			}
-			break;
-		//! Exit (Not settings saved)
-		case generalSettingsPanel_cancel:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					if ( _coreVision != NULL ) {
-						_coreVision->switchMultiCamsGUI( false );
+				break;
+				//! Save settings and exit
+			case generalSettingsPanel_save:
+				if ( length == sizeof(bool) ) {
+					if (*(bool*)data) {
+						// TODO save the settings to XML file
+						if( _coreVision != NULL ) {
+							_coreVision->switchMultiCamsGUI( false );
+						}
 					}
 				}
-			}
-			break;
-		////////////////////////////////////////
-		// STEP 1
-		//! X axis camera number
-		case step1Panel_Xaxis:
-			if( length == sizeof(float) ) {
-				XAxis = *(float*)data;
-				printf( "XAxis: %f\n", *(float*)data );
-			}
-			break;
-		//! Y axis camera number
-		case step1Panel_Yaxis:
-			if ( length == sizeof(float) ) {
-				YAxis = *(float*)data;
-			}
-			break;
-		//! Previous
-		case step1Panel_previous:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( step1Panel );
-					addPanel( generalSettingsPanel );
+				break;
+				//! Exit (Not settings saved)
+			case generalSettingsPanel_cancel:
+				if ( length == sizeof(bool) ) {
+					if (*(bool*)data) {
+						if ( _coreVision != NULL ) {
+							_coreVision->switchMultiCamsGUI( false );
+						}
+					}
 				}
-			}
-			break;
-		//! Next - Go to step 2
-		case step1Panel_next:
-			if ( length == sizeof(bool) ) {
-				if ( *(bool*)data) {
-					removePanel( step1Panel );
-					addPanel( step2Panel );
+				break;
+				////////////////////////////////////////
+				// STEP 1
+				//! X axis camera number
+			case step1Panel_Xaxis:
+				if( length == sizeof(float) ) {
+					XAxis = *(float*)data;
+					printf( "XAxis: %f\n", *(float*)data );
 				}
-			}
-			break;
+				break;
+				//! Y axis camera number
+			case step1Panel_Yaxis:
+				if ( length == sizeof(float) ) {
+					YAxis = *(float*)data;
+				}
+				break;
+				//! Previous
+			case step1Panel_previous:
+				if ( length == sizeof(bool) ) {
+					if (*(bool*)data) {
+						removePanel( step1Panel );
+						addPanel( generalSettingsPanel );
+					}
+				}
+				break;
+				//! Next - Go to step 2
+			case step1Panel_next:
+				if ( length == sizeof(bool) ) {
+					if ( *(bool*)data) {
+						removePanel( step1Panel );
+						addPanel( step2Panel );
+					}
+				}
+				break;
 
-		////////////////////////////////////////
-		// STEP 2
-		//! Previous
-		case step2Panel_previous:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( step2Panel );
-					addPanel( step1Panel );
+				////////////////////////////////////////
+				// STEP 2
+				//! Set Devices
+			case step2Panel_setDevices:
+				if ( length == sizeof( bool ) ) {
+					if (*(bool*)data) {
+						removePanels();
+						setDevices->addPanels();
+						bDevicesConfiguration = true;
+					}
 				}
-			}
-			break;
-		//! Next - Go to step 3
-		case step2Panel_next:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( step2Panel );
-					addPanel( step3Panel );
+				break;
+				//! Previous
+			case step2Panel_previous:
+				if ( length == sizeof(bool) ) {
+					if (*(bool*)data) {
+						removePanel( step2Panel );
+						addPanel( step1Panel );
+					}
 				}
-			}
-			break;
-		////////////////////////////////////////
-		// STEP 3
-		//! Previous step
-		case step3Panel_previous:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step3Panel );
-					addPanel( step2Panel );
+				break;
+				//! Next - Go to step 3
+			case step2Panel_next:
+				if ( length == sizeof(bool) ) {
+					if (*(bool*)data) {
+						removePanel( step2Panel );
+						addPanel( step3Panel );
+					}
 				}
-			}
-			break;
-		//! Next - Go to step 4
-		case step3Panel_next:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step3Panel );
-					addPanel( step4Panel );
+				break;
+				////////////////////////////////////////
+				// STEP 3
+				//! Previous step
+			case step3Panel_previous:
+				if ( length == sizeof( bool ) ) {
+					if (*(bool*)data) {
+						removePanel( step3Panel );
+						addPanel( step2Panel );
+					}
 				}
-			}
-			break;
-		///////////////////////////////////////
-		// STEP 4
-		//! Previous step
-		case step4Panel_previous:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step4Panel );
-					addPanel( step3Panel );
+				break;
+				//! Next - Go to step 4
+			case step3Panel_next:
+				if ( length == sizeof( bool ) ) {
+					if (*(bool*)data) {
+						removePanel( step3Panel );
+						addPanel( step4Panel );
+					}
 				}
-			}
-			break;
-		//! Return to general settings panel
-		case step4Panel_finish:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step4Panel );
-					addPanel( generalSettingsPanel );
+				break;
+				///////////////////////////////////////
+				// STEP 4
+				//! Previous step
+			case step4Panel_previous:
+				if ( length == sizeof( bool ) ) {
+					if (*(bool*)data) {
+						removePanel( step4Panel );
+						addPanel( step3Panel );
+					}
 				}
-			}
-			break;
-		default:
-			break;
+				break;
+				//! Return to general settings panel
+			case step4Panel_finish:
+				if ( length == sizeof( bool ) ) {
+					if (*(bool*)data) {
+						removePanel( step4Panel );
+						addPanel( generalSettingsPanel );
+					}
+				}
+				break;
+			default:
+				break;
 	}
 }
 //--------------------------------------------------------------
-
 void MultiCams::setupControls() {
 
 	//panel border color
@@ -473,6 +501,11 @@ void MultiCams::removePanels() {
 	controls->removePanel( this->generalSettingsPanel );
 	controls->removePanel( this->devicesListPanel );
 	controls->removePanel( this->informationPanel );
+
+	controls->removePanel( this->step1Panel );
+	controls->removePanel( this->step2Panel );
+	controls->removePanel( this->step3Panel );
+	controls->removePanel( this->step4Panel );
 }
 //--------------------------------------------------------------
 
@@ -481,7 +514,20 @@ void MultiCams::removePanel( int id ) {
 }
 //--------------------------------------------------------------
 
+/*******************************************************
+*      Draw methods
+********************************************************/
 void MultiCams::draw() {
+	if ( bDevicesConfiguration ) {
+		setDevices->draw();
+	} else {
+		_draw();	//! Draw the self interface
+	}
+
+}
+//--------------------------------------------------------------
+
+void MultiCams::_draw() {
 	ofSetColor( 0x123456 );
 	ofFill();
 	ofRect( 0, 0, ofGetWidth(), ofGetHeight() );
@@ -499,10 +545,8 @@ void MultiCams::draw() {
 	//);
 
 	controls->draw();
-
 }
 //--------------------------------------------------------------
-
 
 /*******************************************************
 *      PassIn Methods

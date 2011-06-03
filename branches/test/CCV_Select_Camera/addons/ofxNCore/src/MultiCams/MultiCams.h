@@ -13,6 +13,7 @@
 #include "ofxXmlSettings.h"
 #include "Controls/ofxGuiTypes.h"
 #include "Controls/ofxGui.h"
+#include "MultiCams/SetDevices.h"
 // #include "Modules/ofxNCoreVision.h"
 class ofxNCoreVision;
 
@@ -115,6 +116,12 @@ public:
 	void SaveXMLSettings();
 
 	/**********************************************************
+	 *                 PRIVATE METHODS
+	 **********************************************************/
+	void _handleGui( int parameterId, int task, void* data, int length );
+	void _draw();
+
+	/**********************************************************
 	 *                 PUBLIC STUFF
 	 **********************************************************/
 public:
@@ -128,6 +135,12 @@ private:
 
 	//! NCoreVision pointer
 	ofxNCoreVision* _coreVision;
+
+	//////////////////////////////////
+	// SET DEVICES
+	//! SetDevices pointer
+	SetDevices* setDevices;
+	bool		bDevicesConfiguration;
 
 	//! Horizontal and vertical camera count
 	int XAxis;

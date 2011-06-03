@@ -10,16 +10,66 @@
 #ifndef SET_DEVICES_H_
 #define SET_DEVICES_H_
 
-#include "ofxNCore.h"
+#include "ofMain.h"
+#include "ofxXmlSettings.h"
+#include "Controls/ofxGuiTypes.h"
+#include "Controls/ofxgui.h"
 
-class SetDevices : public ofBaseApp {
+class SetDevices : public ofxGuiListener {
+	//! Controls id
+	enum {
+		devicesListPanel,
+
+		cameraDisplayPanel,
+
+		settingsPanel,
+	};
 public:
-	SetDevices( bool bDebug = false );
+	//! Constructor
+	SetDevices();
+	//! Destructor
+	~SetDevices();
 
+	/*************************************************
+	 *               PUBLIC METHODS
+	 *************************************************/
+	// SETUP
 	void setup();
-	void update();
+
+	// MOUSE EVENTS
+	void _mousePressed( ofMouseEventArgs &e );
+	void _mouseDragged( ofMouseEventArgs &e );
+	void _mouseReleased( ofMouseEventArgs &e );
+
+	// KEY EVENTS
+	void _keyPressed( ofKeyEventArgs &e );
+	void _keyReleased( ofKeyEventArgs &e );
+
+	// GUI
+	void handleGui( int parameterId, int task, void* data, int length );
+	void setupControls();
+	void addPanels();
+	void addPanel( int parameterId );
+	void removePanels();
+	void removePanel( int parameterId );
+
+	// DRAWING
 	void draw();
-	void exit();
+
+	// XML
+	void LoadXMLSettings();
+	void SaveXMLSettings();
+	/*************************************************
+	 *               PUBLIC STUFF
+	 *************************************************/
+public:
+	//! Controls
+	ofxGui* controls;
+
+	/*************************************************
+	 *               PRIVATE STUFF
+	 *************************************************/
+private:
 
 	////////////////
 	// TEST STUFF
