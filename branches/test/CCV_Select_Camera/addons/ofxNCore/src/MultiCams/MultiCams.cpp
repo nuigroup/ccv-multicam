@@ -37,6 +37,9 @@ MultiCams::MultiCams() {
 
 	ofAddListener( ofEvents.keyPressed, this, &MultiCams::_keyPressed );
 	ofAddListener( ofEvents.keyReleased, this, &MultiCams::_keyReleased );
+
+	XAxis = 1;
+	YAxis = 1;
 }
 //--------------------------------------------------------------
 
@@ -120,6 +123,19 @@ void MultiCams::handleGui(int parameterId, int task, void* data, int length) {
 			break;
 		////////////////////////////////////////
 		// STEP 1
+		//! X axis camera number
+		case step1Panel_Xaxis:
+			if( length == sizeof(float) ) {
+				XAxis = *(float*)data;
+				printf( "XAxis: %f\n", *(float*)data );
+			}
+			break;
+		//! Y axis camera number
+		case step1Panel_Yaxis:
+			if ( length == sizeof(float) ) {
+				YAxis = *(float*)data;
+			}
+			break;
 		//! Previous
 		case step1Panel_previous:
 			if ( length == sizeof(bool) ) {
@@ -250,6 +266,12 @@ void MultiCams::setupControls() {
 }
 //--------------------------------------------------------------
 
+void MultiCams::updateControls() {
+	controls->update( this->step1Panel_Xaxis, kofxGui_Set_Bool, &this->XAxis, sizeof(float) );
+	controls->update( this->step1Panel_Yaxis, kofxGui_Set_Bool, &this->YAxis, sizeof(float) );
+}
+//--------------------------------------------------------------
+
 void MultiCams::addPanels() {
 
 	addPanel( camerasDisplayPanel );
@@ -330,10 +352,10 @@ void MultiCams::addPanel( int id ) {
 				"Set matrix:", controls->mGlobals->mLabelColor );
 			pPanel->addSlider( this->step1Panel_Xaxis, "X axis", 
 				GENERAL_AREA_SLIDER_WIDTH, GENERAL_AREA_SLIDER_HEIGHT,
-				1, 8, 1, kofxGui_Display_Int, 0 );
+				1, 8, XAxis, kofxGui_Display_Int, 0 );
 			pPanel->addSlider( this->step1Panel_Yaxis, "Y axis",
 				GENERAL_AREA_SLIDER_WIDTH, GENERAL_AREA_SLIDER_HEIGHT,
-				1, 8, 1, kofxGui_Display_Int, 0 );
+				1, 8, YAxis, kofxGui_Display_Int, 0 );
 			pPanel->addButton( this->step1Panel_previous, "previous",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
@@ -390,7 +412,7 @@ void MultiCams::addPanel( int id ) {
 				"Arrange the cameras", controls->mGlobals->mLabelColor );
 			pPanel->addMatrix( this->step3Panel_matrix, "Thumbnails",
 				GENERAL_AREA_MATRIX_WIDTH, GENERAL_AREA_MATRIX_HEIGHT,
-				3, 3, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
+				XAxis, YAxis, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
 			pPanel->addButton( this->step3Panel_previous,"Previous",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
@@ -464,17 +486,17 @@ void MultiCams::draw() {
 	ofFill();
 	ofRect( 0, 0, ofGetWidth(), ofGetHeight() );
 
-	string testStr = ofToString( testInt++ );
+	//string testStr = ofToString( testInt++ );
 
-	// Set the font color to white.
-	ofSetColor( 0xFFFFFF );
+	//// Set the font color to white.
+	//ofSetColor( 0xFFFFFF );
 
-	//! Draw the test string
-	testFont.drawString(
-		testStr,
-		ofGetWidth()/2 - testFont.stringWidth( testStr )/2,
-		ofGetHeight()/2/* - testFont.stringHeight( testStr )/2*/
-	);
+	////! Draw the test string
+	//testFont.drawString(
+	//	testStr,
+	//	ofGetWidth()/2 - testFont.stringWidth( testStr )/2,
+	//	ofGetHeight()/2/* - testFont.stringHeight( testStr )/2*/
+	//);
 
 	controls->draw();
 

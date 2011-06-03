@@ -98,6 +98,7 @@ public:
 	// GUI
 	void handleGui(int parameterId, int task, void* data, int length);
 	void setupControls();
+	void updateControls();
 	void addPanels();
 	void addPanel( int id );
 	void removePanels();
