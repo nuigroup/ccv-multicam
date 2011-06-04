@@ -111,7 +111,7 @@ void SetDevices::addPanel( int id ) {
 			pPanel->mObjWidth = 660;
 			pPanel->mObjHeight = 540;
 
-			pPanel->adjustToNewContent( 660, 0 );
+			pPanel->adjustToNewContent( 380, 0 );
 
 			break;
 
