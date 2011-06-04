@@ -180,9 +180,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			case step2Panel_setDevices:
 				if ( length == sizeof( bool ) ) {
 					if (*(bool*)data) {
-						removePanels();
-						setDevices->addPanels();
-						bDevicesConfiguration = true;
+						switchSetDevicesGUI( true );
 					}
 				}
 				break;
@@ -518,6 +516,10 @@ void MultiCams::removePanel( int id ) {
 *      Draw methods
 ********************************************************/
 void MultiCams::draw() {
+	//! Move this to "update" function
+	if ( bDevicesConfiguration && setDevices->bShowInterface == false ) {
+		switchSetDevicesGUI( false );	//! Close the SetDevices, show MultiCams
+	}
 	if ( bDevicesConfiguration ) {
 		setDevices->draw();
 	} else {
@@ -582,5 +584,24 @@ void MultiCams::SaveXMLSettings() {
 
 	//! Save the file
 	XML.saveFile( _xmlFileName );
+}
+//--------------------------------------------------------------
+
+void MultiCams::switchSetDevicesGUI( bool showDevices ) {
+	if ( setDevices == NULL ) {
+		return;
+	}
+	if ( showDevices ) {
+		removePanels();
+		setDevices->showInterface( true );
+		bDevicesConfiguration = true;
+	} else {
+		setDevices->showInterface( false );
+		addPanels();
+		//! Goto step 2
+		removePanel( generalSettingsPanel );
+		addPanel( step2Panel );
+		bDevicesConfiguration = false;
+	}
 }
 //--------------------------------------------------------------

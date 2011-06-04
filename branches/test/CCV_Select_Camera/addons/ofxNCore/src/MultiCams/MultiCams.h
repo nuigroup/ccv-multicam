@@ -118,8 +118,11 @@ public:
 	/**********************************************************
 	 *                 PRIVATE METHODS
 	 **********************************************************/
+private:
+
 	void _handleGui( int parameterId, int task, void* data, int length );
 	void _draw();
+	void switchSetDevicesGUI( bool showDevices = true );
 
 	/**********************************************************
 	 *                 PUBLIC STUFF

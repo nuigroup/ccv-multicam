@@ -21,8 +21,14 @@ class SetDevices : public ofxGuiListener {
 		devicesListPanel,
 
 		cameraDisplayPanel,
+		cameraDisplayPanel_info,
+
+		informationPanel,
 
 		settingsPanel,
+		settingsPanel_reset,
+		settingsPanel_save,
+		settingsPanel_cancel,
 	};
 public:
 	//! Constructor
@@ -52,6 +58,7 @@ public:
 	void addPanel( int parameterId );
 	void removePanels();
 	void removePanel( int parameterId );
+	void showInterface( bool bShow = true );
 
 	// DRAWING
 	void draw();
@@ -65,6 +72,9 @@ public:
 public:
 	//! Controls
 	ofxGui* controls;
+
+	//! Show interface
+	bool	bShowInterface;
 
 	/*************************************************
 	 *               PRIVATE STUFF
