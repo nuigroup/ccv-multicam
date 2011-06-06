@@ -80,11 +80,6 @@ void ofxGuiGrid::draw() {
 
 		//! Background
 		//glColor4f( mGlobals->mCoverColor.r, mGlobals->mCoverColor.g, mGlobals->mCoverColor.b, mGlobals->mCoverColor.a );
-		
-		//! Frame
-		ofNoFill();
-		glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
-		ofRect( mCtrX, mCtrY, mObjWidth, mObjHeight );
 
 		ofNoFill();
 
@@ -105,7 +100,7 @@ void ofxGuiGrid::draw() {
 
 		//! Frame
 		glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
-		ofRect( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
+		ofRect( mCtrX, mCtrY, mObjWidth, mObjHeight );
 
 	glPopMatrix();
 }
