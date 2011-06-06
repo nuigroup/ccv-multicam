@@ -605,6 +605,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiGrid.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiGrid.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiKnob.cpp"
 							>
 						</File>

@@ -2,7 +2,7 @@
 /*!
 *  
 *
-*  Created by Yishi Guo on 31/05/2011.
+*  Created by Yishi Guo on 05/31/2011.
 *  Copyright 2011 NUI Group. All rights reserved.
 *
 */
@@ -37,6 +37,7 @@ class MultiCams : public ofxGuiListener {
 	//! ofxGUI stuff
 	enum {
 		camerasDisplayPanel,
+		camerasDisplayPanel_grid,
 
 		generalSettingsPanel,
 		generalSettingsPanel_start,
@@ -155,6 +156,9 @@ private:
 
 	//! debug mode
 	bool bDebugMode;
+	///////////////////
+	// CAMERAS GRID
+	ofxGuiGrid* camsGrid;
 
 	//! Full display mode
 	bool bFullMode;

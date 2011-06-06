@@ -2,7 +2,7 @@
 /*!
 *  
 *
-*  Created by Yishi Guo on 31/05/2011.
+*  Created by Yishi Guo on 05/31/2011.
 *  Copyright 2011 NUI Group. All rights reserved.
 *
 */
@@ -108,9 +108,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 	// DEBUG
 	printf( "MultiCams::handGui\n" );
 	switch( parameterId ) {
-		////////////////////////////////////
-		// GENERAL SETTINGS
-		//! Start settings
+				////////////////////////////////////
+				// GENERAL SETTINGS
+				//! Start settings
 			case generalSettingsPanel_start:
 				if ( length == sizeof(bool) ) {
 					if (*(bool*)data) {
@@ -146,6 +146,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			case step1Panel_Xaxis:
 				if( length == sizeof(float) ) {
 					XAxis = *(float*)data;
+					if ( camsGrid != NULL ) {
+						camsGrid->setXY( XAxis, YAxis );
+					}
 					printf( "XAxis: %f\n", *(float*)data );
 				}
 				break;
@@ -153,6 +156,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			case step1Panel_Yaxis:
 				if ( length == sizeof(float) ) {
 					YAxis = *(float*)data;
+					if ( camsGrid != NULL ) {
+						camsGrid->setXY( XAxis, YAxis );
+					}
 				}
 				break;
 				//! Previous
@@ -320,8 +326,11 @@ void MultiCams::addPanel( int id ) {
 			pPanel = controls->addPanel(
 				this->camerasDisplayPanel, "Cameras Display" , 30, 30,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "", 680, 320, XAxis, YAxis, 10, 5 );
 			pPanel->mObjWidth = 700;
 			pPanel->mObjHeight = 360;
+
+			pPanel->adjustToNewContent( 600, 0 );
 
 			break;
 		//! General settings panel
