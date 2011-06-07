@@ -63,6 +63,7 @@ private:
 	void drawSelectedRect( float x, float y, float width, float height );
 	int  mouseToGridId( ofxPoint2f point );
 	void clearSelectedColor();
+	void selectedColor();
 	float getColorR();
 	float getColorG();
 	float getColorB();

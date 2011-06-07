@@ -83,6 +83,8 @@ bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
 // ----------------------------------------------
 
 void ofxGuiGrid::draw() {
+	selectedColor();
+
 	glPushMatrix();
 		glTranslatef( mObjX, mObjY, 0.0f );
 
@@ -247,6 +249,39 @@ void ofxGuiGrid::clearSelectedColor() {
 	mColorG = 0;
 	mColorB = 0;
 	mColorA = 1;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::selectedColor() {
+	static unsigned long oldTime = 0;
+	int interval = 50;	// ms
+	float offset = 0.05;
+	unsigned long now = ofGetSystemTime();
+	static bool up = true;
+	printf( "old: %ld\n now: %ld\n", oldTime, now );
+	if ( now - oldTime >= interval ) {
+		oldTime = now;
+		if ( up ) {
+			mColorR += offset;
+			mColorG += offset;
+			mColorB += offset;
+		} else {
+			mColorR -= offset;
+			mColorG -= offset;
+			mColorB -= offset;
+		}
+
+		if ( mColorR >= 1 ) {
+			up = false;
+		} else if ( mColorR <= 0 ) {
+			up = true;
+		}
+
+		printf( "\nR: %f\n", mColorR );
+	}
+
+
 }
 
 // ----------------------------------------------
