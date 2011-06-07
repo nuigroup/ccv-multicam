@@ -32,6 +32,12 @@ public:
 	void init( int id, string name, int x, int y, int width, int height, int xGrid, int yGrid, int border, int spacing );
 
 	void setXY( int x, int y );
+	void setSelectedId( int index );
+
+	float getGridX( int x );
+	float getGridY( int y );
+	float getGridWidth();
+	float getGridHeight();
 
 	bool update( int id, int task, void* data, int length );
 	void draw();
@@ -47,11 +53,20 @@ public:
 	int mGridWidth, mGridHeight;
 	int mXGrid, mYGrid, mBorder, mSpacing;
 
-	int mValue;
+	int mValue, mSelectedId;
+
+	float mColorR, mColorG, mColorB, mColorA;
 
 
 private:
 	void calculateWH();
+	void drawSelectedRect( float x, float y, float width, float height );
+	int  mouseToGridId( ofxPoint2f point );
+	void clearSelectedColor();
+	float getColorR();
+	float getColorG();
+	float getColorB();
+	float getColorA();
 	
 };
 // ----------------------------------------------

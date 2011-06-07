@@ -19,6 +19,8 @@ ofxGuiGrid::ofxGuiGrid() {
 
 	mWidthScale = GRID_WIDTH_SCALE;
 	mHeightScale = GRID_HEIGHT_SCALE;
+
+	mSelectedId = -1;
 }
 
 // ----------------------------------------------
@@ -42,6 +44,9 @@ void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height,
 	mSpacing		= spacing;
 
 	calculateWH();
+	setControlRegion( 0, textHeight, width, height );
+
+	clearSelectedColor();
 }
 
 // ----------------------------------------------
@@ -51,6 +56,14 @@ void ofxGuiGrid::setXY( int x, int y ) {
 	mYGrid			= y;
 
 	calculateWH();
+	setSelectedId( -1 );	// Clear the selected value
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setSelectedId( int index ) {
+	this->mSelectedId = index;
+	clearSelectedColor();
 }
 
 // ----------------------------------------------
@@ -61,6 +74,7 @@ bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
 	if ( id == mParamId ) {
 		// TODO
 		handled = true;
+		mColorB += 0.1;
 	}
 
 	return handled;
@@ -86,12 +100,19 @@ void ofxGuiGrid::draw() {
 		//! Grids
 		for ( int j = 0; j < mYGrid; j++ ) {
 			for ( int i = 0; i < mXGrid; i++ ) {
+				int index = i + j * mXGrid;
 				ofNoFill();
 
+				if ( mSelectedId == index ) {
+					drawSelectedRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
+					continue;
+				}
+
 				glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
-				ofRect( mCtrX + mBorder + i * mSpacing + i * mGridWidth,
-					mCtrY + mBorder + j * mSpacing + j * mGridHeight,
-					mGridWidth, mGridHeight );
+				//ofRect( mCtrX + mBorder + i * mSpacing + i * mGridWidth,
+				//	mCtrY + mBorder + j * mSpacing + j * mGridHeight,
+				//	mGridWidth, mGridHeight );
+				ofRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
 
 			}
 		}
@@ -100,7 +121,7 @@ void ofxGuiGrid::draw() {
 
 		//! Frame
 		glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
-		ofRect( mCtrX, mCtrY, mObjWidth, mObjHeight );
+		ofRect( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
 
 	glPopMatrix();
 }
@@ -115,7 +136,14 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 // ----------------------------------------------
 
 bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
-	// TODO
+	ofxPoint2f inside = mouseToLocal( x, y );
+	mMouseIsDown = isPointInsideMe( inside );
+
+	if ( mMouseIsDown ) {
+		int id = mouseToGridId( inside );
+		
+		setSelectedId( id );
+	}
 	return mMouseIsDown;
 }
 
@@ -153,6 +181,100 @@ void ofxGuiGrid::calculateWH() {
 
 	mGridWidth = unit * mWidthScale;
 	mGridHeight = unit * mHeightScale;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::drawSelectedRect( float x, float y, float width, float height ) {
+
+	glShadeModel( GL_SMOOTH );
+	glBegin( GL_LINE_LOOP );
+		glColor4f( getColorR(), getColorG(), getColorB(), getColorA() );
+		glVertex3f( x, y, 0 );
+		glVertex3f( x, y + height, 0 );
+		glVertex3f( x + width, y + height, 0 );
+		glVertex3f( x + width, y, 0 );
+	glEnd();
+}
+
+// ----------------------------------------------
+
+int ofxGuiGrid::mouseToGridId( ofxPoint2f p ) {
+	int index = 0;
+	for ( int j = 0; j < mYGrid; ++j ) {
+		for ( int i = 0; i < mXGrid; ++i ) {
+			int index = i + j * mXGrid;
+			if ( p.x >= getGridX(i) &&
+				p.x <= getGridX(i) + getGridWidth() &&
+				p.y >= getGridY(j) &&
+				p.y <= getGridY(j) + getGridHeight() ) {
+					return index;	// return the index of grid
+			}
+		}
+	}
+
+	return -1;	//! No id found
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getGridX( int i ) {
+	return mCtrX + mBorder + i * (mSpacing + mGridWidth );
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getGridY( int i ) {
+	return mCtrY + mBorder + i * (mSpacing + mGridHeight);
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getGridWidth() {
+	return this->mGridWidth;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getGridHeight() {
+	return this->mGridHeight;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::clearSelectedColor() {
+	mColorR = 0;
+	mColorG = 0;
+	mColorB = 0;
+	mColorA = 1;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getColorR() {
+	// TODO
+	return mColorR;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getColorG() {
+	// TODO
+	return mColorG;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getColorB() {
+	// TODO
+	return mColorB;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getColorA() {
+	// TODO
+	return mColorA;
 }
 
 // ----------------------------------------------
