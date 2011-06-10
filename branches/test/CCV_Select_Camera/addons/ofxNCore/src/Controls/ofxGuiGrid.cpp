@@ -21,6 +21,12 @@ ofxGuiGrid::ofxGuiGrid() {
 	mHeightScale = GRID_HEIGHT_SCALE;
 
 	mSelectedId = -1;
+
+	mOldTime = ofGetSystemTime();
+	mInterval = 50;		// 50 ms
+	mOffset = 0.05f;	// color changing offset
+	mRising = true;
+
 }
 
 // ----------------------------------------------
@@ -263,28 +269,24 @@ void ofxGuiGrid::clearSelectedColor() {
 // ----------------------------------------------
 
 void ofxGuiGrid::selectedColor() {
-	static unsigned long oldTime = 0;
-	int interval = 50;	// ms
-	float offset = 0.05;
-	unsigned long now = ofGetSystemTime();
-	static bool up = true;
-	printf( "old: %ld\n now: %ld\n", oldTime, now );
-	if ( now - oldTime >= interval ) {
-		oldTime = now;
-		if ( up ) {
-			mColorR += offset;
-			mColorG += offset;
-			mColorB += offset;
+	mNowTime = ofGetSystemTime();
+	//printf( "old: %ld\n now: %ld\n", oldTime, now );
+	if ( mNowTime - mOldTime >= mInterval ) {
+		mOldTime = mNowTime;
+		if ( mRising ) {
+			mColorR += mOffset;
+			mColorG += mOffset;
+			mColorB += mOffset;
 		} else {
-			mColorR -= offset;
-			mColorG -= offset;
-			mColorB -= offset;
+			mColorR -= mOffset;
+			mColorG -= mOffset;
+			mColorB -= mOffset;
 		}
 
 		if ( mColorR >= 1 ) {
-			up = false;
+			mRising = false;
 		} else if ( mColorR <= 0 ) {
-			up = true;
+			mRising = true;
 		}
 
 		printf( "\nR: %f\n", mColorR );

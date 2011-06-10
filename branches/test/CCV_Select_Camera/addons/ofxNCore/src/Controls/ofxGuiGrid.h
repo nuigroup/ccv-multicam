@@ -79,6 +79,14 @@ private:
 
 	void clearImages();
 	void createImages();
+
+	//! Selected color calculation
+	unsigned long mOldTime;
+	unsigned long mNowTime;
+	int mInterval;
+	float mOffset;
+	bool mRising;
+
 	
 };
 // ----------------------------------------------

@@ -46,6 +46,7 @@ class MultiCams : public ofxGuiListener {
 		generalSettingsPanel_label1,
 
 		devicesListPanel,
+		devicesListPanel_grid,
 
 		informationPanel,
 
@@ -159,6 +160,10 @@ private:
 	///////////////////
 	// CAMERAS GRID
 	ofxGuiGrid* camsGrid;
+
+	///////////////////
+	// DEVICES LIST
+	ofxGuiGrid* devGrid;
 
 	//! Full display mode
 	bool bFullMode;
