@@ -72,6 +72,7 @@ enum
 
 	kofxGui_Object_Text,	//< added by Yishi Guo
 	kofxGui_Object_Grid,	//< added by Yishi Guo 2011-06-06
+	kofxGui_Object_Image,	//< added by Yishi Guo 2011-06-10
 };
 
 enum

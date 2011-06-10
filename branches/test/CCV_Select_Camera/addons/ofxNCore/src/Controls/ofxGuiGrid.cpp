@@ -47,16 +47,22 @@ void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height,
 	setControlRegion( 0, textHeight, width, height );
 
 	clearSelectedColor();
+
+	createImages();
 }
 
 // ----------------------------------------------
 
 void ofxGuiGrid::setXY( int x, int y ) {
+	clearImages();
+
 	mXGrid			= x;
 	mYGrid			= y;
 
 	calculateWH();
 	setSelectedId( -1 );	// Clear the selected value
+
+	createImages();
 }
 
 // ----------------------------------------------
@@ -107,14 +113,17 @@ void ofxGuiGrid::draw() {
 
 				if ( mSelectedId == index ) {
 					drawSelectedRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
-					continue;
+				} else {
+					glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
+					//ofRect( mCtrX + mBorder + i * mSpacing + i * mGridWidth,
+					//	mCtrY + mBorder + j * mSpacing + j * mGridHeight,
+					//	mGridWidth, mGridHeight );
+					ofRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
 				}
 
-				glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
-				//ofRect( mCtrX + mBorder + i * mSpacing + i * mGridWidth,
-				//	mCtrY + mBorder + j * mSpacing + j * mGridHeight,
-				//	mGridWidth, mGridHeight );
-				ofRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
+				if ( gridImages[index] != NULL ) {
+					gridImages[index]->draw();
+				}
 
 			}
 		}
@@ -310,6 +319,35 @@ float ofxGuiGrid::getColorB() {
 float ofxGuiGrid::getColorA() {
 	// TODO
 	return mColorA;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::clearImages() {
+	//! Clear all images
+	for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
+		delete gridImages[i];
+	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::createImages() {
+	//! Allocate the space
+	gridImages = new ofxGuiImage*[mXGrid*mYGrid];
+
+	int index = 0;
+
+	//! Setup each image
+	for ( int j = 0; j < mYGrid; ++j ) {
+		for ( int i = 0; i < mXGrid; ++i ) {
+			index = i + j * mXGrid;
+			gridImages[index] = new ofxGuiImage();
+
+			gridImages[index]->init( CAMERAS_ID_OFFSET + index, "Cam " + ofToString(index), getGridX(i) + 1, getGridY(j) + 1, mGridWidth - 2, mGridHeight - 2  );
+
+		}
+	}
 }
 
 // ----------------------------------------------

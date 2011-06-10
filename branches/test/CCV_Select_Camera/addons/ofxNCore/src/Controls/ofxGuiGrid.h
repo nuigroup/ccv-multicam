@@ -16,11 +16,13 @@
 
 #define GRID_WIDTH_SCALE 4
 #define GRID_HEIGHT_SCALE 3
+#define CAMERAS_ID_OFFSET 1000
 
 // ----------------------------------------------
 
 #include "ofxGuiTypes.h"
 #include "ofxGuiObject.h"
+#include "ofxGuiImage.h"
 
 // ----------------------------------------------
 
@@ -38,6 +40,8 @@ public:
 	float getGridY( int y );
 	float getGridWidth();
 	float getGridHeight();
+
+	ofxGuiObject* addImage( int id, string name, int targetId, unsigned char* image );
 
 	bool update( int id, int task, void* data, int length );
 	void draw();
@@ -57,17 +61,24 @@ public:
 
 	float mColorR, mColorG, mColorB, mColorA;
 
+	ofxGuiImage** gridImages;
 
 private:
 	void calculateWH();
-	void drawSelectedRect( float x, float y, float width, float height );
+
 	int  mouseToGridId( ofxPoint2f point );
+
+	void drawSelectedRect( float x, float y, float width, float height );
+
 	void clearSelectedColor();
 	void selectedColor();
 	float getColorR();
 	float getColorG();
 	float getColorB();
 	float getColorA();
+
+	void clearImages();
+	void createImages();
 	
 };
 // ----------------------------------------------
