@@ -365,12 +365,19 @@ void MultiCams::addPanel( int id ) {
 				this->devicesListPanel, "Devices List", 30, 420,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5 );
+			pPanel->addArrow( devicesListPanel_arrow_left, "", 53, 109, kofxGui_Arrow_Left );
+			pPanel->addArrow( devicesListPanel_arrow_right, "", 50, 109, kofxGui_Arrow_Right );
 
 			pPanel->mObjWidth = 700;
 			pPanel->mObjHeight = 150;
 
 			pPanel->mObjects[0]->mObjX = 73;	//! [0]: devices grid
 			//pPanel->mObjects[0]->mObjY = 475;
+			pPanel->mObjects[1]->mObjX = 10;		//! [1]: left arrow
+			pPanel->mObjects[1]->mObjY = 30;
+			pPanel->mObjects[2]->mObjX = 637;	//! [2]: right arrow
+			pPanel->mObjects[2]->mObjY = 30;
+
 
 			pPanel->adjustToNewContent( 600, 0 );
 

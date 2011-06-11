@@ -47,6 +47,8 @@ class MultiCams : public ofxGuiListener {
 
 		devicesListPanel,
 		devicesListPanel_grid,
+		devicesListPanel_arrow_right,
+		devicesListPanel_arrow_left,
 
 		informationPanel,
 

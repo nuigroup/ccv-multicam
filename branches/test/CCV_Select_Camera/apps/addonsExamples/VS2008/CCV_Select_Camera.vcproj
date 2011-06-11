@@ -573,6 +573,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiArrow.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiArrow.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\..\addons\ofxNCore\src\Controls\ofxGuiButton.cpp"
 							>
 						</File>

@@ -23,9 +23,10 @@ class ofxGuiArrow : public ofxGuiObject {
 public:
 	ofxGuiArrow();
 
-	void init( int id, string name, int x, int y, int width, int height, bool rightward );
+	void init( int id, string name, int x, int y, int width, int height, int direction );
 	
-	void setDirection( bool rightward );
+	void setDirection( int direction );
+	void setValue( bool value );
 
 	bool update( int id, int task, void* data, int length );
 	void draw();
@@ -37,7 +38,11 @@ public:
 	void buildFromXml();
 	void saveToXml();
 
-	bool mRightward;
+	int mDirection;
+	bool mValue;
+
+private:
+	void drawArrow( int direciton );
 };
 
 // ----------------------------------------------

@@ -73,6 +73,7 @@ enum
 	kofxGui_Object_Text,	//< added by Yishi Guo
 	kofxGui_Object_Grid,	//< added by Yishi Guo 2011-06-06
 	kofxGui_Object_Image,	//< added by Yishi Guo 2011-06-10
+	kofxGui_Object_Arrow,	//< added by Yishi Guo 2011-06-11
 };
 
 enum
@@ -126,6 +127,13 @@ enum
 	kofxGui_Set_IntArray,
 	kofxGui_Set_FloatArray,
 	kofxGui_Set_String,
+};
+
+enum {	//! Added by Yishi Guo 2011-06-11
+	kofxGui_Arrow_Up,
+	kofxGui_Arrow_Down,
+	kofxGui_Arrow_Right,
+	kofxGui_Arrow_Left,
 };
 
 //	----------------------------------------------------------------------------------------------------
