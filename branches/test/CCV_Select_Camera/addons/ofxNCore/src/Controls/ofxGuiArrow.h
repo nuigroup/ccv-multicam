@@ -23,7 +23,7 @@ class ofxGuiArrow : public ofxGuiObject {
 public:
 	ofxGuiArrow();
 
-	void init( int id, string name, int x, int y, int width, int height, int direction );
+	void init( int id, string name, int x, int y, int width, int height, int direction, int offset = 0 );
 	
 	void setDirection( int direction );
 	void setValue( bool value );
@@ -40,6 +40,7 @@ public:
 
 	int mDirection;
 	bool mValue;
+	int mOffset;
 
 private:
 	void drawArrow( int direciton );

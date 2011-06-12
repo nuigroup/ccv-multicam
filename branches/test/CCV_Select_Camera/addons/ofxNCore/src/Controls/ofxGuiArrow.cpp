@@ -19,7 +19,7 @@ ofxGuiArrow::ofxGuiArrow() {
 
 // ----------------------------------------------
 
-void ofxGuiArrow::init( int id, string name, int x, int y, int width, int height, int diretion ) {
+void ofxGuiArrow::init( int id, string name, int x, int y, int width, int height, int diretion, int offset ) {
 	// TODO
 	mParamId		= id;
 	mParamName		= name;
@@ -29,6 +29,8 @@ void ofxGuiArrow::init( int id, string name, int x, int y, int width, int height
 
 	mObjWidth		= width;
 	mObjHeight		= height;
+
+	mOffset			= offset;
 
 	setDirection( diretion );
 	setControlRegion( 0, 0, width, height );
@@ -145,7 +147,7 @@ void ofxGuiArrow::drawArrow( int direction ) {
 		switch( direction ) {
 			case kofxGui_Arrow_Up:
 				glBegin( GL_TRIANGLES );
-					glVertex3f( mCtrX + mCtrWidth/2, mCtrY, 0.0f );
+					glVertex3f( mCtrX + mCtrWidth/2, mCtrY + mOffset, 0.0f );
 					glVertex3f( mCtrX, mCtrY + mCtrHeight, 0.0f );
 					glVertex3f( mCtrX + mCtrWidth, mCtrY + mCtrHeight, 0.0f );
 				glEnd();
@@ -155,7 +157,7 @@ void ofxGuiArrow::drawArrow( int direction ) {
 				glBegin( GL_TRIANGLES );
 					glVertex3f( mCtrX, mCtrY, 0.0f );
 					glVertex3f( mCtrX + mCtrWidth, mCtrY, 0.0f );
-					glVertex3f( mCtrX + mCtrWidth/2, mCtrY + mCtrHeight, 0.0f );
+					glVertex3f( mCtrX + mCtrWidth/2, mCtrY + mCtrHeight - mOffset, 0.0f );
 				glEnd();
 				break;
 
@@ -163,13 +165,13 @@ void ofxGuiArrow::drawArrow( int direction ) {
 				glBegin( GL_TRIANGLES );
 					glVertex3f( mCtrX, mCtrY, 0.0f );
 					glVertex3f( mCtrX, mCtrY + mCtrHeight, 0.0f );
-					glVertex3f( mCtrX + mCtrWidth, mCtrY + mCtrHeight/2, 0.0f );
+					glVertex3f( mCtrX + mCtrWidth, mCtrY + mCtrHeight/2 - mOffset, 0.0f );
 				glEnd();
 				break;
 				
 			case kofxGui_Arrow_Left:
 				glBegin( GL_TRIANGLES );
-					glVertex3f( mCtrX, mCtrY + mCtrHeight/2, 0.0f );
+					glVertex3f( mCtrX + mOffset, mCtrY + mCtrHeight/2, 0.0f );
 					glVertex3f( mCtrX + mCtrWidth, mCtrY, 0.0f );
 					glVertex3f( mCtrX + mCtrWidth, mCtrY + mCtrHeight, 0.0f );
 				glEnd();

@@ -358,11 +358,11 @@ ofxGuiObject* ofxGuiPanel::addGrid( int id, string name, int width, int height, 
 
 //	----------------------------------------------------------------------------------------------------
 
-ofxGuiObject* ofxGuiPanel::addArrow( int id, string name, int width, int height, int direction ) {
+ofxGuiObject* ofxGuiPanel::addArrow( int id, string name, int width, int height, int direction, int arrowOffset ) {
 	int offset = (mObjects.size() == 0 && mParamName == "" ) ? 0 : mSpacing;
 
 	ofxGuiArrow* arrow = new ofxGuiArrow();
-	arrow->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height, direction );
+	arrow->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height, direction, arrowOffset );
 	mObjects.push_back( arrow );
 
 	adjustToNewContent( arrow->mObjWidth, arrow->mObjHeight + offset );
