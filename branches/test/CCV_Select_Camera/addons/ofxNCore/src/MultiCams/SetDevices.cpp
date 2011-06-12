@@ -101,17 +101,19 @@ void SetDevices::addPanel( int id ) {
 			pPanel = controls->addPanel( cameraDisplayPanel,
 				"Camera Display", 30, 30,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			pPanel->addGrid( cameraDisplayPanel_grid, "",
+				640, 480, 1, 1, 0, 0 );
 			pPanel->addButton( cameraDisplayPanel_info, 
 				"Show Info", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Switch );
 
-			pPanel->mObjects[0]->mObjX = 380;	// [0]: "Show Info" button
-			pPanel->mObjects[0]->mObjY = 510;
+			//pPanel->mObjects[1]->mObjX = 380;	// [1]: "Show Info" button
+			//pPanel->mObjects[1]->mObjY = 510;
 
 			pPanel->mObjWidth = 660;
 			pPanel->mObjHeight = 540;
 
-			pPanel->adjustToNewContent( 380, 0 );
+			pPanel->adjustToNewContent( 640, 0 );
 
 			break;
 

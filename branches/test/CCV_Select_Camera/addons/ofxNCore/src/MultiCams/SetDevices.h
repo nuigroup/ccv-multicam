@@ -25,6 +25,7 @@ class SetDevices : public ofxGuiListener {
 
 		cameraDisplayPanel,
 		cameraDisplayPanel_info,
+		cameraDisplayPanel_grid,
 
 		informationPanel,
 
