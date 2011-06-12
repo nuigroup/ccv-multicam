@@ -54,7 +54,7 @@ public:
 	void saveToXml();
 
 	int mWidthScale, mHeightScale;
-	int mGridWidth, mGridHeight;
+	float mGridWidth, mGridHeight;
 	int mXGrid, mYGrid, mBorder, mSpacing;
 
 	int mValue, mSelectedId;

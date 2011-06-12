@@ -119,6 +119,12 @@ void SetDevices::addPanel( int id ) {
 			pPanel = controls->addPanel( devicesListPanel,
 				"Devices List", 720, 30,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			pPanel->addArrow( devicesListPanel_arrow_up, "",
+				180, 35, kofxGui_Arrow_Up, 5 );
+			pPanel->addGrid( devicesListPanel_grid, "",
+				180, 270, 1, 2, 10, 10 );
+			pPanel->addArrow( devicesListPanel_arrow_down, "",
+				180, 35, kofxGui_Arrow_Down, 5 );
 			pPanel->mObjWidth = 200;
 			pPanel->mObjHeight = 400;
 			break;

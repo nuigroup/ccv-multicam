@@ -188,7 +188,7 @@ void ofxGuiGrid::saveToXml() {
 // ----------------------------------------------
 
 void ofxGuiGrid::calculateWH() {
-	int w, h, unit;
+	float w, h, unit;
 	
 	w = ( (mObjWidth - 2 * mBorder - (mXGrid - 1) * mSpacing ) / mXGrid ) / mWidthScale;
 	h = ( (mObjHeight - 2 * mBorder - (mYGrid - 1) * mSpacing ) / mYGrid ) / mHeightScale;
@@ -346,7 +346,7 @@ void ofxGuiGrid::createImages() {
 			index = i + j * mXGrid;
 			gridImages[index] = new ofxGuiImage();
 
-			gridImages[index]->init( CAMERAS_ID_OFFSET + index, "Cam " + ofToString(index), getGridX(i) + 1, getGridY(j) + 1, mGridWidth - 2, mGridHeight - 2  );
+			gridImages[index]->init( CAMERAS_ID_OFFSET + index, "Cam " + ofToString(index), getGridX(i) + 1, getGridY(j) + 1, roundInt(mGridWidth - 2), roundInt(mGridHeight - 2)  );
 
 		}
 	}

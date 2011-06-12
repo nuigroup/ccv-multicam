@@ -19,6 +19,9 @@ class SetDevices : public ofxGuiListener {
 	//! Controls id
 	enum {
 		devicesListPanel,
+		devicesListPanel_grid,
+		devicesListPanel_arrow_up,
+		devicesListPanel_arrow_down,
 
 		cameraDisplayPanel,
 		cameraDisplayPanel_info,
