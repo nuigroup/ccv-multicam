@@ -127,21 +127,21 @@ void ofxGuiArrow::drawArrow( int direction ) {
 
 		//! No param name output.
 
-		ofFill();
+		//ofFill();
 
-		//! Background
-		glColor4f( mGlobals->mCoverColor.r, mGlobals->mCoverColor.g, mGlobals->mCoverColor.b, mGlobals->mCoverColor.a );
-		ofRect( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
+		////! background
+		//glColor4f( mGlobals->mCoverColor.r, mGlobals->mCoverColor.g, mGlobals->mCoverColor.b, mGlobals->mCoverColor.a );
+		//ofRect( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
 
 		if ( mValue == true ) {
 			//! Handle
+			ofFill();
 			glColor4f( mGlobals->mButtonColor.r, mGlobals->mButtonColor.g, mGlobals->mButtonColor.b, mGlobals->mButtonColor.a );
 		} else {
 			ofNoFill();
 			glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
 		}
 
-		glShadeModel( GL_SMOOTH );
 		switch( direction ) {
 			case kofxGui_Arrow_Up:
 				glBegin( GL_TRIANGLES );

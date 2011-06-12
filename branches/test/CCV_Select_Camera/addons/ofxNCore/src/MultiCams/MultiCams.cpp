@@ -374,9 +374,9 @@ void MultiCams::addPanel( int id ) {
 			pPanel->mObjects[0]->mObjX = 73;	//! [0]: devices grid
 			//pPanel->mObjects[0]->mObjY = 475;
 			pPanel->mObjects[1]->mObjX = 10;		//! [1]: left arrow
-			pPanel->mObjects[1]->mObjY = 30;
+			pPanel->mObjects[1]->mObjY = 32;
 			pPanel->mObjects[2]->mObjX = 637;	//! [2]: right arrow
-			pPanel->mObjects[2]->mObjY = 30;
+			pPanel->mObjects[2]->mObjY = 32;
 
 
 			pPanel->adjustToNewContent( 600, 0 );
