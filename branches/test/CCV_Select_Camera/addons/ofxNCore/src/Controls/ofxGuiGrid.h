@@ -58,6 +58,7 @@ public:
 	int mXGrid, mYGrid, mBorder, mSpacing;
 
 	int mValue, mSelectedId;
+	int mTotal;
 
 	float mColorR, mColorG, mColorB, mColorA;
 

@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib glut32.lib rtAudioD.lib videoInput.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib GLee.lib fmodex_vc.lib glu32.lib PocoFoundationmtd.lib PocoNetmtd.lib PocoUtilmtd.lib PocoXMLmtd.lib Ws2_32.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cv110d.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cvaux110d.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cxcore110d.lib ..\..\..\addons\ofxOsc\libs\oscpack\lib\vs2008\oscpackd.lib ..\..\..\addons\ofxPS3\lib\PS3EyeMulticam.lib ..\..\..\addons\ofxFFMV\lib\PGRFlyCapture.lib ..\..\..\addons\ofxDSVL\lib\dsvl.lib ..\..\..\libs\openFrameworksCompiled\lib\vs2008\openframeworksLibDebug.lib"
+				AdditionalDependencies="OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib glut32.lib rtAudioD.lib videoInput.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib GLee.lib fmodex_vc.lib glu32.lib PocoFoundationmtd.lib PocoNetmtd.lib PocoUtilmtd.lib PocoXMLmtd.lib Ws2_32.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cv110d.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cvaux110d.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cxcore110d.lib ..\..\..\addons\ofxOsc\libs\oscpack\lib\vs2008\oscpackd.lib ..\..\..\addons\ofxPS3\lib\PS3EyeMulticam.lib ..\..\..\addons\ofxFFMV\lib\PGRFlyCapture.lib ..\..\..\addons\ofxDSVL\lib\dsvl.lib ..\..\..\libs\openFrameworksCompiled\lib\vs2008\openframeworksLibDebug.lib ..\..\..\addons\ofxPS3\lib\CLEyeMulticam.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\libs\glut\lib\vs2008;..\..\..\libs\rtAudio\lib\vs2008;..\..\..\libs\freeImage\lib\vs2008;..\..\..\libs\freetype\lib\vs2008;..\..\..\libs\fmodex\lib\vs2008;..\..\..\libs\videoInput\lib\vs2008;..\..\..\libs\glee\lib\vs2008;..\..\..\libs\glu\lib\vs2008;..\..\..\libs\Poco\lib\vs2008;..\..\..\libs\quicktime\lib\vs2008"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib glut32.lib rtAudio.lib videoInput.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib GLee.lib fmodex_vc.lib glu32.lib PocoFoundationmt.lib PocoNetmt.lib PocoUtilmt.lib PocoXMLmt.lib Ws2_32.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cv110.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cvaux110.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cxcore110.lib ..\..\..\addons\ofxOsc\libs\oscpack\lib\vs2008\oscpack.lib ..\..\..\addons\ofxFFMV\lib\PGRFlyCapture.lib ..\..\..\addons\ofxDSVL\lib\dsvl.lib ..\..\..\addons\ofxPS3\lib\PS3EyeMulticam.lib ..\..\..\libs\openFrameworksCompiled\lib\vs2008\openframeworksLib.lib"
+				AdditionalDependencies="OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib glut32.lib rtAudio.lib videoInput.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib GLee.lib fmodex_vc.lib glu32.lib PocoFoundationmt.lib PocoNetmt.lib PocoUtilmt.lib PocoXMLmt.lib Ws2_32.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cv110.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cvaux110.lib ..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2008\cxcore110.lib ..\..\..\addons\ofxOsc\libs\oscpack\lib\vs2008\oscpack.lib ..\..\..\addons\ofxFFMV\lib\PGRFlyCapture.lib ..\..\..\addons\ofxDSVL\lib\dsvl.lib ..\..\..\addons\ofxPS3\lib\PS3EyeMulticam.lib ..\..\..\libs\openFrameworksCompiled\lib\vs2008\openframeworksLib.lib ..\..\..\addons\ofxPS3\lib\CLEyeMulticam.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\libs\glut\lib\vs2008;..\..\..\libs\rtAudio\lib\vs2008;..\..\..\libs\freeImage\lib\vs2008;..\..\..\libs\freetype\lib\vs2008;..\..\..\libs\fmodex\lib\vs2008;..\..\..\libs\videoInput\lib\vs2008;..\..\..\libs\glee\lib\vs2008;..\..\..\libs\glu\lib\vs2008;..\..\..\libs\Poco\lib\vs2008;..\..\..\libs\quicktime\lib\vs2008"
 				IgnoreAllDefaultLibraries="false"
@@ -833,11 +833,27 @@
 						Name="MultiCams"
 						>
 						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\CamsUtils.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\CamsUtils.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\MultiCams.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\MultiCams.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\PS3.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\PS3.h"
 							>
 						</File>
 						<File
