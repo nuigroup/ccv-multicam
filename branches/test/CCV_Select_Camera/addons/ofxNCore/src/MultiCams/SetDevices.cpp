@@ -102,7 +102,7 @@ void SetDevices::addPanel( int id ) {
 				"Camera Display", 30, 30,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addGrid( cameraDisplayPanel_grid, "",
-				640, 480, 1, 1, 0, 0 );
+				640, 480, 1, 1, 0, 0, kofxGui_Grid_List );
 			pPanel->addButton( cameraDisplayPanel_info, 
 				"Show Info", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Switch );
@@ -124,7 +124,7 @@ void SetDevices::addPanel( int id ) {
 			pPanel->addArrow( devicesListPanel_arrow_up, "",
 				180, 35, kofxGui_Arrow_Up, 5 );
 			pPanel->addGrid( devicesListPanel_grid, "",
-				180, 270, 1, 2, 10, 10 );
+				180, 270, 1, 2, 10, 10, kofxGui_Grid_List );
 			pPanel->addArrow( devicesListPanel_arrow_down, "",
 				180, 35, kofxGui_Arrow_Down, 5 );
 			pPanel->mObjWidth = 200;

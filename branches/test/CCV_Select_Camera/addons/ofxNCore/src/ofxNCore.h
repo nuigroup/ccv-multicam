@@ -67,6 +67,7 @@
 // MultiCams Support by Yishi Guo
 #include "MultiCams/MultiCams.h"
 #include "MultiCams/SetDevices.h"
+#include "MultiCams/CamsUtils.h"
 
 //#include "Camera/Camera.h"
 

@@ -31,7 +31,7 @@ ofxGuiGrid::ofxGuiGrid() {
 
 // ----------------------------------------------
 
-void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height, int xGrid, int yGrid, int border, int spacing ) {
+void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode ) {
 	int textHeight = (name == "") ? 0 : mGlobals->mParamFontHeight;
 
 	mParamId		= id;
@@ -49,6 +49,8 @@ void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height,
 	mBorder			= border;
 	mSpacing		= spacing;
 
+	mDisplayMode	= mode;
+
 	calculateWH();
 	setControlRegion( 0, textHeight, width, height );
 
@@ -60,15 +62,18 @@ void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height,
 // ----------------------------------------------
 
 void ofxGuiGrid::setXY( int x, int y ) {
-	clearImages();
+	//! Just display mode can be set X/Y
+	if ( mDisplayMode == kofxGui_Grid_Display ) {
+		clearImages();
 
-	mXGrid			= x;
-	mYGrid			= y;
+		mXGrid			= x;
+		mYGrid			= y;
 
-	calculateWH();
-	setSelectedId( -1 );	// Clear the selected value
+		calculateWH();
+		setSelectedId( -1 );	// Clear the selected value
 
-	createImages();
+		createImages();
+	}
 }
 
 // ----------------------------------------------
@@ -76,6 +81,20 @@ void ofxGuiGrid::setXY( int x, int y ) {
 void ofxGuiGrid::setSelectedId( int index ) {
 	this->mSelectedId = index;
 	clearSelectedColor();
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setCamsUtils( CamsUtils* utils ) {
+	if ( utils == NULL ) {
+		return;
+	}
+
+	this->utils = utils;
+
+	if ( mDisplayMode == kofxGui_Grid_List ) {
+		setImages();
+	}
 }
 
 // ----------------------------------------------
@@ -90,6 +109,13 @@ bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
 	}
 
 	return handled;
+}
+
+// ----------------------------------------------
+
+bool ofxGuiGrid::update() {
+	this->setImages();
+	return true;
 }
 
 // ----------------------------------------------
@@ -289,7 +315,7 @@ void ofxGuiGrid::selectedColor() {
 			mRising = true;
 		}
 
-		printf( "\nR: %f\n", mColorR );
+		// printf( "\nR: %f\n", mColorR );
 	}
 
 
@@ -348,6 +374,22 @@ void ofxGuiGrid::createImages() {
 
 			gridImages[index]->init( CAMERAS_ID_OFFSET + index, "Cam " + ofToString(index), getGridX(i) + 1, getGridY(j) + 1, roundInt(mGridWidth - 2), roundInt(mGridHeight - 2)  );
 
+		}
+	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setImages() {
+	//! Only for list mode
+	if ( mDisplayMode == kofxGui_Grid_List ) {
+		for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
+			if ( i < utils->getCount() ) {
+				//! DEBUG
+				printf( "\nofxGuiGrid:setImages()\t i < utils->getCount()\n" );
+				gridImages[i]->setCamera( utils->getRawCam(i) );
+				//PS3* cam = utils->getRawCam(i);
+			}
 		}
 	}
 }

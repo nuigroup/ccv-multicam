@@ -246,7 +246,7 @@ void ofxNCoreVision ::handleGui(int parameterId, int task, void* data, int lengt
 			printf( "properitesPanel_settings\n" );
 			if(length == sizeof(bool))
 			{
-				if(*(bool*)data && bcamera)
+				if(*(bool*)data/* && bcamera*/)
 				{
 					//              #ifdef TARGET_WIN32
 					//if(PS3)

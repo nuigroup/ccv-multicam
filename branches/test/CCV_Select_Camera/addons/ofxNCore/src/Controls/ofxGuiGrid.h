@@ -23,6 +23,7 @@
 #include "ofxGuiTypes.h"
 #include "ofxGuiObject.h"
 #include "ofxGuiImage.h"
+#include "MultiCams/CamsUtils.h"
 
 // ----------------------------------------------
 
@@ -31,10 +32,11 @@ public:
 	ofxGuiGrid();
 	~ofxGuiGrid();
 
-	void init( int id, string name, int x, int y, int width, int height, int xGrid, int yGrid, int border, int spacing );
+	void init( int id, string name, int x, int y, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode );
 
 	void setXY( int x, int y );
 	void setSelectedId( int index );
+	void setCamsUtils( CamsUtils* utils );
 
 	float getGridX( int x );
 	float getGridY( int y );
@@ -44,6 +46,7 @@ public:
 	ofxGuiObject* addImage( int id, string name, int targetId, unsigned char* image );
 
 	bool update( int id, int task, void* data, int length );
+	bool update();
 	void draw();
 
 	bool mouseDragged( int x, int y, int button );
@@ -59,10 +62,12 @@ public:
 
 	int mValue, mSelectedId;
 	int mTotal;
+	int mDisplayMode;
 
 	float mColorR, mColorG, mColorB, mColorA;
 
 	ofxGuiImage** gridImages;
+	CamsUtils* utils;
 
 private:
 	void calculateWH();
@@ -80,6 +85,7 @@ private:
 
 	void clearImages();
 	void createImages();
+	void setImages();
 
 	//! Selected color calculation
 	unsigned long mOldTime;

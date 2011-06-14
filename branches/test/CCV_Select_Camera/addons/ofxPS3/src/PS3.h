@@ -47,11 +47,14 @@ public:
 	//! Get GUID of the camera
 	GUID GetGUID() const;
 
+	//! Get GUID of the camera [return string]
+	std::string GetGUIDStr() const;
+
 	//! Set the GUID of camera
 	void SetGUID( GUID guid );
 
-	//!
-	static DWORD WINAPI CaptureThread( LPVOID instance );
+	////!
+	//static DWORD WINAPI CaptureThread( LPVOID instance );
 
 	//! Main method to running camera
 	void Run();

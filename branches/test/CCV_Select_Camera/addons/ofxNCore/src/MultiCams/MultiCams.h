@@ -14,6 +14,7 @@
 #include "Controls/ofxGuiTypes.h"
 #include "Controls/ofxGui.h"
 #include "MultiCams/SetDevices.h"
+#include "MultiCams/CamsUtils.h"
 // #include "Modules/ofxNCoreVision.h"
 class ofxNCoreVision;
 
@@ -90,6 +91,7 @@ public:
 	 **********************************************************/
 	// SETUP
 	void setup();
+	void update( ofEventArgs &e );
 
 	// MOUSE EVENTS
 	void _mousePressed( ofMouseEventArgs &e );
@@ -111,6 +113,7 @@ public:
 
 	// PASS IN
 	void passInCoreVision( ofxNCoreVision * core );
+	void passInCamsUtils( CamsUtils* utils );
 
 	// DRAWING
 	void draw();
@@ -127,6 +130,7 @@ private:
 	void _handleGui( int parameterId, int task, void* data, int length );
 	void _draw();
 	void switchSetDevicesGUI( bool showDevices = true );
+	void _setXY( int x, int y );
 
 	/**********************************************************
 	 *                 PUBLIC STUFF
@@ -134,6 +138,7 @@ private:
 public:
 	//! Controls
 	ofxGui* controls;
+	CamsUtils* utils;
 
 	/**********************************************************
 	 *                 PRIVATE STUFF
@@ -142,6 +147,9 @@ private:
 
 	//! NCoreVision pointer
 	ofxNCoreVision* _coreVision;
+
+
+	int camCount;
 
 	//////////////////////////////////
 	// SET DEVICES

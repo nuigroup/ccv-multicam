@@ -65,7 +65,7 @@ public:
 
 	//! Added by Yishi Guo
 	ofxGuiObject*	addLabel( int id, string name, int width, int height, string text, ofRGBA fontColor, string fontName = "verdana.ttf", int fontSize = 8 );
-	ofxGuiObject*	addGrid( int id, string name, int width, int height, int xGrid, int yGrid, int border, int spacing );
+	ofxGuiObject*	addGrid( int id, string name, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode );
 	ofxGuiObject*	addArrow( int id, string name, int width, int height, int direction, int offset = 0 );
 
 	void			adjustToNewContent(int w, int h);

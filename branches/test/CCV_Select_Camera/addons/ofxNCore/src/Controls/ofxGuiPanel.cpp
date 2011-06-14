@@ -344,11 +344,11 @@ ofxGuiObject* ofxGuiPanel::addLabel( int id, string name, int width, int height,
 
 //	----------------------------------------------------------------------------------------------------
 
-ofxGuiObject* ofxGuiPanel::addGrid( int id, string name, int width, int height, int xGrid, int yGrid, int border, int spacing ) {
+ofxGuiObject* ofxGuiPanel::addGrid( int id, string name, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode ) {
 	int offset = (mObjects.size() == 0 && mParamName == "" ) ? 0 : mSpacing;
 
 	ofxGuiGrid* grid = new ofxGuiGrid();
-	grid->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height, xGrid, yGrid, border, spacing );
+	grid->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height, xGrid, yGrid, border, spacing, mode );
 	mObjects.push_back( grid );
 
 	adjustToNewContent( grid->mObjWidth, grid->mObjHeight + offset );

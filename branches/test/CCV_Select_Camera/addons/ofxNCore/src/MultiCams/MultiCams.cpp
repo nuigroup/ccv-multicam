@@ -45,6 +45,10 @@ MultiCams::MultiCams() {
 	// SetDevices
 	setDevices = NULL;
 	bDevicesConfiguration = false;
+
+	//////////////////////////
+	// Cams Utils
+	utils = NULL;
 }
 //--------------------------------------------------------------
 
@@ -66,6 +70,13 @@ void MultiCams::setup() {
 		setDevices->setup();
 	}
 }
+//--------------------------------------------------------------
+
+void MultiCams::update( ofEventArgs &e ) {
+	utils->update();
+	devGrid->update();
+}
+
 //--------------------------------------------------------------
 
 
@@ -146,9 +157,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			case step1Panel_Xaxis:
 				if( length == sizeof(float) ) {
 					XAxis = *(float*)data;
-					if ( camsGrid != NULL ) {
-						camsGrid->setXY( XAxis, YAxis );
-					}
+					_setXY( XAxis, YAxis );
 					printf( "XAxis: %f\n", *(float*)data );
 				}
 				break;
@@ -156,9 +165,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			case step1Panel_Yaxis:
 				if ( length == sizeof(float) ) {
 					YAxis = *(float*)data;
-					if ( camsGrid != NULL ) {
-						camsGrid->setXY( XAxis, YAxis );
-					}
+					_setXY( XAxis, YAxis );
 				}
 				break;
 				//! Previous
@@ -326,7 +333,9 @@ void MultiCams::addPanel( int id ) {
 			pPanel = controls->addPanel(
 				this->camerasDisplayPanel, "Cameras Display" , 30, 30,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "", 680, 320, XAxis, YAxis, 10, 5 );
+			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "",
+				680, 320, XAxis, YAxis,
+				10, 5, kofxGui_Grid_Display );
 			pPanel->mObjWidth = 700;
 			pPanel->mObjHeight = 360;
 
@@ -364,7 +373,8 @@ void MultiCams::addPanel( int id ) {
 			pPanel = controls->addPanel(
 				this->devicesListPanel, "Devices List", 30, 420,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5 );
+			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5, kofxGui_Grid_List );
+			devGrid->setCamsUtils( utils );
 			pPanel->addArrow( devicesListPanel_arrow_left, "", 53, 109, kofxGui_Arrow_Left );
 			pPanel->addArrow( devicesListPanel_arrow_right, "", 50, 109, kofxGui_Arrow_Right );
 
@@ -582,6 +592,12 @@ void MultiCams::passInCoreVision( ofxNCoreVision* core ) {
 }
 //--------------------------------------------------------------
 
+void MultiCams::passInCamsUtils( CamsUtils* utils ) {
+	this->utils = utils;
+}
+
+//--------------------------------------------------------------
+
 
 /*******************************************************
 *      Load/Save Settings to XML File
@@ -627,4 +643,15 @@ void MultiCams::switchSetDevicesGUI( bool showDevices ) {
 		bDevicesConfiguration = false;
 	}
 }
+//--------------------------------------------------------------
+
+void MultiCams::_setXY( int x, int y ) {
+	if ( camsGrid != NULL ) {
+		camsGrid->setXY( XAxis, YAxis );
+	}
+	if ( utils != NULL ) {
+		utils->setXY( XAxis, YAxis );
+	}
+}
+
 //--------------------------------------------------------------

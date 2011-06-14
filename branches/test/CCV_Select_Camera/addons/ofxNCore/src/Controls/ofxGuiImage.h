@@ -20,6 +20,8 @@
 
 #include "ofxGuiTypes.h"
 #include "ofxGuiObject.h"
+#include "PS3.h"
+#include "ofxCvGrayscaleImage.h"
 
 // ----------------------------------------------
 
@@ -30,8 +32,9 @@ public:
 
 	void init( int id, string name, int x, int y, int width, int height, unsigned char* pImage = NULL );
 
-	void setImage( unsigned char* pImage );
+	void setImage( unsigned char* pImage, int width, int height );
 	void setBlank( bool bBlank = true );
+	void setCamera( PS3* cam );
 
 	bool update( int parameterId, int task, void* data, int length);
 	void draw();
@@ -49,6 +52,11 @@ public:
 private:
 	void drawBlank();
 	void drawImage();
+
+	PS3* pCam;
+	ofxCvGrayscaleImage* pCvImage;
+
+	int mCamWidth, mCamHeight;
 };
 
 // ----------------------------------------------

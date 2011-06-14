@@ -87,14 +87,14 @@ std::string PS3::Int2String( int val ) {
 
 	return ss.str();
 }
-//! The thread for capture
-/*! Copy from CLEyeMulticamTest.cpp */
-DWORD WINAPI PS3::CaptureThread( LPVOID instance ) {
-	PS3 *pThis = (PS3*)instance;
-	pThis->Run();
-
-	return 0;
-}
+////! The thread for capture
+///*! Copy from CLEyeMulticamTest.cpp */
+//DWORD WINAPI PS3::CaptureThread( LPVOID instance ) {
+//	PS3 *pThis = (PS3*)instance;
+//	pThis->Run();
+//
+//	return 0;
+//}
 
 //! Run
 void PS3::Run() {
@@ -102,21 +102,28 @@ void PS3::Run() {
 		return;
 	}
 	int width, height;
-	IplImage *pCapImage;
+	//IplImage *pCapImage;
 
 	_cam = CLEyeCreateCamera( _camGUID, _camColorMode, _camResolution, _frameRate );
+
+	Sleep( 300 );
 	
 	if ( _cam == NULL ) {
+		printf( "\nPS3::Run()\tCould not create camera\n" );
 		return;	//! Could not create camera
 	}
+	printf( "\tPS3::Run()\t#1\n" );
 
 	CLEyeCameraGetFrameDimensions( _cam, width, height );
 
-	if ( _camColorMode == CLEYE_COLOR_PROCESSED || _camColorMode == CLEYE_COLOR_RAW ) {
-		pCapImage = cvCreateImage( cvSize(width, height), IPL_DEPTH_8U, 4 );
-	} else {
-		pCapImage = cvCreateImage( cvSize(width, height), IPL_DEPTH_8U, 1 );
-	}
+	_pCapBuffer = new unsigned char[width * height * 4];
+	printf( "PS3::Run() p=%p\n", _pCapBuffer );
+
+	//if ( _camColorMode == CLEYE_COLOR_PROCESSED || _camColorMode == CLEYE_COLOR_RAW ) {
+	//	pCapImage = cvCreateImage( cvSize(width, height), IPL_DEPTH_8U, 4 );
+	//} else {
+	//	pCapImage = cvCreateImage( cvSize(width, height), IPL_DEPTH_8U, 1 );
+	//}
 
 	//! Set some camera parameters
 	CLEyeSetCameraParameter( _cam, CLEYE_GAIN, 0 );
@@ -129,48 +136,9 @@ void PS3::Run() {
 		std::cout << "Could not start camera!\n" << std::endl;
 		return;
 	}
+	printf( "\nPS3::Run()\t#2\n" );
+	Sleep( 300 );
 
-	//! Get the image from captured buffer
-	cvGetImageRawData( pCapImage, &_pCapBuffer );
-
-	double now = GetTickCount();
-	double lastFPSlog = now;
-	int frame = 0;
-
-	//! Image capturing loop
-	while ( _bRunning ) {
-		if ( _bCapture ) {
-			if ( CLEyeCameraGetFrame( _cam, _pCapBuffer ) ) {
-				++_frameCount;
-
-				//! Calculate the FPS
-				++frame;
-				now = GetTickCount();
-				if ( now >= lastFPSlog + 1000 ) {
-					_fps = frame;
-					frame = 0;
-					lastFPSlog = now;
-				}
-
-				//std::cout << "ok capture!\n" << std::flush;
-			}
-
-			if ( _bShow ) {
-				//cvShowImage( _sWindowName, pCapImage );
-			}
-		}
-	}
-
-	//! Stop camera capture
-	CLEyeCameraStop( _cam );
-
-	//! Destroy camera object
-	CLEyeDestroyCamera( _cam );
-
-	//! Release OpenCV resources
-	cvReleaseImage( &pCapImage );
-
-	_cam = NULL;
 }
 
 //! Set PS3 camera
@@ -188,6 +156,11 @@ GUID PS3::GetGUID() const{
 	return _camGUID;
 }
 
+//! Get the GUID of the camera [return string]
+std::string PS3::GetGUIDStr() const {
+	return GUID2String( GetGUID() );
+}
+
 //! Set the GUID of camera
 void PS3::SetGUID( GUID guid ) {
 	_camGUID = guid;
@@ -202,42 +175,40 @@ bool PS3::StartCamera() {
 	_bRunning = true;
 	_bCapture = true;
 
-	//! Show window or not
-	if ( _bShow ) {
-		if ( _windowTitle.empty() ) {
-			_windowTitle = "GUID: " + GUID2String( _camGUID );
-		}
-		_sWindowName = _windowTitle.c_str();
-		//cvNamedWindow( _sWindowName, CV_WINDOW_AUTOSIZE );
-		//cvNamedWindow( _windowTitle.c_str(), CV_WINDOW_AUTOSIZE );
-	}
+	////! Show window or not
+	//if ( _bShow ) {
+	//	if ( _windowTitle.empty() ) {
+	//		_windowTitle = "GUID: " + GUID2String( _camGUID );
+	//	}
+	//	_sWindowName = _windowTitle.c_str();
+	//	//cvNamedWindow( _sWindowName, CV_WINDOW_AUTOSIZE );
+	//	//cvNamedWindow( _windowTitle.c_str(), CV_WINDOW_AUTOSIZE );
+	//}
 
-	// Start the capture thread
-	_hThread = CreateThread( NULL, 0, &PS3::CaptureThread, this, 0, 0 );
+	//// Start the capture thread
+	//_hThread = CreateThread( NULL, 0, &PS3::CaptureThread, this, 0, 0 );
 
-	if ( _hThread == NULL ) {
-		printf( "Could not create capture thread\n" );
-		//MessageBoxA( NULL, "Could not create capture thread", "PS3Capture", MB_ICONEXCLAMATION );
-		return false;
-	}
+	//if ( _hThread == NULL ) {
+	//	printf( "Could not create capture thread\n" );
+	//	//MessageBoxA( NULL, "Could not create capture thread", "PS3Capture", MB_ICONEXCLAMATION );
+	//	return false;
+	//}
+	Run();
 
 	return true;
 }
 
 void PS3::StopCamera() {
-	if ( !_bRunning ) {
-		return;
-	}
+	//! Stop camera capture
+	CLEyeCameraStop( _cam );
 
-	//! Stop the capturing loop
-	_bRunning = false;
+	//! Destroy camera object
+	CLEyeDestroyCamera( _cam );
 
-	WaitForSingleObject( _hThread, 1000 );
+	////! Release OpenCV resources
+	//cvReleaseImage( &pCapImage );
 
-	//! Destroy window
-	if ( _bShow ) {
-		//cvDestroyWindow( _windowTitle.c_str() );
-	}
+	_cam = NULL;
 }
 
 bool PS3::StartCapture() {
@@ -268,6 +239,8 @@ bool PS3::StopCapture() {
 }
 
 unsigned char* PS3::GetPixels() {
+	printf( "PS3::GetPixels()\t p = %p\n", _pCapBuffer );
+	cout << endl;
 	return _pCapBuffer;
 }
 
@@ -360,12 +333,7 @@ bool PS3::IsColorMode() {
 }
 
 bool PS3::IsFrameNew() {
-	if ( _oldFrameCount < _frameCount ) {
-		_oldFrameCount = _frameCount;
-		return true;
-	}
-
-	return false;
+	return CLEyeCameraGetFrame( _cam, _pCapBuffer );
 }
 
 bool PS3::DecrementParam( int  param ) {

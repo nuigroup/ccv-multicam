@@ -136,6 +136,11 @@ enum {	//! Added by Yishi Guo 2011-06-11
 	kofxGui_Arrow_Left,
 };
 
+enum {	//! Added by Yishi Guo 2011-06-14
+	kofxGui_Grid_List,
+	kofxGui_Grid_Display,
+};
+
 //	----------------------------------------------------------------------------------------------------
 
 static inline int roundInt(float value)

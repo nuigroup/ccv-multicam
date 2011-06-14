@@ -16,6 +16,8 @@
 ofxGuiImage::ofxGuiImage() {
 	// TODO
 	bImageSet = false;
+	pCam = NULL;
+	pCvImage = new ofxCvGrayscaleImage();
 }
 
 // ----------------------------------------------
@@ -37,18 +39,30 @@ void ofxGuiImage::init( int id, string name, int x, int y, int width, int height
 	mObjWidth			= width;
 	mObjHeight			= height;
 
-	setImage( pImage );
 	setControlRegion( 0, 0, width, height );
-
 }
 
 // ----------------------------------------------
 
-void ofxGuiImage::setImage( unsigned char* pImage ) {
+void ofxGuiImage::setImage( unsigned char* pImage, int width, int height ) {
 	if ( pImage != NULL ) {
+		//! DEBUG
+		printf( "\nofxGuiImage::setImage()\t pImage != NULL\n" );
 		this->pImage = pImage;
 		bImageSet = true;
+		mCamWidth = width;
+		mCamHeight = height;
+
+		cout << "ofxGuiImage::setImage()" << endl;
+
+		if ( pCvImage != NULL ) {	//! If exist, clear it!
+			pCvImage->clear();
+		}
+		pCvImage->allocate( mCamWidth, mCamHeight );
+		pCvImage->setFromPixels( this->pImage, this->mCamWidth, this->mCamHeight );
+		pCvImage->setUseTexture( false );
 	}
+	printf( "ofxGuiImage::setImage()\t out of if - p = %p\n", pImage );
 }
 
 // ----------------------------------------------
@@ -56,6 +70,25 @@ void ofxGuiImage::setImage( unsigned char* pImage ) {
 void ofxGuiImage::setBlank( bool bBlank ) {
 	if ( bBlank ) {
 		bImageSet = false;
+	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::setCamera( PS3* cam ) {
+	if ( cam != NULL ) {
+		//! DEBUG
+		printf( "\nofxGuiImage::setCamera()\tcam = %p\n", cam );
+
+		printf( "pCam = %p\n", pCam );
+		this->pCam = cam;
+		printf( "pCam!!!\n" );
+		printf( "pCam = %p\n", pCam );
+		cam->PrintInfo();
+		setImage( pCam->GetPixels(), pCam->GetWidth(), pCam->GetHeight() );
+		printf( "pCam = %p\n", pCam );
+
+		cam->PrintInfo();
 	}
 }
 
@@ -140,7 +173,11 @@ void ofxGuiImage::drawBlank() {
 // ----------------------------------------------
 
 void ofxGuiImage::drawImage() {
-	// TODO
+	if ( bImageSet ) {
+		if ( pCvImage != NULL ) {
+			pCvImage->draw( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
+		}
+	}
 }
 
 // ----------------------------------------------

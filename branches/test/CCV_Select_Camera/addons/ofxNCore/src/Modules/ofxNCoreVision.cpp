@@ -83,10 +83,16 @@ void ofxNCoreVision::_setup(ofEventArgs &e)
 	/**********************************************
 	 * MultiCams
 	 **********************************************/
+
+	if ( camsUtils == NULL ) {
+		camsUtils = new CamsUtils();
+		camsUtils->setup( CLEYE_MONO_PROCESSED, CLEYE_VGA, 30 );
+	}
 	if ( multiCams == NULL ) {
 		multiCams = new MultiCams();
 		multiCams->setup();
 		multiCams->passInCoreVision( this );
+		multiCams->passInCamsUtils( camsUtils );
 	}
 
 	//Setup Calibration
@@ -301,19 +307,19 @@ void ofxNCoreVision::initDevice()
 		cameraInited=true;
 		//check if a firefly, ps3 camera, or other is plugged in
 		#ifdef TARGET_WIN32
-			/****PS3 - PS3 camera only****/
-		    if(ofxPS3::getDeviceCount() > 0 && PS3 == NULL)
-			{
-				PS3 = new ofxPS3();
-				PS3->listDevices();
-				PS3->initPS3(camWidth, camHeight, camRate);
-				camWidth = PS3->getCamWidth();
-			    camHeight = PS3->getCamHeight();
-				printf("PS3 Camera Mode\nAsked for %i by %i - actual size is %i by %i \n\n", camWidth, camHeight, PS3->getCamWidth(), PS3->getCamHeight());
-				return;
-			}
-			/****ffmv - firefly camera only****/
-			else if(ofxffmv::getDeviceCount() > 0 && ffmv == NULL)
+			///****PS3 - PS3 camera only**
+		 //   if(ofxPS3::getDeviceCount() > 0 && PS3 == NULL)
+			//{
+			//	PS3 = new ofxPS3();
+			//	PS3->listDevices();
+			//	PS3->initPS3(camWidth, camHeight, camRate);
+			//	camWidth = PS3->getCamWidth();
+			//    camHeight = PS3->getCamHeight();
+			//	printf("PS3 Camera Mode\nAsked for %i by %i - actual size is %i by %i \n\n", camWidth, camHeight, PS3->getCamWidth(), PS3->getCamHeight());
+			//	return;
+			////}
+			//// /* ***ffmv - firefly camera only****else */ 
+			if(ofxffmv::getDeviceCount() > 0 && ffmv == NULL)
 			{
 			   ffmv = new ofxffmv();
 			   ffmv->listDevices();
@@ -380,16 +386,22 @@ void ofxNCoreVision::_update(ofEventArgs &e)
 {
 	if(debugMode) if((stream = freopen(fileName, "a", stdout)) == NULL){}
 
+	if ( bMultiCamsInterface ) {
+		multiCams->update( e );
+		//return;
+	}
+
 	bNewFrame = false;
 
 	if(bcamera) //if camera
 	{
 		#ifdef TARGET_WIN32
-			if(PS3!=NULL)//ps3 camera
-			{
-				bNewFrame = PS3->isFrameNew();
-			}
-			else if(ffmv!=NULL)
+			//if(PS3!=NULL)//ps3 camera
+			//{
+			//	bNewFrame = PS3->isFrameNew();
+			//}
+			//else 
+		if(ffmv!=NULL)
 			{
 				ffmv->grabFrame();
 				bNewFrame = true;
@@ -504,13 +516,14 @@ void ofxNCoreVision::_update(ofEventArgs &e)
 void ofxNCoreVision::getPixels()
 {
 #ifdef TARGET_WIN32
-	if(PS3!=NULL)
-	{
-		//already grayscale
-		processedImg.setFromPixels(PS3->getPixels(), camWidth, camHeight);
-		if(contourFinder.bTrackFiducials){processedImg_fiducial = processedImg;}
-	}
-	else if(ffmv != NULL)
+	//if(PS3!=NULL)
+	//{
+	//	//already grayscale
+	//	processedImg.setFromPixels(PS3->getPixels(), camWidth, camHeight);
+	//	if(contourFinder.bTrackFiducials){processedImg_fiducial = processedImg;}
+	//}
+	//else 
+		if(ffmv != NULL)
 	{
 		processedImg.setFromPixels(ffmv->fcImage[ffmv->getDeviceID()].pData, camWidth, camHeight);
 
@@ -578,11 +591,12 @@ void ofxNCoreVision::grabFrameToGPU(GLuint target)
 		glBindTexture(GL_TEXTURE_2D, target);
 
 		#ifdef TARGET_WIN32
-			if(PS3!=NULL)
-			{
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, camWidth, camHeight, GL_RGB, GL_UNSIGNED_BYTE, PS3->getPixels());
-			}
-			else if(vidGrabber!=NULL)
+			//if(PS3!=NULL)
+			//{
+			//	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, camWidth, camHeight, GL_RGB, GL_UNSIGNED_BYTE, PS3->getPixels());
+			//}
+			//else 
+				if(vidGrabber!=NULL)
 			{
 				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, camWidth, camHeight, GL_RGB, GL_UNSIGNED_BYTE, vidGrabber->getPixels());
 			}
@@ -961,9 +975,10 @@ void ofxNCoreVision::_keyPressed(ofKeyEventArgs &e)
 		case 'v':
 			if (bcamera && vidGrabber != NULL)
 				#ifdef TARGET_WIN32
-				if(PS3)
-					PS3->showSettings();
-				else if(vidGrabber)
+				//if(PS3)
+				//	PS3->showSettings();
+				//else 
+				if(vidGrabber)
 					vidGrabber->videoSettings();
                 #else
                 	vidGrabber->videoSettings();
@@ -1173,7 +1188,7 @@ void ofxNCoreVision::_exit(ofEventArgs &e)
 	// AlexP
 	// C++ guarantees that operator delete checks its argument for null-ness
     #ifdef TARGET_WIN32
-		delete PS3;		PS3 = NULL;
+		//delete PS3;		PS3 = NULL;
 		delete ffmv; 	ffmv = NULL;
 		delete dsvl;	dsvl = NULL;
 	#endif
@@ -1191,6 +1206,8 @@ void ofxNCoreVision::switchMultiCamsGUI( bool showCams ) {
 	if ( showCams ) {
 		bMultiCamsInterface = true;
 		bShowInterface = false;
+
+		//multiCams->utils->start();
 
 		this->removePanels();
 		multiCams->addPanels();
