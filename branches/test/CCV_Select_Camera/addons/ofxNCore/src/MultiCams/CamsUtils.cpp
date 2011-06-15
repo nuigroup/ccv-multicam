@@ -74,8 +74,10 @@ void CamsUtils::stop() {
 		for ( int i = 0; i < camCount; ++i ) {
 			rawCams[i]->StopCamera();
 			delete rawCams[i];
+			rawCams[i] = NULL;
 		}
 		delete rawCams;
+		rawCams = NULL;
 	}
 }
 

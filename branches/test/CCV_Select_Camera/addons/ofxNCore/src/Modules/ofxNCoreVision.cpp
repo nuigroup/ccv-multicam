@@ -1195,6 +1195,13 @@ void ofxNCoreVision::_exit(ofEventArgs &e)
 	delete filter;		filter = NULL;
 	delete vidGrabber;	vidGrabber = NULL;
 	delete vidPlayer;	vidPlayer = NULL;
+
+	/***********************
+	* Cams Utils
+	************************/
+	camsUtils->stop();
+
+
 	// -------------------------------- SAVE STATE ON EXIT
 	printf("Vision module has exited!\n");
 }
