@@ -433,6 +433,8 @@ void ofxGuiGrid::setImages() {
 					// TODO
 				}
 				//PS3* cam = utils->getRawCam(i);
+			} else {
+				gridImages[i]->setBlank();
 			}
 		}
 	}
