@@ -83,6 +83,8 @@ void ofxGuiGrid::setXY( int x, int y ) {
 void ofxGuiGrid::setSelectedId( int index ) {
 	this->mSelectedId = index;
 	clearSelectedColor();
+
+	this->mCamIndex = this->mSelectedId + this->mIndexOffset;
 }
 
 // ----------------------------------------------
@@ -97,6 +99,13 @@ void ofxGuiGrid::setCamsUtils( CamsUtils* utils ) {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		setImages();
 	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setOffset( int offset ) {
+	this->mIndexOffset = offset;
+	this->setTitles();
 }
 
 // ----------------------------------------------
@@ -127,7 +136,7 @@ bool ofxGuiGrid::previous() {
 	return false;
 }
 
-// ----------------------------------------------
+// -------------------------------------------   ---
 
 bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
 	bool handled = false;
@@ -216,6 +225,7 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 		int id = mouseToGridId( inside );
 		
 		setSelectedId( id );
+		mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Int, &mCamIndex, sizeof(int) );
 	}
 	return mMouseIsDown;
 }

@@ -37,6 +37,7 @@ public:
 	void setXY( int x, int y );
 	void setSelectedId( int index );
 	void setCamsUtils( CamsUtils* utils );
+	void setOffset( int offset );
 
 	bool next();
 	bool previous();
@@ -93,6 +94,7 @@ private:
 	void setTitles();
 
 	int mIndexOffset;
+	int mCamIndex;	//! index of all raw cams
 
 	//! Selected color calculation
 	unsigned long mOldTime;

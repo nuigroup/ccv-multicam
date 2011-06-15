@@ -29,6 +29,7 @@ void SetDevices::setup() {
 //--------------------------------------------------------------
 
 void SetDevices::update() {
+	camGrid->update();
 	devGrid->update();
 }
 
@@ -43,6 +44,11 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 	switch ( parameterId ) {
 		//////////////////////////////////
 		// Devices List Panel
+		case devicesListPanel_grid:
+			if ( length == sizeof( int ) ) {
+				this->mCamIndex = *(int*)data;
+				this->camGrid->setOffset( mCamIndex );
+			}
 		case devicesListPanel_arrow_up:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data) {
@@ -134,8 +140,9 @@ void SetDevices::addPanel( int id ) {
 			pPanel = controls->addPanel( cameraDisplayPanel,
 				"Camera Display", 30, 30,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->addGrid( cameraDisplayPanel_grid, "",
+			camGrid = (ofxGuiGrid*)pPanel->addGrid( cameraDisplayPanel_grid, "",
 				640, 480, 1, 1, 0, 0, kofxGui_Grid_List );
+			camGrid->setCamsUtils( utils );
 			pPanel->addButton( cameraDisplayPanel_info, 
 				"Show Info", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Switch );

@@ -84,6 +84,10 @@ public:
 
 	//! Device list control
 	ofxGuiGrid* devGrid;
+	ofxGuiGrid* camGrid;
+
+	// current display cam index (of all raw cams)
+	int mCamIndex;
 
 	//! Show interface
 	bool	bShowInterface;
