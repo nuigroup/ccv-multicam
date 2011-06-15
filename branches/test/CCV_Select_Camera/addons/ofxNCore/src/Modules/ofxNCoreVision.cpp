@@ -996,7 +996,7 @@ void ofxNCoreVision::_keyPressed(ofKeyEventArgs &e)
 			if (bMiniMode && !bCalibration) // NEED TO ADD HERE ONLY GO MINI MODE IF NOT CALIBRATING
 			{
 				bMiniMode = false;
-				bShowInterface = true;
+				bShowInterface = bMultiCamsInterface ? false : true;
 				filter->bMiniMode = bMiniMode;
 				filter_fiducial->bMiniMode = bMiniMode;
 				ofSetWindowShape(950,600); //default size
