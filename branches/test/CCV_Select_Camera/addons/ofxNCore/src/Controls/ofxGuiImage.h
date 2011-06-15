@@ -52,9 +52,11 @@ public:
 private:
 	void drawBlank();
 	void drawImage();
+	void drawString( int x, int y, string str, bool center, ofRGBA color );
 
 	PS3* pCam;
 	ofxCvGrayscaleImage* pCvImage;
+	ofRGBA color;
 
 	int mCamWidth, mCamHeight;
 };

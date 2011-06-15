@@ -100,6 +100,7 @@ bool ofxGuiImage::update( int id, int task, void* data, int length ) {
 
 	if ( id == mParamId ) {
 		handled = true;
+
 	}
 
 	return handled;
@@ -121,7 +122,10 @@ void ofxGuiImage::draw() {
 		}
 
 		if ( mParamName != "" ) {
-			drawParamString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false );
+			color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
+			//drawParamString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false );
+			drawString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false, color );
+
 		}
 	glPopMatrix();
 }
@@ -178,6 +182,21 @@ void ofxGuiImage::drawImage() {
 			pCvImage->draw( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
 		}
 	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::drawString( int x, int y, string str, bool center, ofRGBA color ) {
+	glColor4f( color.r, color.g, color.b, color.a );
+
+	if ( center ) {
+		x -= roundInt( mGlobals->mParamFont.stringWidth( str ) / 2.0f );
+	} else {
+		x += mGlobals->mParamFontXOffset;
+	}
+
+	y += mGlobals->mParamFontYOffset;
+	mGlobals->mParamFont.drawString( str, x, y );
 }
 
 // ----------------------------------------------
