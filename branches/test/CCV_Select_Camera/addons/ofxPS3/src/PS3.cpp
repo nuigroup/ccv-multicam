@@ -106,18 +106,18 @@ void PS3::Run() {
 
 	_cam = CLEyeCreateCamera( _camGUID, _camColorMode, _camResolution, _frameRate );
 
-	Sleep( 300 );
+	//Sleep( 300 );
 	
 	if ( _cam == NULL ) {
 		printf( "\nPS3::Run()\tCould not create camera\n" );
 		return;	//! Could not create camera
 	}
-	printf( "\tPS3::Run()\t#1\n" );
+	//printf( "\tPS3::Run()\t#1\n" );
 
 	CLEyeCameraGetFrameDimensions( _cam, width, height );
 
 	_pCapBuffer = new unsigned char[width * height * 4];
-	printf( "PS3::Run() p=%p\n", _pCapBuffer );
+	//printf( "PS3::Run() p=%p\n", _pCapBuffer );
 
 	//if ( _camColorMode == CLEYE_COLOR_PROCESSED || _camColorMode == CLEYE_COLOR_RAW ) {
 	//	pCapImage = cvCreateImage( cvSize(width, height), IPL_DEPTH_8U, 4 );
@@ -136,8 +136,7 @@ void PS3::Run() {
 		std::cout << "Could not start camera!\n" << std::endl;
 		return;
 	}
-	printf( "\nPS3::Run()\t#2\n" );
-	Sleep( 300 );
+	//Sleep( 300 );
 
 }
 

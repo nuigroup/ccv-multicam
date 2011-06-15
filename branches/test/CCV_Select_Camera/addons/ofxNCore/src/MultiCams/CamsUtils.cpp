@@ -63,7 +63,7 @@ void CamsUtils::start() {
 		rawCams[i] = new PS3();
 		rawCams[i]->SetCamera( guid, colorMode, camRes, frameRate );
 		if ( rawCams[i]->StartCamera() ) {
-			printf( "rawCams[%d]->StartCamera() return true\n", i );
+			//printf( "rawCams[%d]->StartCamera() return true\n", i );
 		}
 	}
 }
@@ -120,7 +120,7 @@ PS3* CamsUtils::getCam( int x, int y ) {
 
 PS3* CamsUtils::getRawCam( int index ) {
 	if ( rawCams != NULL && camCount > index ) {
-		printf( "CamsUtils::getRawCam()\t return\n" );
+		//printf( "CamsUtils::getRawCam()\t return\n" );
 		return rawCams[index];
 	}
 

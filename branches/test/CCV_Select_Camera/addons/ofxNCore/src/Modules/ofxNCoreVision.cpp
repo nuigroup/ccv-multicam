@@ -86,7 +86,7 @@ void ofxNCoreVision::_setup(ofEventArgs &e)
 
 	if ( camsUtils == NULL ) {
 		camsUtils = new CamsUtils();
-		camsUtils->setup( CLEYE_MONO_PROCESSED, CLEYE_VGA, 30 );
+		camsUtils->setup( CLEYE_MONO_PROCESSED, CLEYE_QVGA, 60 );
 	}
 	if ( multiCams == NULL ) {
 		multiCams = new MultiCams();

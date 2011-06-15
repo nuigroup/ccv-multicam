@@ -47,13 +47,13 @@ void ofxGuiImage::init( int id, string name, int x, int y, int width, int height
 void ofxGuiImage::setImage( unsigned char* pImage, int width, int height ) {
 	if ( pImage != NULL ) {
 		//! DEBUG
-		printf( "\nofxGuiImage::setImage()\t pImage != NULL\n" );
+		//printf( "\nofxGuiImage::setImage()\t pImage != NULL\n" );
 		this->pImage = pImage;
 		bImageSet = true;
 		mCamWidth = width;
 		mCamHeight = height;
 
-		cout << "ofxGuiImage::setImage()" << endl;
+		//cout << "ofxGuiImage::setImage()" << endl;
 
 		if ( pCvImage != NULL ) {	//! If exist, clear it!
 			pCvImage->clear();
@@ -62,7 +62,7 @@ void ofxGuiImage::setImage( unsigned char* pImage, int width, int height ) {
 		pCvImage->setFromPixels( this->pImage, this->mCamWidth, this->mCamHeight );
 		pCvImage->setUseTexture( false );
 	}
-	printf( "ofxGuiImage::setImage()\t out of if - p = %p\n", pImage );
+	//printf( "ofxGuiImage::setImage()\t out of if - p = %p\n", pImage );
 }
 
 // ----------------------------------------------
