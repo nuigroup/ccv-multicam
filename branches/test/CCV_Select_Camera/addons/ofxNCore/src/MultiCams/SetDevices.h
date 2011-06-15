@@ -14,6 +14,7 @@
 #include "ofxXmlSettings.h"
 #include "Controls/ofxGuiTypes.h"
 #include "Controls/ofxgui.h"
+#include "MultiCams/CamsUtils.h"
 
 class SetDevices : public ofxGuiListener {
 	//! Controls id
@@ -45,6 +46,10 @@ public:
 	 *************************************************/
 	// SETUP
 	void setup();
+	void update();
+
+	// PASSIN
+	void passInCamsUtils( CamsUtils* utils );
 
 	// MOUSE EVENTS
 	void _mousePressed( ofMouseEventArgs &e );
@@ -77,6 +82,9 @@ public:
 	//! Controls
 	ofxGui* controls;
 
+	//! Device list control
+	ofxGuiGrid* devGrid;
+
 	//! Show interface
 	bool	bShowInterface;
 
@@ -90,6 +98,9 @@ private:
 	// TEST STUFF
 	int testInt;
 	ofTrueTypeFont testFont;
+
+	//! CamsUtils
+	CamsUtils* utils;
 
 };
 

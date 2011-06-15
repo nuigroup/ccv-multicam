@@ -90,9 +90,9 @@ void ofxNCoreVision::_setup(ofEventArgs &e)
 	}
 	if ( multiCams == NULL ) {
 		multiCams = new MultiCams();
-		multiCams->setup();
 		multiCams->passInCoreVision( this );
 		multiCams->passInCamsUtils( camsUtils );
+		multiCams->setup();
 	}
 
 	//Setup Calibration

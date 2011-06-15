@@ -67,6 +67,7 @@ void MultiCams::setup() {
 	//! SetDevices
 	if (setDevices == NULL ) {
 		setDevices = new SetDevices();
+		setDevices->passInCamsUtils( utils );
 		setDevices->setup();
 	}
 }
@@ -74,7 +75,11 @@ void MultiCams::setup() {
 
 void MultiCams::update( ofEventArgs &e ) {
 	utils->update();
-	devGrid->update();
+	if ( bDevicesConfiguration ) {
+		setDevices->update();
+	} else { 
+		devGrid->update();
+	}
 }
 
 //--------------------------------------------------------------

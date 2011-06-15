@@ -13,7 +13,7 @@
 //--------------------------------------------------------------
 SetDevices::SetDevices() {
 	bShowInterface = false;
-	// TODO
+	utils = NULL;
 }
 
 //--------------------------------------------------------------
@@ -27,8 +27,38 @@ void SetDevices::setup() {
 }
 
 //--------------------------------------------------------------
+
+void SetDevices::update() {
+	devGrid->update();
+}
+
+//--------------------------------------------------------------
+
+void SetDevices::passInCamsUtils( CamsUtils* utils ) {
+	this->utils = utils;
+}
+
+//--------------------------------------------------------------
 void SetDevices::handleGui( int parameterId, int task, void* data, int length ) {
 	switch ( parameterId ) {
+		//////////////////////////////////
+		// Devices List Panel
+		case devicesListPanel_arrow_up:
+			if ( length == sizeof(bool) ) {
+				if ( *(bool*)data) {
+					devGrid->previous();
+				}
+			}
+			break;
+		case devicesListPanel_arrow_down:
+			if ( length == sizeof(bool) ) {
+				if ( *(bool*)data ) {
+					devGrid->next();
+				}
+			}
+			break;
+		//////////////////////////////////
+		// Camera Display Panel
 		case cameraDisplayPanel_info:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data) {
@@ -37,6 +67,9 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 					removePanel( informationPanel );
 				}
 			}
+			break;
+		//////////////////////////////////
+		// Settings Panel
 		case settingsPanel_reset:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data ) {
@@ -123,8 +156,9 @@ void SetDevices::addPanel( int id ) {
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addArrow( devicesListPanel_arrow_up, "",
 				180, 35, kofxGui_Arrow_Up, 5 );
-			pPanel->addGrid( devicesListPanel_grid, "",
+			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "",
 				180, 270, 1, 2, 10, 10, kofxGui_Grid_List );
+			devGrid->setCamsUtils( utils );
 			pPanel->addArrow( devicesListPanel_arrow_down, "",
 				180, 35, kofxGui_Arrow_Down, 5 );
 			pPanel->mObjWidth = 200;
