@@ -80,16 +80,22 @@ void ofxGuiImage::setCamera( PS3* cam ) {
 		//! DEBUG
 		printf( "\nofxGuiImage::setCamera()\tcam = %p\n", cam );
 
-		printf( "pCam = %p\n", pCam );
+		//printf( "pCam = %p\n", pCam );
 		this->pCam = cam;
-		printf( "pCam!!!\n" );
-		printf( "pCam = %p\n", pCam );
-		cam->PrintInfo();
+		//printf( "pCam!!!\n" );
+		//printf( "pCam = %p\n", pCam );
+		//cam->PrintInfo();
 		setImage( pCam->GetPixels(), pCam->GetWidth(), pCam->GetHeight() );
-		printf( "pCam = %p\n", pCam );
+		//printf( "pCam = %p\n", pCam );
 
 		cam->PrintInfo();
 	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::setTitle( string name ) {
+	mParamName = name;
 }
 
 // ----------------------------------------------

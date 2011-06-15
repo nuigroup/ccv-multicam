@@ -119,144 +119,164 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 	// DEBUG
 	printf( "MultiCams::handGui\n" );
 	switch( parameterId ) {
-				////////////////////////////////////
-				// GENERAL SETTINGS
-				//! Start settings
-			case generalSettingsPanel_start:
-				if ( length == sizeof(bool) ) {
-					if (*(bool*)data) {
-						removePanel( generalSettingsPanel );
-						addPanel( step1Panel );
-					}
+			//////////////////////////////////
+			// DEVICES LIST
+			//! Show previous camera.
+		case devicesListPanel_arrow_left:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					devGrid->previous();
 				}
-				break;
-				//! Save settings and exit
-			case generalSettingsPanel_save:
-				if ( length == sizeof(bool) ) {
-					if (*(bool*)data) {
-						// TODO save the settings to XML file
-						if( _coreVision != NULL ) {
-							_coreVision->switchMultiCamsGUI( false );
-						}
-					}
-				}
-				break;
-				//! Exit (Not settings saved)
-			case generalSettingsPanel_cancel:
-				if ( length == sizeof(bool) ) {
-					if (*(bool*)data) {
-						if ( _coreVision != NULL ) {
-							_coreVision->switchMultiCamsGUI( false );
-						}
-					}
-				}
-				break;
-				////////////////////////////////////////
-				// STEP 1
-				//! X axis camera number
-			case step1Panel_Xaxis:
-				if( length == sizeof(float) ) {
-					XAxis = *(float*)data;
-					_setXY( XAxis, YAxis );
-					printf( "XAxis: %f\n", *(float*)data );
-				}
-				break;
-				//! Y axis camera number
-			case step1Panel_Yaxis:
-				if ( length == sizeof(float) ) {
-					YAxis = *(float*)data;
-					_setXY( XAxis, YAxis );
-				}
-				break;
-				//! Previous
-			case step1Panel_previous:
-				if ( length == sizeof(bool) ) {
-					if (*(bool*)data) {
-						removePanel( step1Panel );
-						addPanel( generalSettingsPanel );
-					}
-				}
-				break;
-				//! Next - Go to step 2
-			case step1Panel_next:
-				if ( length == sizeof(bool) ) {
-					if ( *(bool*)data) {
-						removePanel( step1Panel );
-						addPanel( step2Panel );
-					}
-				}
-				break;
+			}
+			break;
 
-				////////////////////////////////////////
-				// STEP 2
-				//! Set Devices
-			case step2Panel_setDevices:
-				if ( length == sizeof( bool ) ) {
-					if (*(bool*)data) {
-						switchSetDevicesGUI( true );
+			//! Show next camera.
+		case devicesListPanel_arrow_right:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					devGrid->next();
+				}
+			}
+			break;
+		
+			////////////////////////////////////
+			// GENERAL SETTINGS
+			//! Start settings
+		case generalSettingsPanel_start:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					removePanel( generalSettingsPanel );
+					addPanel( step1Panel );
+				}
+			}
+			break;
+			//! Save settings and exit
+		case generalSettingsPanel_save:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					// TODO save the settings to XML file
+					if( _coreVision != NULL ) {
+						_coreVision->switchMultiCamsGUI( false );
 					}
 				}
-				break;
-				//! Previous
-			case step2Panel_previous:
-				if ( length == sizeof(bool) ) {
-					if (*(bool*)data) {
-						removePanel( step2Panel );
-						addPanel( step1Panel );
+			}
+			break;
+			//! Exit (Not settings saved)
+		case generalSettingsPanel_cancel:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					if ( _coreVision != NULL ) {
+						_coreVision->switchMultiCamsGUI( false );
 					}
 				}
-				break;
-				//! Next - Go to step 3
-			case step2Panel_next:
-				if ( length == sizeof(bool) ) {
-					if (*(bool*)data) {
-						removePanel( step2Panel );
-						addPanel( step3Panel );
-					}
+			}
+			break;
+			////////////////////////////////////////
+			// STEP 1
+			//! X axis camera number
+		case step1Panel_Xaxis:
+			if( length == sizeof(float) ) {
+				XAxis = *(float*)data;
+				_setXY( XAxis, YAxis );
+				printf( "XAxis: %f\n", *(float*)data );
+			}
+			break;
+			//! Y axis camera number
+		case step1Panel_Yaxis:
+			if ( length == sizeof(float) ) {
+				YAxis = *(float*)data;
+				_setXY( XAxis, YAxis );
+			}
+			break;
+			//! Previous
+		case step1Panel_previous:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					removePanel( step1Panel );
+					addPanel( generalSettingsPanel );
 				}
-				break;
-				////////////////////////////////////////
-				// STEP 3
-				//! Previous step
-			case step3Panel_previous:
-				if ( length == sizeof( bool ) ) {
-					if (*(bool*)data) {
-						removePanel( step3Panel );
-						addPanel( step2Panel );
-					}
+			}
+			break;
+			//! Next - Go to step 2
+		case step1Panel_next:
+			if ( length == sizeof(bool) ) {
+				if ( *(bool*)data) {
+					removePanel( step1Panel );
+					addPanel( step2Panel );
 				}
-				break;
-				//! Next - Go to step 4
-			case step3Panel_next:
-				if ( length == sizeof( bool ) ) {
-					if (*(bool*)data) {
-						removePanel( step3Panel );
-						addPanel( step4Panel );
-					}
+			}
+			break;
+
+			////////////////////////////////////////
+			// STEP 2
+			//! Set Devices
+		case step2Panel_setDevices:
+			if ( length == sizeof( bool ) ) {
+				if (*(bool*)data) {
+					switchSetDevicesGUI( true );
 				}
-				break;
-				///////////////////////////////////////
-				// STEP 4
-				//! Previous step
-			case step4Panel_previous:
-				if ( length == sizeof( bool ) ) {
-					if (*(bool*)data) {
-						removePanel( step4Panel );
-						addPanel( step3Panel );
-					}
+			}
+			break;
+			//! Previous
+		case step2Panel_previous:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					removePanel( step2Panel );
+					addPanel( step1Panel );
 				}
-				break;
-				//! Return to general settings panel
-			case step4Panel_finish:
-				if ( length == sizeof( bool ) ) {
-					if (*(bool*)data) {
-						removePanel( step4Panel );
-						addPanel( generalSettingsPanel );
-					}
+			}
+			break;
+			//! Next - Go to step 3
+		case step2Panel_next:
+			if ( length == sizeof(bool) ) {
+				if (*(bool*)data) {
+					removePanel( step2Panel );
+					addPanel( step3Panel );
 				}
-				break;
-			default:
-				break;
+			}
+			break;
+			////////////////////////////////////////
+			// STEP 3
+			//! Previous step
+		case step3Panel_previous:
+			if ( length == sizeof( bool ) ) {
+				if (*(bool*)data) {
+					removePanel( step3Panel );
+					addPanel( step2Panel );
+				}
+			}
+			break;
+			//! Next - Go to step 4
+		case step3Panel_next:
+			if ( length == sizeof( bool ) ) {
+				if (*(bool*)data) {
+					removePanel( step3Panel );
+					addPanel( step4Panel );
+				}
+			}
+			break;
+			///////////////////////////////////////
+			// STEP 4
+			//! Previous step
+		case step4Panel_previous:
+			if ( length == sizeof( bool ) ) {
+				if (*(bool*)data) {
+					removePanel( step4Panel );
+					addPanel( step3Panel );
+				}
+			}
+			break;
+			//! Return to general settings panel
+		case step4Panel_finish:
+			if ( length == sizeof( bool ) ) {
+				if (*(bool*)data) {
+					removePanel( step4Panel );
+					addPanel( generalSettingsPanel );
+				}
+			}
+			break;
+		default:
+			break;
 	}
 }
 //--------------------------------------------------------------

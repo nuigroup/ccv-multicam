@@ -22,6 +22,8 @@ ofxGuiGrid::ofxGuiGrid() {
 
 	mSelectedId = -1;
 
+	mIndexOffset = 0;
+
 	mOldTime = ofGetSystemTime();
 	mInterval = 50;		// 50 ms
 	mOffset = 0.05f;	// color changing offset
@@ -95,6 +97,34 @@ void ofxGuiGrid::setCamsUtils( CamsUtils* utils ) {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		setImages();
 	}
+}
+
+// ----------------------------------------------
+
+bool ofxGuiGrid::next() {
+	if ( mDisplayMode == kofxGui_Grid_List ) {
+		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {
+			mIndexOffset++;
+			setTitles();
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// ----------------------------------------------
+
+bool ofxGuiGrid::previous() {
+	if (mDisplayMode == kofxGui_Grid_List ) {
+		if ( mIndexOffset - 1 >= 0 ) {
+			mIndexOffset--;
+			setTitles();
+			return true;
+		}
+	}
+
+	return false;
 }
 
 // ----------------------------------------------
@@ -384,13 +414,25 @@ void ofxGuiGrid::setImages() {
 	//! Only for list mode
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
-			if ( i < utils->getCount() ) {
+			if ( i + mIndexOffset < utils->getCount() ) {
 				//! DEBUG
-				printf( "\nofxGuiGrid:setImages()\t i < utils->getCount()\n" );
-				gridImages[i]->setCamera( utils->getRawCam(i) );
+				//printf( "\nofxGuiGrid:setImages()\t i < utils->getCount()\n" );
+				try {
+					gridImages[i]->setCamera( utils->getRawCam( i + mIndexOffset ) );
+				} catch( ... ) {
+					// TODO
+				}
 				//PS3* cam = utils->getRawCam(i);
 			}
 		}
+	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setTitles() {
+	for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
+		gridImages[i]->setTitle( "Cam " + ofToString( i + mIndexOffset ) );
 	}
 }
 

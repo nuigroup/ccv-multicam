@@ -38,6 +38,9 @@ public:
 	void setSelectedId( int index );
 	void setCamsUtils( CamsUtils* utils );
 
+	bool next();
+	bool previous();
+
 	float getGridX( int x );
 	float getGridY( int y );
 	float getGridWidth();
@@ -86,6 +89,10 @@ private:
 	void clearImages();
 	void createImages();
 	void setImages();
+
+	void setTitles();
+
+	int mIndexOffset;
 
 	//! Selected color calculation
 	unsigned long mOldTime;

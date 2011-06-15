@@ -35,6 +35,7 @@ public:
 	void setImage( unsigned char* pImage, int width, int height );
 	void setBlank( bool bBlank = true );
 	void setCamera( PS3* cam );
+	void setTitle( string name );
 
 	bool update( int parameterId, int task, void* data, int length);
 	void draw();
