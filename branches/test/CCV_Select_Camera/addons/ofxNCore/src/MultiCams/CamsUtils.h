@@ -38,6 +38,9 @@ public:
 	PS3** getCams();
 	PS3** getRawCams();
 
+	bool isSelected( int rawId );
+	void setSelected( int rawId );
+
 	void setXY( int x, int y );
 	void setCam( int index, PS3* cam );
 	void setCam( int x, int y, PS3* cam );
@@ -46,6 +49,7 @@ public:
 	int xGrid, yGrid;
 	PS3** rawCams;
 	PS3** displayCams;
+	bool* camsSelected;
 
 private:
 	int getDevicesCount();

@@ -40,6 +40,11 @@ void CamsUtils::setup( CLEyeCameraColorMode colorMode, CLEyeCameraResolution cam
 	this->frameRate = frameRate;
 
 	rawCams = new PS3*[camCount];
+	//! init the bool array.
+	camsSelected = new bool[camCount];
+	for ( int i = 0; i < camCount; ++i ) {
+		camsSelected[i] = false;
+	}
 
 	start();
 }

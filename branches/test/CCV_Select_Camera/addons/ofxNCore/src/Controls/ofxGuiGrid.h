@@ -38,6 +38,7 @@ public:
 	void setSelectedId( int index );
 	void setCamsUtils( CamsUtils* utils );
 	void setOffset( int offset );
+	void setMode( int mode );
 
 	bool next();
 	bool previous();
@@ -102,6 +103,7 @@ private:
 	int mInterval;
 	float mOffset;
 	bool mRising;
+	bool mIsSelectable;
 
 	
 };

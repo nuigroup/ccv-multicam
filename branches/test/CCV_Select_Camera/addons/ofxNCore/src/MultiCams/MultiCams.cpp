@@ -49,6 +49,9 @@ MultiCams::MultiCams() {
 	//////////////////////////
 	// Cams Utils
 	utils = NULL;
+
+	bDraggingImage = false;
+	draggingImage = new ofxGuiImage();
 }
 //--------------------------------------------------------------
 
@@ -86,17 +89,21 @@ void MultiCams::update( ofEventArgs &e ) {
 
 
 void MultiCams::_mousePressed( ofMouseEventArgs &e ) {
-
+	// TODO
 }
+
 //--------------------------------------------------------------
 
 void MultiCams::_mouseDragged( ofMouseEventArgs &e ) {
-
+	// TODO
 }
+
+//--------------------------------------------------------------
 
 void MultiCams::_mouseReleased( ofMouseEventArgs &e ) {
-
+	// TOOD
 }
+
 //--------------------------------------------------------------
 
 void MultiCams::_keyPressed( ofKeyEventArgs &e ) {
@@ -126,6 +133,19 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 	switch( parameterId ) {
 			//////////////////////////////////
 			// DEVICES LIST
+			//! 
+		case devicesListPanel_grid:
+			if ( length == sizeof(int) ) {
+				if ( task == kofxGui_Set_Grid_Dragging ) {
+					int index = *(int*)data;
+					this->bDraggingImage = true;
+					this->draggingImage->init( dragging_image, "", 100, 100, 
+						devGrid->getGridWidth(), devGrid->getGridHeight() );
+
+					this->draggingImage->setCamera( this->utils->getRawCam( index ) );
+				}
+			}
+			break;
 			//! Show previous camera.
 		case devicesListPanel_arrow_left:
 			if ( length == sizeof(bool) ) {
@@ -608,6 +628,10 @@ void MultiCams::_draw() {
 	//);
 
 	controls->draw();
+
+	if ( bDraggingImage ) {
+		this->draggingImage->draw();
+	}
 }
 //--------------------------------------------------------------
 

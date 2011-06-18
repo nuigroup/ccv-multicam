@@ -51,6 +51,8 @@ class MultiCams : public ofxGuiListener {
 		devicesListPanel_arrow_right,
 		devicesListPanel_arrow_left,
 
+		dragging_image,
+
 		informationPanel,
 
 		step1Panel,
@@ -148,7 +150,6 @@ private:
 	//! NCoreVision pointer
 	ofxNCoreVision* _coreVision;
 
-
 	int camCount;
 
 	//////////////////////////////////
@@ -174,6 +175,12 @@ private:
 	///////////////////
 	// DEVICES LIST
 	ofxGuiGrid* devGrid;
+
+	//! Dragging image
+	ofxGuiImage* draggingImage;
+
+	//! Is dragging now?
+	bool bDraggingImage;
 
 	//! Full display mode
 	bool bFullMode;

@@ -127,6 +127,8 @@ enum
 	kofxGui_Set_IntArray,
 	kofxGui_Set_FloatArray,
 	kofxGui_Set_String,
+
+	kofxGui_Set_Grid_Dragging,
 };
 
 enum {	//! Added by Yishi Guo 2011-06-11
@@ -139,6 +141,7 @@ enum {	//! Added by Yishi Guo 2011-06-11
 enum {	//! Added by Yishi Guo 2011-06-14
 	kofxGui_Grid_List,
 	kofxGui_Grid_Display,
+	kofxGui_Grid_Selectable,
 };
 
 //	----------------------------------------------------------------------------------------------------

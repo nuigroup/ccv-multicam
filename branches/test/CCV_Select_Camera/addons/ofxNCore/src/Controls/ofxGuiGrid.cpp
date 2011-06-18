@@ -110,6 +110,16 @@ void ofxGuiGrid::setOffset( int offset ) {
 
 // ----------------------------------------------
 
+void ofxGuiGrid::setMode( int mode ) {
+	if ( mode == kofxGui_Grid_Selectable ) {
+		mIsSelectable = true;
+	} else {
+		mDisplayMode = mode;
+	}
+}
+
+// ----------------------------------------------
+
 bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {
@@ -136,7 +146,7 @@ bool ofxGuiGrid::previous() {
 	return false;
 }
 
-// -------------------------------------------   ---
+// ----------------------------------------------
 
 bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
 	bool handled = false;
@@ -211,7 +221,17 @@ void ofxGuiGrid::draw() {
 // ----------------------------------------------
 
 bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
-	// TODO
+	ofxPoint2f inside = mouseToLocal( x, y );
+	mMouseIsDown = isPointInsideMe( inside );
+
+	if ( mIsSelectable ) {
+		if ( mMouseIsDown ) {
+			int id = mouseToGridId( inside );
+
+			setSelectedId( id );
+			mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Dragging, &mCamIndex, sizeof(int) );
+		}
+	}
 	return mMouseIsDown;
 }
 
