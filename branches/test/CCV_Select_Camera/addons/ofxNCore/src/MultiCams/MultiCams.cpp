@@ -206,8 +206,11 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 		case step1Panel_next:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data) {
-					removePanel( step1Panel );
-					addPanel( step2Panel );
+					//! user must set the correct value
+					if ( this->XAxis * this->YAxis <= this->utils->getCount() ) {
+						removePanel( step1Panel );
+						addPanel( step2Panel );
+					}
 				}
 			}
 			break;
