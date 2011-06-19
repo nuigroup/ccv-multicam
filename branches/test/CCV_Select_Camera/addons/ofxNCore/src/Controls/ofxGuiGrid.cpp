@@ -109,7 +109,6 @@ void ofxGuiGrid::setOffset( int offset ) {
 	this->mIndexOffset = offset;
 	this->setTitles();
 	this->setImages();
-
 }
 
 // ----------------------------------------------
@@ -128,7 +127,7 @@ bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {
 			mIndexOffset++;
-			setTitles();
+			setOffset( mIndexOffset );
 			return true;
 		}
 	}
@@ -142,7 +141,7 @@ bool ofxGuiGrid::previous() {
 	if (mDisplayMode == kofxGui_Grid_List ) {
 		if ( mIndexOffset - 1 >= 0 ) {
 			mIndexOffset--;
-			setTitles();
+			setOffset( mIndexOffset );
 			return true;
 		}
 	}
