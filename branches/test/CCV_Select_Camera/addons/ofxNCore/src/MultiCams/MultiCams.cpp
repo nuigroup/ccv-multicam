@@ -31,9 +31,9 @@
 //}
 
 MultiCams::MultiCams() {
-	//ofAddListener( ofEvents.mousePressed, this, &MultiCams::_mousePressed );
-	//ofAddListener( ofEvents.mouseDragged, this, &MultiCams::_mouseDragged );
-	//ofAddListener( ofEvents.mouseReleased, this, &MultiCams::_mouseReleased );
+	ofAddListener( ofEvents.mousePressed, this, &MultiCams::_mousePressed );
+	ofAddListener( ofEvents.mouseDragged, this, &MultiCams::_mouseDragged );
+	ofAddListener( ofEvents.mouseReleased, this, &MultiCams::_mouseReleased );
 
 	ofAddListener( ofEvents.keyPressed, this, &MultiCams::_keyPressed );
 	ofAddListener( ofEvents.keyReleased, this, &MultiCams::_keyReleased );
@@ -95,13 +95,17 @@ void MultiCams::_mousePressed( ofMouseEventArgs &e ) {
 //--------------------------------------------------------------
 
 void MultiCams::_mouseDragged( ofMouseEventArgs &e ) {
-	// TODO
+	if ( bDraggingImage ) {
+		draggingImage->setXYPos( e.x, e.y );
+	}
 }
 
 //--------------------------------------------------------------
 
 void MultiCams::_mouseReleased( ofMouseEventArgs &e ) {
-	// TOOD
+	if ( bDraggingImage ) {
+		this->bDraggingImage = false;
+	}
 }
 
 //--------------------------------------------------------------
@@ -138,11 +142,13 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof(int) ) {
 				if ( task == kofxGui_Set_Grid_Dragging ) {
 					int index = *(int*)data;
-					this->bDraggingImage = true;
-					this->draggingImage->init( dragging_image, "", 100, 100, 
-						devGrid->getGridWidth(), devGrid->getGridHeight() );
+					if ( this->bDraggingImage == false ) {
+						this->bDraggingImage = true;
+						this->draggingImage->init( dragging_image, "", 100, 100, 
+							devGrid->getGridWidth(), devGrid->getGridHeight() );
 
-					this->draggingImage->setCamera( this->utils->getRawCam( index ) );
+						this->draggingImage->setCamera( this->utils->getRawCam( index ) );
+					}
 				}
 			}
 			break;
@@ -608,6 +614,15 @@ void MultiCams::draw() {
 	}
 
 }
+
+//--------------------------------------------------------------
+
+void MultiCams::testDraw( ofEventArgs &e ) {
+	ofSetColor( 0x654321 );
+	ofFill();
+	ofRect( 0, 0, ofGetWidth(), ofGetHeight() );
+}
+
 //--------------------------------------------------------------
 
 void MultiCams::_draw() {

@@ -110,6 +110,7 @@ public:
 		ofAddListener(ofEvents.mousePressed, this, &ofxNCoreVision::_mousePressed);
 		ofAddListener(ofEvents.mouseDragged, this, &ofxNCoreVision::_mouseDragged);
 		ofAddListener(ofEvents.mouseReleased, this, &ofxNCoreVision::_mouseReleased);
+
 		ofAddListener(ofEvents.keyPressed, this, &ofxNCoreVision::_keyPressed);
 		ofAddListener(ofEvents.keyReleased, this, &ofxNCoreVision::_keyReleased);
 		ofAddListener(ofEvents.setup, this, &ofxNCoreVision::_setup);

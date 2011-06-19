@@ -163,7 +163,7 @@ bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
 // ----------------------------------------------
 
 bool ofxGuiGrid::update() {
-	this->setImages();
+	// this->setImages();
 	return true;
 }
 

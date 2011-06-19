@@ -100,6 +100,13 @@ void ofxGuiImage::setTitle( string name ) {
 
 // ----------------------------------------------
 
+void ofxGuiImage::setXYPos( int x, int y ) {
+	this->mObjX = x;
+	this->mObjY = y;
+}
+
+// ----------------------------------------------
+
 bool ofxGuiImage::update( int id, int task, void* data, int length ) {
 	// TODO
 	bool handled = false;
@@ -184,6 +191,9 @@ void ofxGuiImage::drawBlank() {
 
 void ofxGuiImage::drawImage() {
 	if ( bImageSet ) {
+		if ( pCam != NULL ) {
+			setImage( pCam->GetPixels(), pCam->GetWidth(), pCam->GetHeight() );
+		}
 		if ( pCvImage != NULL ) {
 			pCvImage->draw( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
 		}

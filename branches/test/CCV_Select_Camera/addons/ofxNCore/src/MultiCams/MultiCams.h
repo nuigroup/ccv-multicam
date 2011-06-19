@@ -120,6 +120,8 @@ public:
 	// DRAWING
 	void draw();
 
+	void testDraw( ofEventArgs &e );
+
 	// LOAD/SAVE XML SETTINGS
 	void loadXMLSettings();
 	void SaveXMLSettings();
