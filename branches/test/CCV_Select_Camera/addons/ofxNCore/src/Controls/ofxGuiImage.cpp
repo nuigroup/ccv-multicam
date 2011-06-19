@@ -55,9 +55,9 @@ void ofxGuiImage::setImage( unsigned char* pImage, int width, int height ) {
 
 		//cout << "ofxGuiImage::setImage()" << endl;
 
-		if ( pCvImage != NULL ) {	//! If exist, clear it!
-			pCvImage->clear();
-		}
+		//if ( pCvImage != NULL ) {	//! If exist, clear it!
+		//	pCvImage->clear();
+		//}
 		pCvImage->allocate( mCamWidth, mCamHeight );
 		pCvImage->setFromPixels( this->pImage, this->mCamWidth, this->mCamHeight );
 		pCvImage->setUseTexture( false );

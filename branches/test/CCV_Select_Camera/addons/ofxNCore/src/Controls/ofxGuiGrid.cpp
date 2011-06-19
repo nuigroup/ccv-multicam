@@ -29,6 +29,8 @@ ofxGuiGrid::ofxGuiGrid() {
 	mOffset = 0.05f;	// color changing offset
 	mRising = true;
 
+	mIsSelectable = false;
+
 }
 
 // ----------------------------------------------
@@ -106,6 +108,8 @@ void ofxGuiGrid::setCamsUtils( CamsUtils* utils ) {
 void ofxGuiGrid::setOffset( int offset ) {
 	this->mIndexOffset = offset;
 	this->setTitles();
+	this->setImages();
+
 }
 
 // ----------------------------------------------
@@ -228,7 +232,9 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 		if ( mMouseIsDown ) {
 			int id = mouseToGridId( inside );
 
-			setSelectedId( id );
+			this->mDraggingXOffset = gridImages[id]->mouseToLocal( x, y ).x;
+			this->mDraggingYOffset = gridImages[id]->mouseToLocal( x, y ).y;
+
 			mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Dragging, &mCamIndex, sizeof(int) );
 		}
 	}
@@ -341,6 +347,18 @@ float ofxGuiGrid::getGridWidth() {
 
 float ofxGuiGrid::getGridHeight() {
 	return this->mGridHeight;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getDraggingXOffset() {
+	return this->mDraggingXOffset;
+}
+
+// ----------------------------------------------
+
+float ofxGuiGrid::getDraggingYOffset() {
+	return this->mDraggingYOffset;
 }
 
 // ----------------------------------------------

@@ -47,6 +47,8 @@ public:
 	float getGridY( int y );
 	float getGridWidth();
 	float getGridHeight();
+	float getDraggingXOffset();
+	float getDraggingYOffset();
 
 	ofxGuiObject* addImage( int id, string name, int targetId, unsigned char* image );
 
@@ -96,6 +98,9 @@ private:
 
 	int mIndexOffset;
 	int mCamIndex;	//! index of all raw cams
+
+	float mDraggingXOffset;
+	float mDraggingYOffset;
 
 	//! Selected color calculation
 	unsigned long mOldTime;
