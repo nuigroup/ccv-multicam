@@ -30,6 +30,7 @@ ofxGuiGrid::ofxGuiGrid() {
 	mRising = true;
 
 	mIsSelectable = false;
+	mValidSelection = false;
 
 }
 
@@ -227,19 +228,18 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 	ofxPoint2f inside = mouseToLocal( x, y );
 	mMouseIsDown = isPointInsideMe( inside );
 
-	if ( mIsSelectable ) {
-		if ( mMouseIsDown ) {
+	if ( mMouseIsDown ) {
+		if ( mIsSelectable && mValidSelection) {
 			int id = mouseToGridId( inside );
-			if ( !mDragging ) {
-				if ( id + mIndexOffset < utils->getCount() ) {
+			if ( id + mIndexOffset < utils->getCount() && id != -1 ){
+				if ( !mDragging ) {
 					//! Get the X/Y mouse position offset
-					this->mDraggingXOffset = inside.x - getGridX( id );
-					this->mDraggingYOffset = inside.y - getGridY( id );
+					this->mDraggingXOffset = clickingPoint.x - getGridX( id );
+					this->mDraggingYOffset = clickingPoint.y - getGridY( 0 );	//! just one "line", so y == 0
+					mDragging = true;	//! do not get the x/y again for this time.
 				}
-				mDragging = true;	//! do not get the x/y again for this time.
+				mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Dragging, &mCamIndex, sizeof(int) );
 			}
-			mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Dragging, &mCamIndex, sizeof(int) );
-
 		}
 	}
 
@@ -259,6 +259,13 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 		mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Int, &mCamIndex, sizeof(int) );
 
 		mDragging = false;	//! reset the value
+
+		if ( id != -1 ) {
+			clickingPoint = inside;
+			mValidSelection = true;
+		} else {
+			mValidSelection = false;
+		}
 	}
 	return mMouseIsDown;
 }

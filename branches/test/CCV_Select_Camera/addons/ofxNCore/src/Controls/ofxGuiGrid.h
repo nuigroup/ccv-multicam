@@ -108,8 +108,14 @@ private:
 	int mInterval;
 	float mOffset;
 	bool mRising;
+
+	////////////////
+	//! Dragging
 	bool mIsSelectable;
 	bool mDragging;
+	ofxPoint2f clickingPoint;
+	bool mValidSelection;
+
 
 	
 };

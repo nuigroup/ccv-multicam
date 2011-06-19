@@ -126,7 +126,7 @@ PS3* CamsUtils::getCam( int x, int y ) {
 // ----------------------------------------------
 
 PS3* CamsUtils::getRawCam( int index ) {
-	if ( rawCams != NULL && camCount > index ) {
+	if ( rawCams != NULL && camCount > index && index >= 0 ) {	//! index can not less than 0
 		//printf( "CamsUtils::getRawCam()\t return\n" );
 		return rawCams[index];
 	}
