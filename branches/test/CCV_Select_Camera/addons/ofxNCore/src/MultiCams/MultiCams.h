@@ -178,11 +178,17 @@ private:
 	// DEVICES LIST
 	ofxGuiGrid* devGrid;
 
+	///////////////////
+	// DRAGGING IMAGE
 	//! Dragging image
 	ofxGuiImage* draggingImage;
 
 	//! Is dragging now?
 	bool bDraggingImage;
+
+	//! Image draw offset
+	float draggingXOffset;
+	float draggingYOffset;
 
 	//! Full display mode
 	bool bFullMode;

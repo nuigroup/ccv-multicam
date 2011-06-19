@@ -96,7 +96,7 @@ void MultiCams::_mousePressed( ofMouseEventArgs &e ) {
 
 void MultiCams::_mouseDragged( ofMouseEventArgs &e ) {
 	if ( bDraggingImage ) {
-		draggingImage->setXYPos( e.x, e.y );
+		draggingImage->setXYPos( e.x - draggingXOffset, e.y - draggingYOffset );
 	}
 }
 
@@ -142,12 +142,21 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof(int) ) {
 				if ( task == kofxGui_Set_Grid_Dragging ) {
 					int index = *(int*)data;
-					if ( this->bDraggingImage == false ) {
-						this->bDraggingImage = true;
-						this->draggingImage->init( dragging_image, "", 100, 100, 
-							devGrid->getGridWidth(), devGrid->getGridHeight() );
+					//! the camera index must less than camera count
+					if ( index < utils->getCount() ) {
+						if ( bDraggingImage == false ) {
+							bDraggingImage = true;
+							draggingImage->init( dragging_image, "", 100, 100, 
+								devGrid->getGridWidth(), devGrid->getGridHeight() );
 
-						this->draggingImage->setCamera( this->utils->getRawCam( index ) );
+							draggingImage->setCamera( this->utils->getRawCam( index ) );
+
+							//! Set the X/Y coordinate offset
+							draggingXOffset = devGrid->getDraggingXOffset();
+							draggingYOffset = devGrid->getDraggingYOffset();
+						}
+					} else {
+						bDraggingImage = false;
 					}
 				}
 			}
@@ -316,46 +325,46 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 //--------------------------------------------------------------
 void MultiCams::setupControls() {
 
-	//panel border color
-	controls->mGlobals->mBorderColor.r = 0;
-	controls->mGlobals->mBorderColor.g = 0;
-	controls->mGlobals->mBorderColor.b = 0;
-	controls->mGlobals->mBorderColor.a = .3;
-	//panel color
-	controls->mGlobals->mCoverColor.r = 1;
-	controls->mGlobals->mCoverColor.g = 1;
-	controls->mGlobals->mCoverColor.b = 1;
-	controls->mGlobals->mCoverColor.a = .4;
-	//control outline color
-	controls->mGlobals->mFrameColor.r = 0;
-	controls->mGlobals->mFrameColor.g = 0;
-	controls->mGlobals->mFrameColor.b = 0;
-	controls->mGlobals->mFrameColor.a = .3;
-	//text color
-	controls->mGlobals->mTextColor.r = 0;
-	controls->mGlobals->mTextColor.g = 0;
-	controls->mGlobals->mTextColor.b = 0;
-	controls->mGlobals->mTextColor.a = 1;
-	//button color
-	controls->mGlobals->mButtonColor.r = 1;
-	controls->mGlobals->mButtonColor.g = 0;
-	controls->mGlobals->mButtonColor.b = 0;
-	controls->mGlobals->mButtonColor.a = .8;
-	//slider tip color
-	controls->mGlobals->mHandleColor.r = 0;
-	controls->mGlobals->mHandleColor.g = 0;
-	controls->mGlobals->mHandleColor.b = 0;
-	//slider color
-	controls->mGlobals->mSliderColor.r = 1;
-	controls->mGlobals->mSliderColor.g = 0;
-	controls->mGlobals->mSliderColor.b = 0;
-	controls->mGlobals->mSliderColor.a = .8;
+	////panel border color
+	//controls->mGlobals->mBorderColor.r = 0;
+	//controls->mGlobals->mBorderColor.g = 0;
+	//controls->mGlobals->mBorderColor.b = 0;
+	//controls->mGlobals->mBorderColor.a = .3;
+	////panel color
+	//controls->mGlobals->mCoverColor.r = 1;
+	//controls->mGlobals->mCoverColor.g = 1;
+	//controls->mGlobals->mCoverColor.b = 1;
+	//controls->mGlobals->mCoverColor.a = .4;
+	////control outline color
+	//controls->mGlobals->mFrameColor.r = 0;
+	//controls->mGlobals->mFrameColor.g = 0;
+	//controls->mGlobals->mFrameColor.b = 0;
+	//controls->mGlobals->mFrameColor.a = .3;
+	////text color
+	//controls->mGlobals->mTextColor.r = 0;
+	//controls->mGlobals->mTextColor.g = 0;
+	//controls->mGlobals->mTextColor.b = 0;
+	//controls->mGlobals->mTextColor.a = 1;
+	////button color
+	//controls->mGlobals->mButtonColor.r = 1;
+	//controls->mGlobals->mButtonColor.g = 0;
+	//controls->mGlobals->mButtonColor.b = 0;
+	//controls->mGlobals->mButtonColor.a = .8;
+	////slider tip color
+	//controls->mGlobals->mHandleColor.r = 0;
+	//controls->mGlobals->mHandleColor.g = 0;
+	//controls->mGlobals->mHandleColor.b = 0;
+	////slider color
+	//controls->mGlobals->mSliderColor.r = 1;
+	//controls->mGlobals->mSliderColor.g = 0;
+	//controls->mGlobals->mSliderColor.b = 0;
+	//controls->mGlobals->mSliderColor.a = .8;
 
-	//! label color
-	controls->mGlobals->mLabelColor.r = 0;
-	controls->mGlobals->mLabelColor.g = 0;
-	controls->mGlobals->mLabelColor.b = .2;
-	controls->mGlobals->mLabelColor.a = .8;
+	////! label color
+	//controls->mGlobals->mLabelColor.r = 0;
+	//controls->mGlobals->mLabelColor.g = 0;
+	//controls->mGlobals->mLabelColor.b = .2;
+	//controls->mGlobals->mLabelColor.a = .8;
 }
 //--------------------------------------------------------------
 
@@ -429,6 +438,7 @@ void MultiCams::addPanel( int id ) {
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5, kofxGui_Grid_List );
 			devGrid->setCamsUtils( utils );
+			devGrid->setMode( kofxGui_Grid_Selectable );
 			pPanel->addArrow( devicesListPanel_arrow_left, "", 53, 109, kofxGui_Arrow_Left );
 			pPanel->addArrow( devicesListPanel_arrow_right, "", 50, 109, kofxGui_Arrow_Right );
 

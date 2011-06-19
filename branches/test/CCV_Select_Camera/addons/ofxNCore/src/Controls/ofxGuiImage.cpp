@@ -89,6 +89,8 @@ void ofxGuiImage::setCamera( PS3* cam ) {
 		//printf( "pCam = %p\n", pCam );
 
 		cam->PrintInfo();
+	} else {
+		setBlank( true );	//! camera is NULL so we show blank image.
 	}
 }
 

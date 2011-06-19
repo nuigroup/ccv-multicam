@@ -109,6 +109,7 @@ private:
 	float mOffset;
 	bool mRising;
 	bool mIsSelectable;
+	bool mDragging;
 
 	
 };

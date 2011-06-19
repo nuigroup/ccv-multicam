@@ -230,13 +230,19 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 	if ( mIsSelectable ) {
 		if ( mMouseIsDown ) {
 			int id = mouseToGridId( inside );
-
-			this->mDraggingXOffset = gridImages[id]->mouseToLocal( x, y ).x;
-			this->mDraggingYOffset = gridImages[id]->mouseToLocal( x, y ).y;
-
+			if ( !mDragging ) {
+				if ( id + mIndexOffset < utils->getCount() ) {
+					//! Get the X/Y mouse position offset
+					this->mDraggingXOffset = inside.x - getGridX( id );
+					this->mDraggingYOffset = inside.y - getGridY( id );
+				}
+				mDragging = true;	//! do not get the x/y again for this time.
+			}
 			mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Dragging, &mCamIndex, sizeof(int) );
+
 		}
 	}
+
 	return mMouseIsDown;
 }
 
@@ -251,6 +257,8 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 		
 		setSelectedId( id );
 		mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Int, &mCamIndex, sizeof(int) );
+
+		mDragging = false;	//! reset the value
 	}
 	return mMouseIsDown;
 }
@@ -259,7 +267,7 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 
 bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 	// TODO
-	return mMouseIsDown;
+	return false;
 }
 
 // ----------------------------------------------
