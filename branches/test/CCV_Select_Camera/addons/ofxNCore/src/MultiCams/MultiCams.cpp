@@ -73,6 +73,9 @@ void MultiCams::setup() {
 		setDevices->passInCamsUtils( utils );
 		setDevices->setup();
 	}
+
+	//! init the X/Y
+	_setXY( XAxis, YAxis );
 }
 //--------------------------------------------------------------
 
@@ -154,6 +157,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 							//! Set the X/Y coordinate offset
 							draggingXOffset = devGrid->getDraggingXOffset();
 							draggingYOffset = devGrid->getDraggingYOffset();
+
+							//! Tell camsGrid the dragging index
+							camsGrid->setDraggingRawIndex( index );
 						}
 					} else {
 						bDraggingImage = false;
@@ -399,6 +405,7 @@ void MultiCams::addPanel( int id ) {
 			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "",
 				680, 320, XAxis, YAxis,
 				10, 5, kofxGui_Grid_Display );
+			camsGrid->setCamsUtils( utils );
 			pPanel->mObjWidth = 700;
 			pPanel->mObjHeight = 360;
 
@@ -438,7 +445,6 @@ void MultiCams::addPanel( int id ) {
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5, kofxGui_Grid_List );
 			devGrid->setCamsUtils( utils );
-			devGrid->setMode( kofxGui_Grid_Selectable );
 			pPanel->addArrow( devicesListPanel_arrow_left, "", 53, 109, kofxGui_Arrow_Left );
 			pPanel->addArrow( devicesListPanel_arrow_right, "", 50, 109, kofxGui_Arrow_Right );
 
@@ -553,6 +559,9 @@ void MultiCams::addPanel( int id ) {
 			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
 
 			pPanel->adjustToNewContent( 140, 0 );
+
+			//! Turn on the selection function
+			devGrid->setMode( kofxGui_Grid_Selectable );
 
 			break;
 

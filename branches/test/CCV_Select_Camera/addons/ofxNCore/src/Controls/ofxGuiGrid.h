@@ -39,6 +39,7 @@ public:
 	void setCamsUtils( CamsUtils* utils );
 	void setOffset( int offset );
 	void setMode( int mode );
+	void setDraggingRawIndex( int index );
 
 	bool next();
 	bool previous();
@@ -115,9 +116,7 @@ private:
 	bool mDragging;
 	ofxPoint2f clickingPoint;
 	bool mValidSelection;
-
-
-	
+	int mDraggingRawIndex;
 };
 // ----------------------------------------------
 #endif

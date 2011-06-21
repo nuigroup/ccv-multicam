@@ -40,6 +40,7 @@ public:
 
 	bool isSelected( int rawId );
 	void setSelected( int rawId );
+	bool isUsed( int displayId );
 
 	void setXY( int x, int y );
 	void setCam( int index, PS3* cam );
@@ -50,6 +51,7 @@ public:
 	PS3** rawCams;
 	PS3** displayCams;
 	bool* camsSelected;
+	bool* camsUsed;
 
 private:
 	int getDevicesCount();

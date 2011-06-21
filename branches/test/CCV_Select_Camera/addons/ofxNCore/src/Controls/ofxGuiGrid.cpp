@@ -31,6 +31,7 @@ ofxGuiGrid::ofxGuiGrid() {
 
 	mIsSelectable = false;
 	mValidSelection = false;
+	mDraggingRawIndex = -1;
 
 }
 
@@ -120,6 +121,12 @@ void ofxGuiGrid::setMode( int mode ) {
 	} else {
 		mDisplayMode = mode;
 	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setDraggingRawIndex( int index ) {
+	this->mDraggingRawIndex = index;
 }
 
 // ----------------------------------------------
@@ -273,8 +280,31 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 // ----------------------------------------------
 
 bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
-	// TODO
-	return false;
+	bool handled = mMouseIsDown;
+
+	if ( mMouseIsDown ) {
+		mMouseIsDown = false;
+	}
+
+	if ( mDisplayMode == kofxGui_Grid_Display && mDraggingRawIndex != -1) {
+		ofxPoint2f inside = mouseToLocal( x, y );
+		if ( isPointInsideMe( inside ) ) {
+			int id = mouseToGridId( inside );
+			if ( id < mXGrid * mYGrid && id != -1 ) {
+				printf( "\nofxGuiGrid::mouseReleased()\tid=%d\n", id );
+				printf( "\nofxGuiGrid::mouseReleased()\tmDraggingRawIndex=%d\n", mDraggingRawIndex );
+				if ( !utils->isUsed( id ) ) {
+					utils->setCam( id, utils->getRawCam(mDraggingRawIndex) );
+					setImages();
+
+					//! reset the index
+					mDraggingRawIndex = -1;
+				}
+			}
+		}
+	}
+
+	return handled;
 }
 
 // ----------------------------------------------
@@ -473,8 +503,7 @@ void ofxGuiGrid::createImages() {
 // ----------------------------------------------
 
 void ofxGuiGrid::setImages() {
-	//! Only for list mode
-	if ( mDisplayMode == kofxGui_Grid_List ) {
+	if ( mDisplayMode == kofxGui_Grid_List ) {	//! For list mode
 		for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
 			if ( i + mIndexOffset < utils->getCount() ) {
 				//! DEBUG
@@ -487,6 +516,14 @@ void ofxGuiGrid::setImages() {
 				//PS3* cam = utils->getRawCam(i);
 			} else {
 				gridImages[i]->setBlank();
+			}
+		}
+	} else if ( mDisplayMode == kofxGui_Grid_Display ) {	//! For display mode
+		for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
+			try {
+				gridImages[i]->setCamera( utils->getCam( i ) );
+			} catch ( ... ) {
+				// TODO
 			}
 		}
 	}

@@ -17,6 +17,8 @@ CamsUtils::CamsUtils() {
 	displayCams = NULL;
 	rawCams = NULL;
 	camCount = 0;
+
+	camsUsed = NULL;
 }
 
 // ----------------------------------------------
@@ -53,9 +55,9 @@ void CamsUtils::setup( CLEyeCameraColorMode colorMode, CLEyeCameraResolution cam
 
 void CamsUtils::update() {
 	for ( int i = 0; i < camCount; ++i ) {
-		printf( "CamsUtils::update()\t i = %d\n", i );
+		//printf( "CamsUtils::update()\t i = %d\n", i );
 		bool newF = rawCams[i]->IsFrameNew();
-		printf( "CamsUtils::update()\t new = %d\n", newF );
+		//printf( "CamsUtils::update()\t new = %d\n", newF );
 	}
 }
 
@@ -148,6 +150,24 @@ PS3** CamsUtils::getRawCams() {
 
 // ----------------------------------------------
 
+bool CamsUtils::isSelected( int rawId ) {
+	return camsSelected[rawId];
+}
+
+// ----------------------------------------------
+
+void CamsUtils::setSelected( int rawId ) {
+	camsSelected[rawId] = true;
+}
+
+// ----------------------------------------------
+
+bool CamsUtils::isUsed( int displayId ) {
+	return camsUsed[displayId];
+}
+
+// ----------------------------------------------
+
 void CamsUtils::setXY( int x, int y ) {
 	this->xGrid = x;
 	this->yGrid = y;
@@ -157,12 +177,19 @@ void CamsUtils::setXY( int x, int y ) {
 // ----------------------------------------------
 
 void CamsUtils::setCam( int index, PS3* cam ) {
+	if ( cam == NULL ) {
+		return;
+	}
 	displayCams[index] = cam;
+	camsUsed[index] = true;
 }
 
 // ----------------------------------------------
 
 void CamsUtils::setCam( int x, int y, PS3* cam ) {
+	if ( cam == NULL ) {
+		return;
+	}
 	int index = x + xGrid * y;
 	setCam( index, cam );
 }
@@ -182,6 +209,7 @@ GUID CamsUtils::getGUID( int camId ) {
 // ----------------------------------------------
 
 void CamsUtils::createDisplayCams( int x, int y ) {
+	printf( "\nCamsUtils::createDisplayCams()\n" );
 	int count = x * y;
 
 	if ( displayCams != NULL ) {
@@ -191,6 +219,18 @@ void CamsUtils::createDisplayCams( int x, int y ) {
 	for ( int i = 0; i < count; ++i ) {
 		displayCams[i] = NULL;
 	}
+
+	//! for camsUsed array
+	if ( camsUsed != NULL ) {
+		delete camsUsed;
+	}
+	camsUsed = new bool[count];
+	for ( int i = 0; i < count; ++i ) {
+		camsUsed[i] = false;
+		printf( "\ncamsUsed[%d]=%d\n", i, camsUsed[i] );
+	}
+
+	printf( "\nCamsUtils::createDisplayCams()\tx=%d, y=%d\n", x, y );
 }
 
 // ----------------------------------------------

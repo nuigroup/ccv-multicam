@@ -238,8 +238,8 @@ bool PS3::StopCapture() {
 }
 
 unsigned char* PS3::GetPixels() {
-	printf( "PS3::GetPixels()\t p = %p\n", _pCapBuffer );
-	cout << endl;
+	//printf( "PS3::GetPixels()\t p = %p\n", _pCapBuffer );
+	//cout << endl;
 	return _pCapBuffer;
 }
 
