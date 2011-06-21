@@ -137,10 +137,13 @@ void ofxGuiImage::draw() {
 		}
 
 		if ( mParamName != "" ) {
-			color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
-			//drawParamString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false );
-			drawString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false, color );
+			//! draw the shadow
+			color.r = 0.0f;	color.g = 0.0f;	color.b = 0.0f;	color.a = 1.0f;
+			drawString( PARAM_TEXT_OFFSET_X + 1, 1.0f, mParamName, false, color );
 
+			//! draw the text
+			color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
+			drawString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false, color );
 		}
 	glPopMatrix();
 }
