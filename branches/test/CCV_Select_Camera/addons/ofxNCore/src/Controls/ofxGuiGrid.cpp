@@ -115,9 +115,9 @@ void ofxGuiGrid::setOffset( int offset ) {
 
 // ----------------------------------------------
 
-void ofxGuiGrid::setMode( int mode ) {
+void ofxGuiGrid::setMode( int mode, bool value ) {
 	if ( mode == kofxGui_Grid_Selectable ) {
-		mIsSelectable = true;
+		mIsSelectable = value;
 	} else {
 		mDisplayMode = mode;
 	}

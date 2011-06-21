@@ -281,6 +281,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				if (*(bool*)data) {
 					removePanel( step2Panel );
 					addPanel( step3Panel );
+
+					//! Turn on the selection function
+					devGrid->setMode( kofxGui_Grid_Selectable );
 				}
 			}
 			break;
@@ -292,6 +295,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				if (*(bool*)data) {
 					removePanel( step3Panel );
 					addPanel( step2Panel );
+
+					//! Turn off the selection function
+					devGrid->setMode( kofxGui_Grid_Selectable, false );
 				}
 			}
 			break;
@@ -301,6 +307,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				if (*(bool*)data) {
 					removePanel( step3Panel );
 					addPanel( step4Panel );
+
+					//! Turn off the selection function
+					devGrid->setMode( kofxGui_Grid_Selectable, false );
 				}
 			}
 			break;
@@ -312,6 +321,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				if (*(bool*)data) {
 					removePanel( step4Panel );
 					addPanel( step3Panel );
+
+					//! Turn on the selection function
+					devGrid->setMode( kofxGui_Grid_Selectable, true );
 				}
 			}
 			break;
@@ -559,9 +571,6 @@ void MultiCams::addPanel( int id ) {
 			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
 
 			pPanel->adjustToNewContent( 140, 0 );
-
-			//! Turn on the selection function
-			devGrid->setMode( kofxGui_Grid_Selectable );
 
 			break;
 

@@ -38,7 +38,7 @@ public:
 	void setSelectedId( int index );
 	void setCamsUtils( CamsUtils* utils );
 	void setOffset( int offset );
-	void setMode( int mode );
+	void setMode( int mode, bool value = true );
 	void setDraggingRawIndex( int index );
 
 	bool next();
