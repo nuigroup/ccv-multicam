@@ -52,6 +52,10 @@ MultiCams::MultiCams() {
 
 	bDraggingImage = false;
 	draggingImage = new ofxGuiImage();
+
+	// set the value explicit
+	devGrid = NULL;
+	camsGrid = NULL;
 }
 //--------------------------------------------------------------
 
