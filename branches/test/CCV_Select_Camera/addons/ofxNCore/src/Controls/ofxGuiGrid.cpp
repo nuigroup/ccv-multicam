@@ -238,7 +238,10 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 	if ( mMouseIsDown ) {
 		if ( mIsSelectable && mValidSelection) {
 			int id = mouseToGridId( inside );
-			if ( id + mIndexOffset < utils->getCount() && id != -1 ){
+			if ( id + mIndexOffset < utils->getCount()
+				&& id != -1
+				&& !utils->isSelected( id + mIndexOffset )
+				){
 				if ( !mDragging ) {
 					//! Get the X/Y mouse position offset
 					this->mDraggingXOffset = clickingPoint.x - getGridX( id );
@@ -295,6 +298,7 @@ bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 				printf( "\nofxGuiGrid::mouseReleased()\tmDraggingRawIndex=%d\n", mDraggingRawIndex );
 				if ( !utils->isUsed( id ) ) {
 					utils->setCam( id, utils->getRawCam(mDraggingRawIndex) );
+					utils->setSelected( mDraggingRawIndex );
 					setImages();
 
 					//! reset the index
