@@ -555,9 +555,9 @@ void MultiCams::addPanel( int id ) {
 			pPanel->addLabel( this->step3Panel_tip, "",
 				GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
 				"Arrange the cameras", controls->mGlobals->mLabelColor );
-			pPanel->addMatrix( this->step3Panel_matrix, "Thumbnails",
-				GENERAL_AREA_MATRIX_WIDTH, GENERAL_AREA_MATRIX_HEIGHT,
-				XAxis, YAxis, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
+			//pPanel->addMatrix( this->step3Panel_matrix, "Thumbnails",
+			//	GENERAL_AREA_MATRIX_WIDTH, GENERAL_AREA_MATRIX_HEIGHT,
+			//	XAxis, YAxis, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
 			pPanel->addButton( this->step3Panel_previous,"Previous",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
@@ -567,12 +567,16 @@ void MultiCams::addPanel( int id ) {
 			pPanel->mObjWidth = GENERAL_AREA_WIDTH;
 			pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
 
-			pPanel->mObjects[1]->mObjX = 10;	//! [1]: Matrix
-			pPanel->mObjects[1]->mObjY = 45;
-			pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
-			pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
-			pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
-			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
+			//pPanel->mObjects[1]->mObjX = 10;	//! [1]: Matrix
+			//pPanel->mObjects[1]->mObjY = 45;
+			//pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
+			//pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
+			//pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
+			//pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
+			pPanel->mObjects[1]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
+			pPanel->mObjects[1]->mObjY = GENERAL_AREA_PREV_Y;
+			pPanel->mObjects[2]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
+			pPanel->mObjects[2]->mObjY = GENERAL_AREA_NEXT_Y;
 
 			pPanel->adjustToNewContent( 140, 0 );
 
