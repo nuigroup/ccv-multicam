@@ -226,16 +226,21 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			//! X axis camera number
 		case step1Panel_Xaxis:
 			if( length == sizeof(float) ) {
-				XAxis = *(float*)data;
-				_setXY( XAxis, YAxis );
-				printf( "XAxis: %f\n", *(float*)data );
+				//! Modify the value just when that are not equal
+				if ( XAxis != (int)*(float*)data ) {
+					XAxis = *(float*)data;
+					_setXY( XAxis, YAxis );
+				}
+				//printf( "XAxis: %f\n", *(float*)data );
 			}
 			break;
 			//! Y axis camera number
 		case step1Panel_Yaxis:
 			if ( length == sizeof(float) ) {
-				YAxis = *(float*)data;
-				_setXY( XAxis, YAxis );
+				if ( YAxis != (int)*(float*)data ) {
+					YAxis = *(float*)data;
+					_setXY( XAxis, YAxis );
+				}
 			}
 			break;
 			//! Previous
