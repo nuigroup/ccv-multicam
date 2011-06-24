@@ -40,6 +40,7 @@ public:
 	void setOffset( int offset );
 	void setMode( int mode, bool value = true );
 	void setDraggingRawIndex( int index );
+	void setImages();
 	void resetAll();
 
 	bool next();
@@ -94,7 +95,6 @@ private:
 
 	void clearImages();
 	void createImages();
-	void setImages();
 
 	void setTitles();
 

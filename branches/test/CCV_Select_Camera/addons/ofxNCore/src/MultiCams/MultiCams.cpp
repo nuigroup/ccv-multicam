@@ -418,6 +418,14 @@ void MultiCams::addPanels() {
 	addPanel( informationPanel );
 
 
+	//! Update the grid controls
+	if ( camsGrid != NULL ) {
+		camsGrid->setImages();
+	}
+	if ( devGrid != NULL ) {
+		devGrid->setImages();
+	}
+
 	//!
 	controls->forceUpdate( true );
 	controls->activate( true );
