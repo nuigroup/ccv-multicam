@@ -55,13 +55,15 @@ public:
 	int xGrid, yGrid;
 	PS3** rawCams;
 	PS3** displayCams;
-	bool* camsSelected;
-	bool* camsUsed;
+	bool* camsSelected;	//< For raw cameras
+	bool* camsUsed;		//< For display cameras
 
 private:
 	int getDevicesCount();
 	GUID getGUID( int camId );
 	void createDisplayCams( int x, int y);
+	
+	void resetCamsSelected();
 
 	CLEyeCameraColorMode colorMode;
 	CLEyeCameraResolution camRes;

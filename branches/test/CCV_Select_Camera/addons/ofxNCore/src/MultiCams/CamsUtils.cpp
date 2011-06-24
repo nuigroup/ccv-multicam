@@ -172,6 +172,7 @@ void CamsUtils::setXY( int x, int y ) {
 	this->xGrid = x;
 	this->yGrid = y;
 	createDisplayCams( xGrid, yGrid );
+	resetCamsSelected();
 }
 
 // ----------------------------------------------
@@ -180,6 +181,7 @@ void CamsUtils::setCam( int index, PS3* cam ) {
 	if ( cam == NULL ) {
 		return;
 	}
+
 	displayCams[index] = cam;
 	camsUsed[index] = true;
 }
@@ -190,6 +192,7 @@ void CamsUtils::setCam( int x, int y, PS3* cam ) {
 	if ( cam == NULL ) {
 		return;
 	}
+
 	int index = x + xGrid * y;
 	setCam( index, cam );
 }
@@ -201,9 +204,7 @@ void CamsUtils::resetAll() {
 	setXY( xGrid, yGrid );
 	
 	//! Clean up selected cams
-	for ( int i = 0; i < xGrid * yGrid; ++i ) {
-		camsSelected[i] = false;
-	}
+	resetCamsSelected();
 }
 
 // ----------------------------------------------
@@ -249,6 +250,14 @@ void CamsUtils::createDisplayCams( int x, int y ) {
 	}
 
 	printf( "\nCamsUtils::createDisplayCams()\tx=%d, y=%d\n", x, y );
+}
+
+// ----------------------------------------------
+
+void CamsUtils::resetCamsSelected() {
+	for ( int i = 0; i < camCount; ++i ) {
+		camsSelected[i] = false;
+	}
 }
 
 // ----------------------------------------------
