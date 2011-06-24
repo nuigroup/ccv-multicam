@@ -205,14 +205,14 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof(bool) ) {
 				if (*(bool*)data) {
 					// TODO save the settings to XML file
-					if( _coreVision != NULL ) {
-						_coreVision->switchMultiCamsGUI( false );
+					if ( utils != NULL ) {
+						utils->saveXML();
 					}
 				}
 			}
 			break;
 			//! Exit (Not settings saved)
-		case generalSettingsPanel_cancel:
+		case generalSettingsPanel_exit:
 			if ( length == sizeof(bool) ) {
 				if (*(bool*)data) {
 					if ( _coreVision != NULL ) {
@@ -466,7 +466,7 @@ void MultiCams::addPanel( int id ) {
 			pPanel->addButton( this->generalSettingsPanel_save, "Save",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->generalSettingsPanel_cancel, "Cancel",
+			pPanel->addButton( this->generalSettingsPanel_exit, "Exit",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
 

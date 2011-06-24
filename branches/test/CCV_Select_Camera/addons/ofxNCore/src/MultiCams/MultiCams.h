@@ -43,7 +43,7 @@ class MultiCams : public ofxGuiListener {
 		generalSettingsPanel,
 		generalSettingsPanel_start,
 		generalSettingsPanel_save,
-		generalSettingsPanel_cancel,
+		generalSettingsPanel_exit,
 		generalSettingsPanel_label1,
 
 		devicesListPanel,
