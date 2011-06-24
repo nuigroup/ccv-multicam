@@ -40,6 +40,7 @@ public:
 	void setOffset( int offset );
 	void setMode( int mode, bool value = true );
 	void setDraggingRawIndex( int index );
+	void resetAll();
 
 	bool next();
 	bool previous();

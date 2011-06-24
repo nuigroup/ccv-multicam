@@ -131,6 +131,14 @@ void ofxGuiGrid::setDraggingRawIndex( int index ) {
 
 // ----------------------------------------------
 
+void ofxGuiGrid::resetAll() {
+	if ( mDisplayMode == kofxGui_Grid_Display ) {
+		this->setXY( mXGrid, mYGrid );
+	}
+}
+
+// ----------------------------------------------
+
 bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {

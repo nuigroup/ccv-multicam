@@ -71,6 +71,7 @@ class MultiCams : public ofxGuiListener {
 		step3Panel,
 		step3Panel_tip,
 		step3Panel_matrix,
+		step3Panel_reset_all,
 		step3Panel_previous,
 		step3Panel_next,
 

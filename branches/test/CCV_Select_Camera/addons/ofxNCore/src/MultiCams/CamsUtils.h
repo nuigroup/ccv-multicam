@@ -14,6 +14,7 @@
 // ----------------------------------------------
 
 #include "PS3.h"
+#include "ofxXmlSettings.h"
 
 // ----------------------------------------------
 
@@ -45,6 +46,10 @@ public:
 	void setXY( int x, int y );
 	void setCam( int index, PS3* cam );
 	void setCam( int x, int y, PS3* cam );
+	void resetAll();
+
+	//! Save the settings to XML file
+	void saveXML( string filename = "" );
 
 	int camCount, selectedCamCount;
 	int xGrid, yGrid;
@@ -61,6 +66,7 @@ private:
 	CLEyeCameraColorMode colorMode;
 	CLEyeCameraResolution camRes;
 	float frameRate;
+	ofxXmlSettings XML;
 };
 
 // ----------------------------------------------

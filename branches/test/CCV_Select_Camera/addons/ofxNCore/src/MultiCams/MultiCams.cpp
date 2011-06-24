@@ -293,6 +293,20 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			break;
 			////////////////////////////////////////
 			// STEP 3
+			//! Reset All
+		case step3Panel_reset_all:
+			if ( length == sizeof( bool ) ) {
+				if ( *(bool*)data ) {
+					if ( utils != NULL ) {
+						utils->resetAll();
+					}
+					//! Refresh the images
+					if ( camsGrid != NULL ) {
+						camsGrid->resetAll();
+					}
+				}
+			}
+			break;
 			//! Previous step
 		case step3Panel_previous:
 			if ( length == sizeof( bool ) ) {
@@ -558,6 +572,9 @@ void MultiCams::addPanel( int id ) {
 			//pPanel->addMatrix( this->step3Panel_matrix, "Thumbnails",
 			//	GENERAL_AREA_MATRIX_WIDTH, GENERAL_AREA_MATRIX_HEIGHT,
 			//	XAxis, YAxis, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
+			pPanel->addButton( this->step3Panel_reset_all, "Reset All",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				kofxGui_Button_Off, kofxGui_Button_Trigger );
 			pPanel->addButton( this->step3Panel_previous,"Previous",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
@@ -569,14 +586,15 @@ void MultiCams::addPanel( int id ) {
 
 			//pPanel->mObjects[1]->mObjX = 10;	//! [1]: Matrix
 			//pPanel->mObjects[1]->mObjY = 45;
-			//pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
-			//pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
-			//pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
-			//pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
-			pPanel->mObjects[1]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
-			pPanel->mObjects[1]->mObjY = GENERAL_AREA_PREV_Y;
-			pPanel->mObjects[2]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
-			pPanel->mObjects[2]->mObjY = GENERAL_AREA_NEXT_Y;
+			pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
+			pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
+			pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
+			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
+
+			//pPanel->mObjects[1]->mObjX = GENERAL_AREA_PREV_X;	//! [1]: Previous
+			//pPanel->mObjects[1]->mObjY = GENERAL_AREA_PREV_Y;
+			//pPanel->mObjects[2]->mObjX = GENERAL_AREA_NEXT_X;	//! [2]: Next
+			//pPanel->mObjects[2]->mObjY = GENERAL_AREA_NEXT_Y;
 
 			pPanel->adjustToNewContent( 140, 0 );
 

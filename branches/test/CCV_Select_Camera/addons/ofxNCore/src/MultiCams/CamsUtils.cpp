@@ -196,6 +196,24 @@ void CamsUtils::setCam( int x, int y, PS3* cam ) {
 
 // ----------------------------------------------
 
+void CamsUtils::resetAll() {
+	//! Set X/Y as reset all
+	setXY( xGrid, yGrid );
+	
+	//! Clean up selected cams
+	for ( int i = 0; i < xGrid * yGrid; ++i ) {
+		camsSelected[i] = false;
+	}
+}
+
+// ----------------------------------------------
+
+void CamsUtils::saveXML( string filename ) {
+	// TODO
+}
+
+// ----------------------------------------------
+
 int CamsUtils::getDevicesCount() {
 	return CLEyeGetCameraCount();
 }
