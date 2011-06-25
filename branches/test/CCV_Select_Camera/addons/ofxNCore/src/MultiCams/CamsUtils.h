@@ -49,7 +49,7 @@ public:
 	void resetAll();
 
 	//! Save the settings to XML file
-	void saveXML( string filename = "" );
+	void saveXML( string filename = "MultiCams.xml" );
 
 	int camCount, selectedCamCount;
 	int xGrid, yGrid;

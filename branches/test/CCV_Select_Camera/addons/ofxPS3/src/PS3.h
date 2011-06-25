@@ -37,7 +37,7 @@ public:
 		\param guid a GUID structure param
 		\return string of guid
 	*/
-	static std::string GUID2String( GUID guid, char delimiter = '-', bool uppercase = false );
+	static std::string GUID2String( GUID guid, char delimiter = '-', bool uppercase = true );
 
 	static std::string Int2String( int val );
 

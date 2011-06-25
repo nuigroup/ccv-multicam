@@ -211,6 +211,24 @@ void CamsUtils::resetAll() {
 
 void CamsUtils::saveXML( string filename ) {
 	// TODO
+	XML.setValue( "MULTICAMS:GRIDX", xGrid );
+	XML.setValue( "MULTICAMS:GRIDY", yGrid );
+
+	//! cameras information
+	for ( int y = 0; y < yGrid; ++y ) {
+		for ( int x = 0; x < xGrid; ++x ) {
+			int index = x + y * xGrid;
+			if ( displayCams[index] != NULL ) {
+				XML.setValue( "CAMERA:TYPE", "PS3", index );
+				XML.setValue( "CAMERA:X", x, index );
+				XML.setValue( "CAMERA:Y", y, index );
+				XML.setValue( "CAMERA:UUID", displayCams[index]->GetGUIDStr(), index );
+				XML.setValue( "CAMERA:WIDTH", displayCams[index]->GetWidth(), index );
+				XML.setValue( "CAMERA:HEIGHT", displayCams[index]->GetHeight(), index );
+			}
+		}
+	}
+	XML.saveFile( filename );
 }
 
 // ----------------------------------------------
