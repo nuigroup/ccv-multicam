@@ -246,6 +246,9 @@ void CamsUtils::resetAll() {
 // ----------------------------------------------
 
 void CamsUtils::saveXML( string filename ) {
+	//! Clear previous data
+	XML.clear();
+
 	XML.setValue( "MULTICAMS:GRIDX", xGrid );
 	XML.setValue( "MULTICAMS:GRIDY", yGrid );
 
