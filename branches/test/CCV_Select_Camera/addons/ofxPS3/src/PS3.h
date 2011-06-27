@@ -39,6 +39,9 @@ public:
 	*/
 	static std::string GUID2String( GUID guid, char delimiter = '-', bool uppercase = true );
 
+	//! Convert string to GUID
+	static GUID String2GUID( string str, char delimiter = '-', bool uppercase = true );
+
 	static std::string Int2String( int val );
 
 	//! Get camera GUID by camera Id
@@ -52,6 +55,9 @@ public:
 
 	//! Set the GUID of camera
 	void SetGUID( GUID guid );
+
+	//! Is GUID equal?
+	static bool EqualGUID( GUID guid1, GUID guid2 );
 
 	////!
 	//static DWORD WINAPI CaptureThread( LPVOID instance );

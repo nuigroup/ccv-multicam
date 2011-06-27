@@ -19,6 +19,11 @@ CamsUtils::CamsUtils() {
 	camCount = 0;
 
 	camsUsed = NULL;
+
+	//! Set the XML cameras to NULL
+	xmlCams = NULL;
+	xGrid = 1;
+	yGrid = 1;
 }
 
 // ----------------------------------------------
@@ -48,6 +53,16 @@ void CamsUtils::setup( CLEyeCameraColorMode colorMode, CLEyeCameraResolution cam
 		camsSelected[i] = false;
 	}
 
+	//! Load XML settings
+	loadXML();
+	//! 
+	if ( xGrid * yGrid > camCount ) {
+		xGrid = 1;
+		yGrid = 1;
+		xmlCams = NULL;
+	}
+	setXY( xGrid, yGrid );
+
 	start();
 }
 
@@ -68,6 +83,27 @@ void CamsUtils::start() {
 		GUID guid = getGUID( i );
 
 		rawCams[i] = new PS3();
+
+		if ( xmlCams != NULL ) {
+			for ( int j = 0; j < xGrid * yGrid; ++j ) {
+				if ( xmlCams[j] != NULL ) {
+					printf( "CamsUtils::start\tGUID1 = %s\n\t\t\tGUID2 = %s\n\n",
+						PS3::GUID2String(guid).c_str(),
+						PS3::GUID2String(xmlCams[j]->GetGUID()).c_str() );
+
+					if ( PS3::EqualGUID( guid, xmlCams[j]->GetGUID() ) ) {
+						printf ( "\nGUID1 = GUID2\n" );
+						setCam( j, rawCams[i] );
+						setSelected( i );
+						guid = xmlCams[j]->GetGUID();
+						printf ( "Now GUID = %s\n", PS3::GUID2String( guid ).c_str() );
+						break;
+					}
+				}
+			}
+		}
+
+
 		rawCams[i]->SetCamera( guid, colorMode, camRes, frameRate );
 		if ( rawCams[i]->StartCamera() ) {
 			//printf( "rawCams[%d]->StartCamera() return true\n", i );
@@ -210,7 +246,6 @@ void CamsUtils::resetAll() {
 // ----------------------------------------------
 
 void CamsUtils::saveXML( string filename ) {
-	// TODO
 	XML.setValue( "MULTICAMS:GRIDX", xGrid );
 	XML.setValue( "MULTICAMS:GRIDY", yGrid );
 
@@ -230,6 +265,53 @@ void CamsUtils::saveXML( string filename ) {
 	}
 	XML.saveFile( filename );
 }
+
+// ----------------------------------------------
+
+void CamsUtils::loadXML( string filename ) {
+	//! Load the file
+	XML.loadFile( filename );
+	printf( "CamsUtils::loadXML\tLoaded the %s\n", filename.c_str() );
+
+	xGrid = XML.getValue( "MULTICAMS:GRIDX", 1 );
+	yGrid = XML.getValue( "MULTICAMS:GRIDY", 1 );
+
+	printf( "CamsUtils::loadXML\txGrid = %d\tyGrid = %d\n", xGrid, yGrid );
+
+	numCamTags = XML.getNumTags( "CAMERA" );
+	printf( "CamsUtils::loadXML\tnumCamTags = %d\n", numCamTags );
+
+	//! Leave the missing camera blank
+	if ( xGrid * yGrid >= numCamTags && numCamTags > 0 ) {
+		//! Create the XML cameras array
+		xmlCams = new PS3*[ xGrid * yGrid ];
+		//! Set the cameras to blank
+		for ( int i = 0; i < numCamTags; ++i ) {
+			xmlCams[i] = NULL;
+		}
+		//! Load settings from each camera.
+		for ( int i = 0; i < numCamTags; ++i ) {
+			int x = XML.getValue( "CAMERA:X", -1, i );
+			int y = XML.getValue( "CAMERA:Y", -1, i );
+
+			//! Setting wrong!
+			if ( x >= xGrid || y >= yGrid || x == -1 || y == -1 ) {
+				continue;
+			}
+			// TODO guid code should be improved!
+			GUID guid = PS3::String2GUID( XML.getValue( "CAMERA:UUID", "00000000-0000-0000-0000-000000000000", i ) );
+			printf( "CamsUtils::loadXML\ti = %d\tGUID = %s\n", i, PS3::GUID2String(guid).c_str() );
+
+			// TODO check the guid validation
+			
+			int index = x + y * xGrid;
+			xmlCams[index] = new PS3();
+			//! Set the guid of camera
+			xmlCams[index]->SetGUID( guid );
+		}
+	}
+}
+
 
 // ----------------------------------------------
 

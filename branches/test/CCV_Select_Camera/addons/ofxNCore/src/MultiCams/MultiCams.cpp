@@ -79,7 +79,8 @@ void MultiCams::setup() {
 	}
 
 	//! init the X/Y
-	_setXY( XAxis, YAxis );
+	XAxis = utils->getXGrid();
+	YAxis = utils->getYGrid();
 }
 //--------------------------------------------------------------
 
@@ -204,7 +205,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 		case generalSettingsPanel_save:
 			if ( length == sizeof(bool) ) {
 				if (*(bool*)data) {
-					// TODO save the settings to XML file
+					// TODO check the cameras count
 					if ( utils != NULL ) {
 						utils->saveXML();
 					}

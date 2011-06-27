@@ -80,6 +80,30 @@ std::string PS3::GUID2String( GUID guid, char delimiter, bool uppercase ) {
 	return ss.str();
 }
 
+GUID PS3::String2GUID( string str, char delimiter, bool uppercase ) {
+	// TODO
+	GUID guid;
+	int Data4[8];
+	string formatStr;
+
+	if ( uppercase ) {
+		// TODO use the delimiter rather then the "-"
+		formatStr = "%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X";
+	} else {
+		formatStr = "%08lx-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x";
+	}
+	sscanf( str.c_str(), formatStr.c_str(),
+		&guid.Data1, &guid.Data2, &guid.Data3, &Data4[0], &Data4[1],
+		&Data4[2], &Data4[3], &Data4[4], &Data4[5], &Data4[6], &Data4[7] );
+
+	// Ref:
+	//		http://hi.baidu.com/yapn/blog/item/a7acb40117e9810e738da5d1.html
+	for ( int i = 0; i < 8; ++i ) {
+		guid.Data4[i] = (unsigned char)Data4[i];
+	}
+
+	return guid;
+}
 
 std::string PS3::Int2String( int val ) {
 	std::stringstream ss;
@@ -87,6 +111,27 @@ std::string PS3::Int2String( int val ) {
 
 	return ss.str();
 }
+
+bool PS3::EqualGUID( GUID guid1, GUID guid2 ) {
+	if (
+		guid1.Data1 == guid2.Data1 &&
+		guid1.Data2 == guid2.Data2 &&
+		guid1.Data3 == guid2.Data3 &&
+		guid1.Data4[0] == guid2.Data4[0] &&
+		guid1.Data4[1] == guid2.Data4[1] &&
+		guid1.Data4[2] == guid2.Data4[2] &&
+		guid1.Data4[3] == guid2.Data4[3] &&
+		guid1.Data4[4] == guid2.Data4[4] &&
+		guid1.Data4[5] == guid2.Data4[5] &&
+		guid1.Data4[6] == guid2.Data4[6] &&
+		guid1.Data4[7] == guid2.Data4[7]
+	) {
+		return true;
+	}
+
+	return false;
+}
+
 ////! The thread for capture
 ///*! Copy from CLEyeMulticamTest.cpp */
 //DWORD WINAPI PS3::CaptureThread( LPVOID instance ) {

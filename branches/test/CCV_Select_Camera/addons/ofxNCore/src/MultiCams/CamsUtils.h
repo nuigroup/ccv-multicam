@@ -51,12 +51,19 @@ public:
 	//! Save the settings to XML file
 	void saveXML( string filename = "MultiCams.xml" );
 
+	//! Load the settings from XML file
+	void loadXML( string filename = "MultiCams.xml" );
+
 	int camCount, selectedCamCount;
 	int xGrid, yGrid;
 	PS3** rawCams;
 	PS3** displayCams;
 	bool* camsSelected;	//< For raw cameras
 	bool* camsUsed;		//< For display cameras
+
+	//! XML settings
+	PS3** xmlCams;
+	int numCamTags;
 
 private:
 	int getDevicesCount();
