@@ -377,7 +377,25 @@ bool PS3::IsColorMode() {
 }
 
 bool PS3::IsFrameNew() {
-	return CLEyeCameraGetFrame( _cam, _pCapBuffer );
+	static int frame = 0;
+	static double lastFPSlog = 0;
+	double now = GetTickCount();
+	bool frameNew = CLEyeCameraGetFrame( _cam, _pCapBuffer );
+
+	//! Count the fps and framecount
+	if ( frameNew ) {
+		_frameCount++;
+		frame++;
+	}
+	
+	//! 1 sec ago
+	if ( now >= lastFPSlog + 1000 ) {
+		_fps = frame;
+		frame = 0;
+		lastFPSlog = now;
+	}
+
+	return frameNew;
 }
 
 bool PS3::DecrementParam( int  param ) {
