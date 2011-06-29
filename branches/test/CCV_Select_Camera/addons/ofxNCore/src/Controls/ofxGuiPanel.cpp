@@ -344,6 +344,20 @@ ofxGuiObject* ofxGuiPanel::addLabel( int id, string name, int width, int height,
 
 //	----------------------------------------------------------------------------------------------------
 
+ofxGuiObject* ofxGuiPanel::addLabel( int id, string name, int width, int height, string text, ofTrueTypeFont* font, ofRGBA color ) {
+	int offset = (mObjects.size() == 0 && mParamName == "" ) ? 0 : mSpacing;
+
+	ofxGuiLabel* label = new ofxGuiLabel();
+	label->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height, text, font, color );
+	mObjects.push_back( label );
+
+	adjustToNewContent( label->mObjWidth, label->mObjHeight + offset );
+
+	return label;
+}
+
+//	----------------------------------------------------------------------------------------------------
+
 ofxGuiObject* ofxGuiPanel::addGrid( int id, string name, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode ) {
 	int offset = (mObjects.size() == 0 && mParamName == "" ) ? 0 : mSpacing;
 
