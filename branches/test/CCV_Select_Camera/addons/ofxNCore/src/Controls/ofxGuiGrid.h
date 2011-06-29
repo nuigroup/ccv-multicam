@@ -42,6 +42,7 @@ public:
 	void setDraggingRawIndex( int index );
 	void setImages();
 	void resetAll();
+	void setActive( bool active = true );
 
 	bool next();
 	bool previous();
@@ -52,6 +53,9 @@ public:
 	float getGridHeight();
 	float getDraggingXOffset();
 	float getDraggingYOffset();
+
+	//! Return the first image
+	ofxGuiImage* getFirstImage();
 
 	ofxGuiObject* addImage( int id, string name, int targetId, unsigned char* image );
 
@@ -118,6 +122,9 @@ private:
 	ofxPoint2f clickingPoint;
 	bool mValidSelection;
 	int mDraggingRawIndex;
+
+	//////////////////
+	bool mIsActive;
 };
 // ----------------------------------------------
 #endif

@@ -33,6 +33,8 @@ ofxGuiGrid::ofxGuiGrid() {
 	mValidSelection = false;
 	mDraggingRawIndex = -1;
 
+	mIsActive = true;	// default: active
+
 }
 
 // ----------------------------------------------
@@ -139,6 +141,12 @@ void ofxGuiGrid::resetAll() {
 
 // ----------------------------------------------
 
+void ofxGuiGrid::setActive( bool active ) {
+	this->mIsActive = active;
+}
+
+// ----------------------------------------------
+
 bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {
@@ -240,6 +248,10 @@ void ofxGuiGrid::draw() {
 // ----------------------------------------------
 
 bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
+	if ( !mIsActive ) {		//! This control is not active now
+		return false;
+	}
+
 	ofxPoint2f inside = mouseToLocal( x, y );
 	mMouseIsDown = isPointInsideMe( inside );
 
@@ -267,6 +279,9 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 // ----------------------------------------------
 
 bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
+	if ( !mIsActive ) {		//! This control is not active now
+		return false;
+	}
 	ofxPoint2f inside = mouseToLocal( x, y );
 	mMouseIsDown = isPointInsideMe( inside );
 
@@ -291,6 +306,9 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 // ----------------------------------------------
 
 bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
+	if ( !mIsActive ) {		//! This control is not active now
+		return false;
+	}
 	bool handled = mMouseIsDown;
 
 	if ( mMouseIsDown ) {
@@ -415,6 +433,16 @@ float ofxGuiGrid::getDraggingXOffset() {
 
 float ofxGuiGrid::getDraggingYOffset() {
 	return this->mDraggingYOffset;
+}
+
+// ----------------------------------------------
+
+ofxGuiImage* ofxGuiGrid::getFirstImage() {
+	if ( mIndexOffset + 0 < utils->getCount() ) {
+		return this->gridImages[0];
+	}
+
+	return NULL;
 }
 
 // ----------------------------------------------
