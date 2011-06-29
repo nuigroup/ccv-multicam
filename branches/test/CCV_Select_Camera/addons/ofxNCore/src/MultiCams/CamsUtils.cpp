@@ -96,6 +96,10 @@ void CamsUtils::start() {
 						setCam( j, rawCams[i] );
 						setSelected( i );
 						guid = xmlCams[j]->GetGUID();
+
+						//! Setup the camera
+						rawCams[i]->SetHFlip( xmlCams[j]->GetHFlip() );
+						rawCams[i]->SetVFlip( xmlCams[j]->GetVFlip() );
 						printf ( "Now GUID = %s\n", PS3::GUID2String( guid ).c_str() );
 						break;
 					}
@@ -263,6 +267,8 @@ void CamsUtils::saveXML( string filename ) {
 				XML.setValue( "CAMERA:UUID", displayCams[index]->GetGUIDStr(), index );
 				XML.setValue( "CAMERA:WIDTH", displayCams[index]->GetWidth(), index );
 				XML.setValue( "CAMERA:HEIGHT", displayCams[index]->GetHeight(), index );
+				XML.setValue( "CAMERA:HFLIP", displayCams[index]->GetHFlip(), index );
+				XML.setValue( "CAMERA:VFLIP", displayCams[index]->GetVFlip(), index );
 			}
 		}
 	}
@@ -297,6 +303,9 @@ void CamsUtils::loadXML( string filename ) {
 			int x = XML.getValue( "CAMERA:X", -1, i );
 			int y = XML.getValue( "CAMERA:Y", -1, i );
 
+			int hFlip = XML.getValue( "CAMERA:HFLIP", 0, i );
+			int vFlip = XML.getValue( "CAMERA:VFLIP", 0, i );
+
 			//! Setting wrong!
 			if ( x >= xGrid || y >= yGrid || x == -1 || y == -1 ) {
 				continue;
@@ -311,6 +320,8 @@ void CamsUtils::loadXML( string filename ) {
 			xmlCams[index] = new PS3();
 			//! Set the guid of camera
 			xmlCams[index]->SetGUID( guid );
+			xmlCams[index]->SetHFlip( hFlip == 0 ? false : true );
+			xmlCams[index]->SetVFlip( vFlip == 0 ? false : true );
 		}
 	}
 }

@@ -14,6 +14,7 @@
 SetDevices::SetDevices() {
 	bShowInterface = false;
 	utils = NULL;
+	currentCamera = NULL;
 }
 
 //--------------------------------------------------------------
@@ -48,7 +49,13 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof( int ) ) {
 				this->mCamIndex = *(int*)data;
 				this->camGrid->setOffset( mCamIndex );
+				if ( this->camGrid->getFirstImage() != NULL ) {
+					this->currentCamera = this->camGrid->getFirstImage()->getCamera();
+				} else {
+					this->currentCamera = NULL;
+				}
 			}
+			break;
 		case devicesListPanel_arrow_up:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data) {
@@ -68,9 +75,35 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 		case cameraDisplayPanel_info:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data) {
-					addPanel( informationPanel );
+					//! Get the current camera information
+					if ( this->camGrid->getFirstImage() != NULL ) {
+						this->currentCamera = this->camGrid->getFirstImage()->getCamera();
+					} else {
+						this->currentCamera = NULL;
+					}
+
+					if ( this->currentCamera != NULL ) {
+						this->currentCamera->PrintInfo();
+						addPanel( informationPanel );
+					}
 				} else {
 					removePanel( informationPanel );
+				}
+			}
+			break;
+		//////////////////////////////////
+		// Information Panel
+		case informationPanel_hflip:
+			if ( length == sizeof(bool) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetHFlip( *(bool*)data );
+				}
+			}
+			break;
+		case informationPanel_vflip:
+			if ( length == sizeof( bool ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetVFlip( *(bool*)data );
 				}
 			}
 			break;
@@ -143,6 +176,7 @@ void SetDevices::addPanel( int id ) {
 			camGrid = (ofxGuiGrid*)pPanel->addGrid( cameraDisplayPanel_grid, "",
 				640, 480, 1, 1, 0, 0, kofxGui_Grid_List );
 			camGrid->setCamsUtils( utils );
+			camGrid->setActive( false );	//! Disable the mouse event for this control
 			pPanel->addButton( cameraDisplayPanel_info, 
 				"Show Info", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Switch );
@@ -174,9 +208,20 @@ void SetDevices::addPanel( int id ) {
 
 		case informationPanel:
 			pPanel = controls->addPanel( informationPanel,
-				"Information", 400, 240,
+				"Information", 350, 240,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->mObjWidth = 240;
+			pPanel->addLabel( informationPanel_uuid, "UUID", 260, 10,
+				"UUID: " + (this->currentCamera == NULL ? "NONE!" : PS3::GUID2String( this->currentCamera->GetGUID(), '_', true ) ),
+				&(controls->mGlobals->mParamFont), controls->mGlobals->mTextColor );
+			//! For this moment, the type is hard-code with "PS3"
+			pPanel->addLabel( informationPanel_type, "Type", 260, 10,
+				"Type: PS3", &(controls->mGlobals->mParamFont), controls->mGlobals->mTextColor );
+			pPanel->addButton( informationPanel_hflip, "Horizontal Flip", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetHFlip(), kofxGui_Button_Switch );
+			pPanel->addButton( informationPanel_vflip, "Vertical Flip", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
+
+			pPanel->mObjWidth = 270;
 			pPanel->mObjHeight = 320;
 
 			break;

@@ -29,6 +29,10 @@ class SetDevices : public ofxGuiListener {
 		cameraDisplayPanel_grid,
 
 		informationPanel,
+		informationPanel_uuid,
+		informationPanel_type,
+		informationPanel_hflip,
+		informationPanel_vflip,
 
 		settingsPanel,
 		settingsPanel_reset,
@@ -105,6 +109,9 @@ private:
 
 	//! CamsUtils
 	CamsUtils* utils;
+	
+	//! Current camera
+	PS3* currentCamera;
 
 };
 
