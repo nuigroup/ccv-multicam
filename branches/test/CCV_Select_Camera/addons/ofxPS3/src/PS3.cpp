@@ -293,9 +293,16 @@ bool PS3::SetHFlip( bool flip ) {
 	if ( _cam == NULL ) {
 		return false;
 	}
-	if ( CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, flip ) ) {
+	if ( _bRunning ) {
+		if ( CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, flip ) ) {
+			_bHFlip = flip;
+			return true;
+		}
+	} else {
+		_bHFlip = flip;
 		return true;
 	}
+
 
 	return false;
 }
@@ -305,8 +312,13 @@ bool PS3::SetVFlip( bool flip ) {
 	if ( _cam == NULL ) {
 		return false;
 	}
-
-	if ( CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, flip ) ) {
+	if ( _bRunning ) {
+		if ( CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, flip ) ) {
+			_bVFlip = flip;
+			return true;
+		}
+	} else {
+		_bVFlip = flip;
 		return true;
 	}
 
@@ -351,6 +363,14 @@ int PS3::GetHeight() {
 
 int PS3::GetFPS() {
 	return _fps;
+}
+
+bool PS3::GetHFlip() {
+	return _bHFlip;
+}
+
+bool PS3::GetVFlip() {
+	return _bVFlip;
 }
 
 void PS3::PrintInfo() {

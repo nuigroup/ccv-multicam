@@ -111,6 +111,12 @@ public:
 	//! Get the FPS
 	int GetFPS();
 
+	//! Get Horizontal flip value
+	bool GetHFlip();
+
+	//! Get Vertical flip value
+	bool GetVFlip();
+
 	//! Print the camera informations
 	void PrintInfo();
 
