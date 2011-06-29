@@ -38,6 +38,8 @@ public:
 	void setTitle( string name );
 	void setXYPos( int x, int y );
 
+	PS3* getCamera();
+
 	bool update( int parameterId, int task, void* data, int length);
 	void draw();
 
