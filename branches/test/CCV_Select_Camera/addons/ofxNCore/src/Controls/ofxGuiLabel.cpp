@@ -33,9 +33,29 @@ void ofxGuiLabel::init( int id, string name, int x, int y, int width, int height
 	this->fontName = fontName;
 	this->fontSize = fontSize;
 
-	textFont.loadFont( this->fontName, this->fontSize, true, true );
+	textFont = new ofTrueTypeFont();
+	textFont->loadFont( this->fontName, this->fontSize, true, true );
 
 }
+
+//	----------------------------------------------------------------------------------------------------
+
+void ofxGuiLabel::init( int id, string name, int x, int y, int width, int height, string text, ofTrueTypeFont* font, ofRGBA color ) {
+	mParamId	= id;
+	mParamName	= name;
+
+	mObjX		= x;
+	mObjY		= y;
+
+	mObjWidth	= width;
+	mObjHeight	= height;
+
+	setText( text );
+	setFont( font );
+	setColor( color );
+}
+
+
 //	----------------------------------------------------------------------------------------------------
 
 void ofxGuiLabel::setText( string text ) {
@@ -52,13 +72,13 @@ void ofxGuiLabel::drawString( float x, float y, string text, bool center ) {
 	glColor4f( fontColor.r, fontColor.g, fontColor.b, fontColor.a );
 
 	if ( center ) {
-		x -= roundInt( textFont.stringWidth( text ) /2.0f );
+		x -= roundInt( textFont->stringWidth( text ) /2.0f );
 	} else {
 		x += mGlobals->mParamFontXOffset;
 	}
 
 	y += mGlobals->mParamFontYOffset;
-	textFont.drawString( text, x, y );
+	textFont->drawString( text, x, y );
 }
 //	----------------------------------------------------------------------------------------------------
 
@@ -129,6 +149,12 @@ void ofxGuiLabel::saveToXml() {
 	int id = saveObjectData();
 
 	mGlobals->mXml.setValue( "OBJECT:TEXT", text, id );
+}
+
+//	----------------------------------------------------------------------------------------------------
+
+void ofxGuiLabel::setFont( ofTrueTypeFont* font ) {
+	this->textFont = font;
 }
 
 //	----------------------------------------------------------------------------------------------------

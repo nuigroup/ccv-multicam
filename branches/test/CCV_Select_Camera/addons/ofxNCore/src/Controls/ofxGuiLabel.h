@@ -18,6 +18,7 @@ public:
 	ofxGuiLabel();
 
 	void init( int id, string name, int x, int y, int width, int height, string text, string fontName, int fontSize, ofRGBA  fontColor );
+	void init( int id, string name, int x, int y, int width, int height, string text, ofTrueTypeFont* font, ofRGBA color );
 
 	void setText( string text );
 	void setColor( ofRGBA color );
@@ -37,7 +38,10 @@ public:
 	string text, fontName;
 	int fontSize, fontHeight;
 	ofRGBA fontColor;
-	ofTrueTypeFont textFont;
+	ofTrueTypeFont* textFont;
+
+private:
+	void setFont( ofTrueTypeFont* font );
 };
 
 #endif
