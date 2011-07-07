@@ -117,6 +117,20 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
+		case informationPanel_auto_gain:
+			if ( length == sizeof( bool ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetAutoGain( *(bool*)data );
+				}
+			}
+			break;
+		case informationPanel_gain:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetGainValue( (int)*(float*)data );
+				}
+			}
+			break;
 		//////////////////////////////////
 		// Settings Panel
 		case settingsPanel_reset:
@@ -179,6 +193,7 @@ void SetDevices::addPanels() {
 void SetDevices::addPanel( int id ) {
 	ofxGuiPanel* pPanel;
 	switch ( id ) {
+		//////////////////////////////////
 		case cameraDisplayPanel:
 			pPanel = controls->addPanel( cameraDisplayPanel,
 				"Camera Display", 30, 30,
@@ -201,6 +216,7 @@ void SetDevices::addPanel( int id ) {
 
 			break;
 
+		//////////////////////////////////
 		case devicesListPanel:
 			pPanel = controls->addPanel( devicesListPanel,
 				"Devices List", 720, 30,
@@ -216,6 +232,8 @@ void SetDevices::addPanel( int id ) {
 			pPanel->mObjHeight = 400;
 			break;
 
+
+		//////////////////////////////////
 		case informationPanel:
 			pPanel = controls->addPanel( informationPanel,
 				"Information", 350, 240,
@@ -226,16 +244,26 @@ void SetDevices::addPanel( int id ) {
 			//! For this moment, the type is hard-code with "PS3"
 			pPanel->addLabel( informationPanel_type, "Type", 260, 10,
 				"Type: PS3", &(controls->mGlobals->mParamFont), controls->mGlobals->mTextColor );
-			pPanel->addButton( informationPanel_hflip, "Horizontal Flip", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				this->currentCamera->GetHFlip(), kofxGui_Button_Switch );
-			pPanel->addButton( informationPanel_vflip, "Vertical Flip", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			pPanel->addButton( informationPanel_vflip, "Vertical Flip",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
+			pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetAutoGain(), kofxGui_Button_Switch );
+			pPanel->addSlider( informationPanel_gain, "Gain",
+				150, 10, 0.0f, 79.0f,
+				this->currentCamera->GetGainValue(), kofxGui_Display_Int, 0 );
 
 			pPanel->mObjWidth = 270;
 			pPanel->mObjHeight = 320;
 
 			break;
 
+
+		//////////////////////////////////
 		case settingsPanel:
 			pPanel = controls->addPanel( settingsPanel,
 				"Settings", 720, 460,

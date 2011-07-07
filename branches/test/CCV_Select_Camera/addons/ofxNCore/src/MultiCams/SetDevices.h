@@ -33,6 +33,8 @@ class SetDevices : public ofxGuiListener {
 		informationPanel_type,
 		informationPanel_hflip,
 		informationPanel_vflip,
+		informationPanel_auto_gain,
+		informationPanel_gain,
 
 		settingsPanel,
 		settingsPanel_reset,

@@ -172,7 +172,7 @@ void PS3::Run() {
 
 	//! Set some camera parameters
 	CLEyeSetCameraParameter( _cam, CLEYE_AUTO_GAIN, _bAutoGain );
-	CLEyeSetCameraParameter( _cam, CLEYE_EXPOSURE, 511 );
+	CLEyeSetCameraParameter( _cam, CLEYE_GAIN, _gainValue );
 	CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, _bHFlip );
 	CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, _bVFlip );
 
@@ -338,9 +338,8 @@ bool PS3::SetAutoGain( bool autoGain ) {
 }
 
 bool PS3::SetGainValue( int value ) {
-	if ( _bRunning ) {
-		if ( _cam != NULL
-			&& CLEyeSetCameraParameter( _cam, CLEYE_GAIN, value ) ) {
+	if ( _bRunning && !GetAutoGain() ) {	// Could not set the gain value when auto mode on
+		if ( _cam != NULL && CLEyeSetCameraParameter( _cam, CLEYE_GAIN, value ) ) {
 			_gainValue = value;
 			return true;
 		}
