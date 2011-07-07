@@ -82,7 +82,7 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 		// Camera Display Panel
 		case cameraDisplayPanel_info:
 			if ( length == sizeof(bool) ) {
-				if ( *(bool*)data) {
+				if ( *(bool*)data && !bShowInfo ) {	// info panel should not display
 					//! Get the current camera information
 					if ( this->camGrid->getFirstImage() != NULL ) {
 						this->currentCamera = this->camGrid->getFirstImage()->getCamera();
@@ -183,7 +183,11 @@ void SetDevices::addPanels() {
 	// TODO
 	this->addPanel( devicesListPanel );
 	this->addPanel( cameraDisplayPanel );
-	// this->addPanel( informationPanel );
+	
+	if ( bShowInfo ) {
+		this->addPanel( informationPanel );
+	}
+
 	this->addPanel( settingsPanel );
 
 	controls->forceUpdate( true );
@@ -204,7 +208,7 @@ void SetDevices::addPanel( int id ) {
 			camGrid->setActive( false );	//! Disable the mouse event for this control
 			pPanel->addButton( cameraDisplayPanel_info, 
 				"Show Info", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Switch );
+				bShowInfo, kofxGui_Button_Switch );
 
 			//pPanel->mObjects[1]->mObjX = 380;	// [1]: "Show Info" button
 			//pPanel->mObjects[1]->mObjY = 510;
