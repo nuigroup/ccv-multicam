@@ -15,6 +15,9 @@
 
 ofxGuiArrow::ofxGuiArrow() {
 	mParamType = kofxGui_Object_Arrow;
+	
+	//! Be not selected
+	mValue = false;
 }
 
 // ----------------------------------------------
