@@ -171,7 +171,7 @@ void PS3::Run() {
 	//}
 
 	//! Set some camera parameters
-	CLEyeSetCameraParameter( _cam, CLEYE_GAIN, 0 );
+	CLEyeSetCameraParameter( _cam, CLEYE_AUTO_GAIN, _bAutoGain );
 	CLEyeSetCameraParameter( _cam, CLEYE_EXPOSURE, 511 );
 	CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, _bHFlip );
 	CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, _bVFlip );
@@ -289,12 +289,9 @@ unsigned char* PS3::GetPixels() {
 }
 
 bool PS3::SetHFlip( bool flip ) {
-	//! Camera must be created
-	if ( _cam == NULL ) {
-		return false;
-	}
 	if ( _bRunning ) {
-		if ( CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, flip ) ) {
+		if ( _cam != NULL
+			&& CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, flip ) ) {
 			_bHFlip = flip;
 			return true;
 		}
@@ -303,17 +300,13 @@ bool PS3::SetHFlip( bool flip ) {
 		return true;
 	}
 
-
 	return false;
 }
 
 bool PS3::SetVFlip( bool flip ) {
-	//! Camera must be created
-	if ( _cam == NULL ) {
-		return false;
-	}
 	if ( _bRunning ) {
-		if ( CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, flip ) ) {
+		if ( _cam != NULL
+			&& CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, flip ) ) {
 			_bVFlip = flip;
 			return true;
 		}
@@ -327,6 +320,36 @@ bool PS3::SetVFlip( bool flip ) {
 
 void PS3::SetDebugMode( bool debug ) {
 	_bDebugMode = debug;
+}
+
+bool PS3::SetAutoGain( bool autoGain ) {
+	if ( _bRunning ) {
+		if ( _cam != NULL
+			&& CLEyeSetCameraParameter( _cam, CLEYE_AUTO_GAIN, autoGain ) ) {
+			_bAutoGain = autoGain;
+			return true;
+		}
+	} else {
+		_bAutoGain = autoGain;
+		return true;
+	}
+
+	return false;
+}
+
+bool PS3::SetGainValue( int value ) {
+	if ( _bRunning ) {
+		if ( _cam != NULL
+			&& CLEyeSetCameraParameter( _cam, CLEYE_GAIN, value ) ) {
+			_gainValue = value;
+			return true;
+		}
+	} else {
+		_gainValue = value;
+		return true;
+	}
+
+	return false;
 }
 
 int PS3::GetFrameCount() const {
@@ -371,6 +394,14 @@ bool PS3::GetHFlip() {
 
 bool PS3::GetVFlip() {
 	return _bVFlip;
+}
+
+bool PS3::GetAutoGain() const {
+	return _bAutoGain;
+}
+
+int PS3::GetGainValue() const {
+	return _gainValue;
 }
 
 void PS3::PrintInfo() {

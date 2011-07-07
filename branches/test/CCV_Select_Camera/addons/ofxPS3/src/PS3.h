@@ -93,6 +93,12 @@ public:
 	//! Set the debug mode value
 	void SetDebugMode( bool debug );
 
+	//! Set auto gain
+	bool SetAutoGain( bool auto = true );
+
+	//! Set gain value
+	bool SetGainValue( int value );
+
 	//! Get the frame count
 	int GetFrameCount() const;
 
@@ -116,6 +122,12 @@ public:
 
 	//! Get Vertical flip value
 	bool GetVFlip();
+
+	//! Get auto gain value
+	bool GetAutoGain() const;
+
+	//! Get gain value
+	int GetGainValue() const;
 
 	//! Print the camera informations
 	void PrintInfo();
@@ -189,6 +201,12 @@ private:
 
 	//! The really fps, not the framerate
 	int _fps;
+
+	//! Auto gain [true, false]
+	bool _bAutoGain;
+
+	//! Gain value [0, 79]
+	int _gainValue;
 
 };
 #endif
