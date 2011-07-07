@@ -113,6 +113,9 @@ private:
 	//! Current camera
 	PS3* currentCamera;
 
+	//! Show the information panel
+	bool bShowInfo;
+
 };
 
 #endif

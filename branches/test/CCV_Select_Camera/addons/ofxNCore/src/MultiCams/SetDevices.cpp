@@ -15,6 +15,9 @@ SetDevices::SetDevices() {
 	bShowInterface = false;
 	utils = NULL;
 	currentCamera = NULL;
+
+	//! do not display info at beginning
+	bShowInfo = false;
 }
 
 //--------------------------------------------------------------
@@ -54,6 +57,11 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 				} else {
 					this->currentCamera = NULL;
 				}
+
+				removePanel( informationPanel );
+				if ( this->currentCamera != NULL && bShowInfo ) {
+					addPanel( informationPanel );
+				}
 			}
 			break;
 		case devicesListPanel_arrow_up:
@@ -85,9 +93,11 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 					if ( this->currentCamera != NULL ) {
 						this->currentCamera->PrintInfo();
 						addPanel( informationPanel );
+						this->bShowInfo = true;
 					}
 				} else {
 					removePanel( informationPanel );
+					this->bShowInfo = false;
 				}
 			}
 			break;
