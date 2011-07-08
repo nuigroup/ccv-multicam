@@ -23,6 +23,12 @@ PS3::PS3(){
 	_fps = 0;
 
 	_pCapBuffer = NULL;
+
+	_bAutoGain = false;
+	_bAutoExposure = false;
+
+	_gainValue = 0;
+	_exposureValue = 0;
 };
 
 PS3::~PS3() {
@@ -351,6 +357,35 @@ bool PS3::SetGainValue( int value ) {
 	return false;
 }
 
+bool PS3::SetAutoExposure( bool autoExposure ) {
+	if ( _bRunning ) {
+		if ( _cam != NULL
+			&& CLEyeSetCameraParameter( _cam, CLEYE_AUTO_EXPOSURE, autoExposure ) ) {
+				_bAutoExposure = autoExposure;
+				return true;
+		}
+	} else {
+		_bAutoExposure = autoExposure;
+		return true;
+	}
+
+	return false;
+}
+
+bool PS3::SetExposure( int value ) {
+	if ( _bRunning && !GetAutoExposure() ) {
+		if ( _cam != NULL && CLEyeSetCameraParameter( _cam, CLEYE_EXPOSURE, value ) ) {
+			_exposureValue = value;
+			return true;
+		}
+	} else {
+		_exposureValue = value;
+		return true;
+	}
+
+	return false;
+}
+
 int PS3::GetFrameCount() const {
 	return _frameCount;
 }
@@ -401,6 +436,14 @@ bool PS3::GetAutoGain() const {
 
 int PS3::GetGainValue() const {
 	return _gainValue;
+}
+
+bool PS3::GetAutoExposure() const {
+	return _bAutoExposure;
+}
+
+int PS3::GetExposure() const {
+	return _exposureValue;
 }
 
 void PS3::PrintInfo() {

@@ -99,6 +99,12 @@ public:
 	//! Set gain value
 	bool SetGainValue( int value );
 
+	//! Set the auto exposure
+	bool SetAutoExposure( bool auto = true );
+
+	//! Set the exposure value
+	bool SetExposure( int value );
+
 	//! Get the frame count
 	int GetFrameCount() const;
 
@@ -128,6 +134,12 @@ public:
 
 	//! Get gain value
 	int GetGainValue() const;
+
+	//! Get auto exposure value
+	bool GetAutoExposure() const;
+
+	//! Get the exposure value
+	int GetExposure() const;
 
 	//! Print the camera informations
 	void PrintInfo();
@@ -207,6 +219,12 @@ private:
 
 	//! Gain value [0, 79]
 	int _gainValue;
+
+	//! Auto exposure [true, false]
+	bool _bAutoExposure;
+
+	//! Exposure value [0, 511]
+	int _exposureValue;
 
 };
 #endif
