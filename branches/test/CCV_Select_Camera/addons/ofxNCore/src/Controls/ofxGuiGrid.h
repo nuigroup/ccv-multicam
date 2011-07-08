@@ -53,6 +53,7 @@ public:
 	float getGridHeight();
 	float getDraggingXOffset();
 	float getDraggingYOffset();
+	int getIndexOffset();
 
 	//! Return the first image
 	ofxGuiImage* getFirstImage();

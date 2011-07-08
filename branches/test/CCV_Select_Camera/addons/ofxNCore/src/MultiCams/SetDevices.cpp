@@ -18,6 +18,12 @@ SetDevices::SetDevices() {
 
 	//! do not display info at beginning
 	bShowInfo = false;
+
+	//! init the camera index offset to zero
+	mCamIndex = 0;
+
+	//! init the devices index offset to zero
+	mDevIndexOffset = 0;
 }
 
 //--------------------------------------------------------------
@@ -68,6 +74,7 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data) {
 					devGrid->previous();
+					mDevIndexOffset = devGrid->getIndexOffset();
 				}
 			}
 			break;
@@ -75,6 +82,7 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data ) {
 					devGrid->next();
+					mDevIndexOffset = devGrid->getIndexOffset();
 				}
 			}
 			break;
@@ -94,6 +102,9 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 						this->currentCamera->PrintInfo();
 						addPanel( informationPanel );
 						this->bShowInfo = true;
+					} else {
+						//! turn off the [show info] button
+						controls->update( cameraDisplayPanel_info, kofxGui_Set_Bool, &bShowInfo, sizeof( bool ) );
 					}
 				} else {
 					removePanel( informationPanel );
@@ -182,9 +193,16 @@ void SetDevices::draw() {
 void SetDevices::addPanels() {
 	// TODO
 	this->addPanel( devicesListPanel );
-	this->addPanel( cameraDisplayPanel );
 	
-	if ( bShowInfo ) {
+	//! Set the devices index offset
+	this->devGrid->setOffset( this->mDevIndexOffset );
+
+	this->addPanel( cameraDisplayPanel );
+
+	//! Set the camera index offset
+	this->camGrid->setOffset( this->mCamIndex );
+	
+	if ( bShowInfo && currentCamera != NULL ) {
 		this->addPanel( informationPanel );
 	}
 

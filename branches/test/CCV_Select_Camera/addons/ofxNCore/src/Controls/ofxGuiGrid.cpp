@@ -437,6 +437,12 @@ float ofxGuiGrid::getDraggingYOffset() {
 
 // ----------------------------------------------
 
+int ofxGuiGrid::getIndexOffset() {
+	return this->mIndexOffset;
+}
+
+// ----------------------------------------------
+
 ofxGuiImage* ofxGuiGrid::getFirstImage() {
 	if ( mIndexOffset + 0 < utils->getCount() ) {
 		return this->gridImages[0];

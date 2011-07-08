@@ -118,6 +118,9 @@ private:
 	//! Show the information panel
 	bool bShowInfo;
 
+	//! Devices list index offset
+	int mDevIndexOffset;
+
 };
 
 #endif
