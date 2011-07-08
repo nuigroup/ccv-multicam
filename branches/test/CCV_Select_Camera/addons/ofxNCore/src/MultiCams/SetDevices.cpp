@@ -142,6 +142,20 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
+		case informationPanel_auto_exposure:
+			if ( length == sizeof( bool ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetAutoExposure( *(bool*)data );
+				}
+			}
+			break;
+		case informationPanel_exposure:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetExposure( (int)*(float*)data );
+				}
+			}
+			break;
 		//////////////////////////////////
 		// Settings Panel
 		case settingsPanel_reset:
@@ -272,12 +286,22 @@ void SetDevices::addPanel( int id ) {
 			pPanel->addButton( informationPanel_vflip, "Vertical Flip",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
+			//! Gain
 			pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				this->currentCamera->GetAutoGain(), kofxGui_Button_Switch );
 			pPanel->addSlider( informationPanel_gain, "Gain",
 				150, 10, 0.0f, 79.0f,
 				this->currentCamera->GetGainValue(), kofxGui_Display_Int, 0 );
+
+			//! Exposure
+			pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetAutoExposure(), kofxGui_Button_Switch );
+			pPanel->addSlider( informationPanel_exposure, "Exposure",
+				150, 10, 0.0f, 511.0f,
+				this->currentCamera->GetExposure(), kofxGui_Display_Int, 0 );
+
 
 			pPanel->mObjWidth = 270;
 			pPanel->mObjHeight = 320;

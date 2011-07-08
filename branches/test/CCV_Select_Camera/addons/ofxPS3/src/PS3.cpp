@@ -179,6 +179,8 @@ void PS3::Run() {
 	//! Set some camera parameters
 	CLEyeSetCameraParameter( _cam, CLEYE_AUTO_GAIN, _bAutoGain );
 	CLEyeSetCameraParameter( _cam, CLEYE_GAIN, _gainValue );
+	CLEyeSetCameraParameter( _cam, CLEYE_AUTO_EXPOSURE, _bAutoExposure );
+	CLEyeSetCameraParameter( _cam, CLEYE_EXPOSURE, _exposureValue );
 	CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, _bHFlip );
 	CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, _bVFlip );
 

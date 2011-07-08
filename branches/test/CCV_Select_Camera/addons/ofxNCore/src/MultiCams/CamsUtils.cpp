@@ -102,6 +102,8 @@ void CamsUtils::start() {
 						rawCams[i]->SetVFlip( xmlCams[j]->GetVFlip() );
 						rawCams[i]->SetAutoGain( xmlCams[j]->GetAutoGain() );
 						rawCams[i]->SetGainValue( xmlCams[j]->GetGainValue() );
+						rawCams[i]->SetAutoExposure( xmlCams[j]->GetAutoExposure() );
+						rawCams[i]->SetExposure( xmlCams[j]->GetExposure() );
 
 						printf( "Now GUID = %s\n", PS3::GUID2String( guid ).c_str() );
 						printf( "H = %d\tV = %d\n", rawCams[i]->GetHFlip(), rawCams[i]->GetVFlip() );
@@ -276,6 +278,8 @@ void CamsUtils::saveXML( string filename ) {
 				XML.setValue( "CAMERA:VFLIP", displayCams[index]->GetVFlip(), index );
 				XML.setValue( "CAMERA:AUTOGAIN", displayCams[index]->GetAutoGain(), index );
 				XML.setValue( "CAMERA:GAIN", displayCams[index]->GetGainValue(), index );
+				XML.setValue( "CAMERA:AUTOEXPOSURE", displayCams[index]->GetAutoExposure(), index );
+				XML.setValue( "CAMERA:EXPOSURE", displayCams[index]->GetExposure(), index );
 			}
 		}
 	}
@@ -316,6 +320,9 @@ void CamsUtils::loadXML( string filename ) {
 			int bAutoGain = XML.getValue( "CAMERA:AUTOGAIN", 0, i );
 			int gainValue = XML.getValue( "CAMERA:GAIN", 0, i );
 
+			int bAutoExposure = XML.getValue( "CAMERA:AUTOEXPOSURE", 0, i );
+			int exposureValue = XML.getValue( "CAMERA:EXPOSURE", 0, i);
+
 			printf( "CamsUtils::loadXML\th = %d\tv = %d\n", hFlip, vFlip );
 
 			//! Setting wrong!
@@ -336,6 +343,8 @@ void CamsUtils::loadXML( string filename ) {
 			xmlCams[index]->SetVFlip( vFlip == 0 ? false : true );
 			xmlCams[index]->SetAutoGain( bAutoGain == 0 ? false : true );
 			xmlCams[index]->SetGainValue( gainValue );
+			xmlCams[index]->SetAutoExposure( bAutoExposure == 0 ? false : true );
+			xmlCams[index]->SetExposure( exposureValue );
 		}
 	}
 }
