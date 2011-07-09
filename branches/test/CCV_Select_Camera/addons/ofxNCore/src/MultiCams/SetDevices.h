@@ -37,6 +37,10 @@ class SetDevices : public ofxGuiListener {
 		informationPanel_gain,
 		informationPanel_auto_exposure,
 		informationPanel_exposure,
+		informationPanel_auto_whitebalance,
+		informationPanel_whitebalance_red,
+		informationPanel_whitebalance_green,
+		informationPanel_whitebalance_blue,
 
 		settingsPanel,
 		settingsPanel_reset,

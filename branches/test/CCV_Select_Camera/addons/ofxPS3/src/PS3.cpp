@@ -24,13 +24,13 @@ PS3::PS3(){
 
 	_pCapBuffer = NULL;
 
-	_bAutoGain = false;
-	_bAutoExposure = false;
+	_bAutoGain = true;
+	_bAutoExposure = true;
 
 	_gainValue = 0;
 	_exposureValue = 0;
 
-	_bAutoWhiteBalance = false;
+	_bAutoWhiteBalance = true;
 	_whiteBalanceRed = 0;
 	_whiteBalanceGreen = 0;
 	_whiteBalanceBlue = 0;
@@ -186,6 +186,10 @@ void PS3::Run() {
 	CLEyeSetCameraParameter( _cam, CLEYE_GAIN, _gainValue );
 	CLEyeSetCameraParameter( _cam, CLEYE_AUTO_EXPOSURE, _bAutoExposure );
 	CLEyeSetCameraParameter( _cam, CLEYE_EXPOSURE, _exposureValue );
+	CLEyeSetCameraParameter( _cam, CLEYE_AUTO_WHITEBALANCE, _bAutoWhiteBalance );
+	CLEyeSetCameraParameter( _cam, CLEYE_WHITEBALANCE_RED, _whiteBalanceRed );
+	CLEyeSetCameraParameter( _cam, CLEYE_WHITEBALANCE_GREEN, _whiteBalanceGreen );
+	CLEyeSetCameraParameter( _cam, CLEYE_WHITEBALANCE_BLUE, _whiteBalanceBlue );
 	CLEyeSetCameraParameter( _cam, CLEYE_HFLIP, _bHFlip );
 	CLEyeSetCameraParameter( _cam, CLEYE_VFLIP, _bVFlip );
 

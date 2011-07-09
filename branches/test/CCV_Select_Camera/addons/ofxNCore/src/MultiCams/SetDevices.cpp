@@ -156,6 +156,35 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
+		case informationPanel_auto_whitebalance:
+			if ( length == sizeof( bool ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetAutoWhiteBalance( *(bool*)data );
+				}
+			}
+			break;
+		case informationPanel_whitebalance_red:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetWhiteBalanceRed( (int)*(float*)data );
+				}
+			}
+			break;
+		case informationPanel_whitebalance_green:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetWhiteBalanceGreen( (int)*(float*)data );
+				}
+			}
+			break;
+		case informationPanel_whitebalance_blue:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetWhiteBalanceBlue( (int)*(float*)data );
+				}
+			}
+			break;
+
 		//////////////////////////////////
 		// Settings Panel
 		case settingsPanel_reset:
@@ -272,7 +301,7 @@ void SetDevices::addPanel( int id ) {
 		//////////////////////////////////
 		case informationPanel:
 			pPanel = controls->addPanel( informationPanel,
-				"Information", 350, 240,
+				"Information", 350, 200,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addLabel( informationPanel_uuid, "UUID", 260, 10,
 				"UUID: " + (this->currentCamera == NULL ? "NONE!" : PS3::GUID2String( this->currentCamera->GetGUID(), '_', true ) ),
@@ -302,9 +331,23 @@ void SetDevices::addPanel( int id ) {
 				150, 10, 0.0f, 511.0f,
 				this->currentCamera->GetExposure(), kofxGui_Display_Int, 0 );
 
+			//! White balance
+			pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetAutoWhiteBalance(), kofxGui_Button_Switch );
+			pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
+				150, 10, 0.0f, 255.0f,
+				this->currentCamera->GetWhiteBalanceRed(), kofxGui_Display_Int, 0 );
+			pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
+				150, 10, 0.0f, 255.0f,
+				this->currentCamera->GetWhiteBalanceGreen(), kofxGui_Display_Int, 0 );
+			pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
+				150, 10, 0.0f, 255.0f,
+				this->currentCamera->GetWhiteBalanceBlue(), kofxGui_Display_Int, 0 );
+
 
 			pPanel->mObjWidth = 270;
-			pPanel->mObjHeight = 320;
+			pPanel->mObjHeight = 360;
 
 			break;
 

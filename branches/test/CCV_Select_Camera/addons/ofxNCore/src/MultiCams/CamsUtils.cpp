@@ -104,6 +104,10 @@ void CamsUtils::start() {
 						rawCams[i]->SetGainValue( xmlCams[j]->GetGainValue() );
 						rawCams[i]->SetAutoExposure( xmlCams[j]->GetAutoExposure() );
 						rawCams[i]->SetExposure( xmlCams[j]->GetExposure() );
+						rawCams[i]->SetAutoWhiteBalance( xmlCams[j]->GetAutoWhiteBalance() );
+						rawCams[i]->SetWhiteBalanceRed( xmlCams[j]->GetWhiteBalanceRed() );
+						rawCams[i]->SetWhiteBalanceGreen( xmlCams[j]->GetWhiteBalanceGreen() );
+						rawCams[i]->SetWhiteBalanceBlue( xmlCams[j]->GetWhiteBalanceBlue() );
 
 						printf( "Now GUID = %s\n", PS3::GUID2String( guid ).c_str() );
 						printf( "H = %d\tV = %d\n", rawCams[i]->GetHFlip(), rawCams[i]->GetVFlip() );
@@ -280,6 +284,10 @@ void CamsUtils::saveXML( string filename ) {
 				XML.setValue( "CAMERA:GAIN", displayCams[index]->GetGainValue(), index );
 				XML.setValue( "CAMERA:AUTOEXPOSURE", displayCams[index]->GetAutoExposure(), index );
 				XML.setValue( "CAMERA:EXPOSURE", displayCams[index]->GetExposure(), index );
+				XML.setValue( "CAMERA:AUTOWHITEBALANCE", displayCams[index]->GetAutoWhiteBalance(), index );
+				XML.setValue( "CAMERA:WHITEBALANCE:RED", displayCams[index]->GetWhiteBalanceRed(), index );
+				XML.setValue( "CAMERA:WHITEBALANCE:GREEN", displayCams[index]->GetWhiteBalanceGreen(), index );
+				XML.setValue( "CAMERA:WHITEBALANCE:BLUE", displayCams[index]->GetWhiteBalanceBlue(), index );
 			}
 		}
 	}
@@ -317,11 +325,16 @@ void CamsUtils::loadXML( string filename ) {
 			int hFlip = XML.getValue( "CAMERA:HFLIP", 0, i );
 			int vFlip = XML.getValue( "CAMERA:VFLIP", 0, i );
 
-			int bAutoGain = XML.getValue( "CAMERA:AUTOGAIN", 0, i );
+			int bAutoGain = XML.getValue( "CAMERA:AUTOGAIN", 1, i );	// Default true
 			int gainValue = XML.getValue( "CAMERA:GAIN", 0, i );
 
-			int bAutoExposure = XML.getValue( "CAMERA:AUTOEXPOSURE", 0, i );
+			int bAutoExposure = XML.getValue( "CAMERA:AUTOEXPOSURE", 1, i );	// Default true
 			int exposureValue = XML.getValue( "CAMERA:EXPOSURE", 0, i);
+
+			int bAutoWhiteBalance = XML.getValue( "CAMERA:AUTOWHITEBALANCE", 1, i );	// Default true
+			int WBRed = XML.getValue( "CAMERA:WHITEBALANCE:RED", 0, i );
+			int WBGreen = XML.getValue( "CAMERA:WHITEBALANCE:GREEN", 0, i );
+			int WBBlue = XML.getValue( "CAMERA:WHITEBALANCE:BLUE", 0, i );
 
 			printf( "CamsUtils::loadXML\th = %d\tv = %d\n", hFlip, vFlip );
 
@@ -345,6 +358,10 @@ void CamsUtils::loadXML( string filename ) {
 			xmlCams[index]->SetGainValue( gainValue );
 			xmlCams[index]->SetAutoExposure( bAutoExposure == 0 ? false : true );
 			xmlCams[index]->SetExposure( exposureValue );
+			xmlCams[index]->SetAutoWhiteBalance( bAutoWhiteBalance == 0 ? false : true );
+			xmlCams[index]->SetWhiteBalanceRed( WBRed );
+			xmlCams[index]->SetWhiteBalanceGreen( WBGreen );
+			xmlCams[index]->SetWhiteBalanceBlue( WBBlue );
 		}
 	}
 }
