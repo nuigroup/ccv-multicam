@@ -105,6 +105,18 @@ public:
 	//! Set the exposure value
 	bool SetExposure( int value );
 
+	//! Set the auto white balance mode
+	bool SetAutoWhiteBalance( bool autoBalance = true );
+
+	//! Set the red value of white balance
+	bool SetWhiteBalanceRed( int value );
+
+	//! Set the green value of white balance
+	bool SetWhiteBalanceGreen( int value );
+
+	//! Set the blue value of white balance
+	bool SetWhiteBalanceBlue( int value );
+
 	//! Get the frame count
 	int GetFrameCount() const;
 
@@ -141,6 +153,18 @@ public:
 	//! Get the exposure value
 	int GetExposure() const;
 
+	//! Get the auto white balance value
+	bool GetAutoWhiteBalance() const;
+
+	//! Get the red value of white balance
+	int GetWhiteBalanceRed() const;
+
+	//! Get the green value of white balance
+	int GetWhiteBalanceGreen() const;
+
+	//! Get the blue value of white balance
+	int GetWhiteBalanceBlue() const;
+
 	//! Print the camera informations
 	void PrintInfo();
 
@@ -155,6 +179,13 @@ public:
 
 	//! Increase the value of parameter
 	bool IncrementParam( int param );
+
+private:
+	//! Set the white balance value [0: Red, 1: Green, 2:Blue]
+	bool SetWhiteBalance( int color, int value ) ;
+
+	//! Get the value of white balance
+	int GetWhiteBalance( int color ) const;
 
 private:
 	//! GUID of camera
@@ -226,5 +257,17 @@ private:
 	//! Exposure value [0, 511]
 	int _exposureValue;
 
-};
+	//! Auto white balance [true, false]
+	bool _bAutoWhiteBalance;
+
+	//! White balance red value [0, 255]
+	int _whiteBalanceRed;
+
+	//! White balance green value [0, 255]
+	int _whiteBalanceGreen;
+
+	//! White balance blue value [0, 255]
+	int _whiteBalanceBlue;
+
+ };
 #endif

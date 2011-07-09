@@ -29,6 +29,11 @@ PS3::PS3(){
 
 	_gainValue = 0;
 	_exposureValue = 0;
+
+	_bAutoWhiteBalance = false;
+	_whiteBalanceRed = 0;
+	_whiteBalanceGreen = 0;
+	_whiteBalanceBlue = 0;
 };
 
 PS3::~PS3() {
@@ -388,6 +393,33 @@ bool PS3::SetExposure( int value ) {
 	return false;
 }
 
+bool PS3::SetAutoWhiteBalance( bool autoBalance ) {
+	if ( _bRunning ) {
+		if ( _cam != NULL
+			&& CLEyeSetCameraParameter( _cam, CLEYE_AUTO_WHITEBALANCE, autoBalance ) ) {
+				_bAutoWhiteBalance = autoBalance;
+				return true;
+		}
+	} else {
+		_bAutoWhiteBalance = autoBalance;
+		return true;
+	}
+
+	return false;
+}
+
+bool PS3::SetWhiteBalanceRed( int value ) {
+	return SetWhiteBalance( 0, value );	// 0: Red
+}
+
+bool PS3::SetWhiteBalanceGreen( int value ) {
+	return SetWhiteBalance( 1, value );	// 1: Green
+}
+
+bool PS3::SetWhiteBalanceBlue( int value ) {
+	return SetWhiteBalance( 2, value );	// 2: Blue
+}
+
 int PS3::GetFrameCount() const {
 	return _frameCount;
 }
@@ -446,6 +478,22 @@ bool PS3::GetAutoExposure() const {
 
 int PS3::GetExposure() const {
 	return _exposureValue;
+}
+
+bool PS3::GetAutoWhiteBalance() const {
+	return _bAutoWhiteBalance;
+}
+
+int PS3::GetWhiteBalanceRed() const {
+	return GetWhiteBalance( 0 );	// 0: Red
+}
+
+int PS3::GetWhiteBalanceGreen() const {
+	return GetWhiteBalance( 1 );	// 1: Green
+}
+
+int PS3::GetWhiteBalanceBlue() const {
+	return GetWhiteBalance( 2 );	// 2: Blue
 }
 
 void PS3::PrintInfo() {
@@ -518,4 +566,66 @@ bool PS3::IncrementParam( int param ) {
 	CLEyeSetCameraParameter( _cam, (CLEyeCameraParameter)param, nowValue + 10 );
 
 	return true;
+}
+
+// ------------------------------------------------
+// PRIVATE
+// ------------------------------------------------
+bool PS3::SetWhiteBalance( int color, int value ) {
+	if ( _bRunning && !GetAutoWhiteBalance() ) {
+		if ( _cam != NULL ) {
+			switch ( color ) {
+				case 0:	// Red
+					if ( CLEyeSetCameraParameter( _cam, CLEYE_WHITEBALANCE_RED, value ) ) {
+						_whiteBalanceRed = value;
+						return true;
+					}
+					break;
+				case 1:	// Green
+					if ( CLEyeSetCameraParameter( _cam, CLEYE_WHITEBALANCE_GREEN, value ) ) {
+						_whiteBalanceGreen = value;
+						return true;
+					}
+					break;
+				case 2:	// Blue
+					if ( CLEyeSetCameraParameter( _cam, CLEYE_WHITEBALANCE_BLUE, value ) ) {
+						_whiteBalanceBlue = value;
+						return true;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	} else {
+		switch ( color ) {
+			case 0:	// Red
+				_whiteBalanceRed = value;
+				break;
+			case 1:	// Green
+				_whiteBalanceGreen = value;
+				break;
+			case 2:	// Blue
+				_whiteBalanceBlue = value;
+				break;
+		}
+		return true;
+	}
+
+	return false;
+}
+
+int PS3::GetWhiteBalance( int color ) const {
+	switch ( color ) {
+		case 0:	// Red
+			return _whiteBalanceRed;
+		case 1:	// Green
+			return _whiteBalanceGreen;
+		case 2:	// Blue
+			return _whiteBalanceBlue;
+		default:
+			break;
+	}
+
+	return -1;	// error occur
 }
