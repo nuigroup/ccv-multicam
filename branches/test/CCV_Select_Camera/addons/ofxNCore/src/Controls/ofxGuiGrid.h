@@ -43,6 +43,7 @@ public:
 	void setImages();
 	void resetAll();
 	void setActive( bool active = true );
+	void setDrawInfo( bool draw = true );
 
 	bool next();
 	bool previous();

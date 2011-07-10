@@ -147,6 +147,14 @@ void ofxGuiGrid::setActive( bool active ) {
 
 // ----------------------------------------------
 
+void ofxGuiGrid::setDrawInfo( bool draw ) {
+	for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
+		gridImages[i]->setDrawInfo( draw );
+	}
+}
+
+// ----------------------------------------------
+
 bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {

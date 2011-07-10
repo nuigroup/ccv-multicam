@@ -18,6 +18,9 @@ ofxGuiImage::ofxGuiImage() {
 	bImageSet = false;
 	pCam = NULL;
 	pCvImage = new ofxCvGrayscaleImage();
+
+	bDrawInfo =false;
+	bCanDrawInfo = false;
 }
 
 // ----------------------------------------------
@@ -72,6 +75,7 @@ void ofxGuiImage::setImage( unsigned char* pImage, int width, int height ) {
 void ofxGuiImage::setBlank( bool bBlank ) {
 	if ( bBlank ) {
 		bImageSet = false;
+		setCanDrawInfo( false );
 	}
 }
 
@@ -91,6 +95,7 @@ void ofxGuiImage::setCamera( PS3* cam ) {
 		//printf( "pCam = %p\n", pCam );
 
 		// cam->PrintInfo();
+		setCanDrawInfo( true );
 	} else {
 		setBlank( true );	//! camera is NULL so we show blank image.
 	}
@@ -107,6 +112,12 @@ void ofxGuiImage::setTitle( string name ) {
 void ofxGuiImage::setXYPos( int x, int y ) {
 	this->mObjX = x;
 	this->mObjY = y;
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::setDrawInfo( bool draw ) {
+	bDrawInfo = draw;
 }
 
 // ----------------------------------------------
@@ -152,6 +163,10 @@ void ofxGuiImage::draw() {
 			//! draw the text
 			color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
 			drawString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false, color );
+		}
+
+		if ( bDrawInfo && bCanDrawInfo && pCam != NULL ) {
+			drawInfo();
 		}
 	glPopMatrix();
 }
@@ -226,6 +241,35 @@ void ofxGuiImage::drawString( int x, int y, string str, bool center, ofRGBA colo
 
 	y += mGlobals->mParamFontYOffset;
 	mGlobals->mParamFont.drawString( str, x, y );
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::drawInfo() {
+	string info = "";
+	if ( pCam != NULL ) {
+		info += ofToString( pCam->GetFPS() );
+		info += " FPS";
+	}
+
+	int textWidth = mGlobals->mParamFont.stringWidth( info );
+	//int x = mCtrWidth - textWidth;
+	//int y = 0;
+
+
+	//! draw shadow
+	color.r = .0f;	color.g = .0f;	color.b = .0f;	color.a = 1.0f;
+	drawString( mCtrWidth - textWidth + 1, 1, info, false, color );
+
+	//! draw text
+	color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
+	drawString( mCtrWidth - textWidth, 0, info, false, color );
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::setCanDrawInfo( bool draw ) {
+	bCanDrawInfo = draw;
 }
 
 // ----------------------------------------------

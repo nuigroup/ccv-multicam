@@ -267,6 +267,7 @@ void SetDevices::addPanel( int id ) {
 				640, 480, 1, 1, 0, 0, kofxGui_Grid_List );
 			camGrid->setCamsUtils( utils );
 			camGrid->setActive( false );	//! Disable the mouse event for this control
+			camGrid->setDrawInfo( true );
 			pPanel->addButton( cameraDisplayPanel_info, 
 				"Show Info", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				bShowInfo, kofxGui_Button_Switch );

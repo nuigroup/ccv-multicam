@@ -37,6 +37,7 @@ public:
 	void setCamera( PS3* cam );
 	void setTitle( string name );
 	void setXYPos( int x, int y );
+	void setDrawInfo( bool draw = true );
 
 	PS3* getCamera();
 
@@ -57,12 +58,18 @@ private:
 	void drawBlank();
 	void drawImage();
 	void drawString( int x, int y, string str, bool center, ofRGBA color );
+	void drawInfo();
+
+	void setCanDrawInfo( bool draw );
 
 	PS3* pCam;
 	ofxCvGrayscaleImage* pCvImage;
 	ofRGBA color;
 
 	int mCamWidth, mCamHeight;
+
+	bool bDrawInfo;
+	bool bCanDrawInfo;
 };
 
 // ----------------------------------------------
