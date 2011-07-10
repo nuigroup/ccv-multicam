@@ -132,6 +132,10 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
 					this->currentCamera->SetAutoGain( *(bool*)data );
+
+					if ( !*(bool*)data ) {	// use the manual value
+						this->currentCamera->SetGainValue( currentCamera->GetGainValue() );
+					}
 				}
 			}
 			break;
@@ -146,6 +150,10 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
 					this->currentCamera->SetAutoExposure( *(bool*)data );
+
+					if ( !*(bool*)data ) {	// use the manual value
+						this->currentCamera->SetExposure( currentCamera->GetExposure() );
+					}
 				}
 			}
 			break;
@@ -160,6 +168,12 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
 					this->currentCamera->SetAutoWhiteBalance( *(bool*)data );
+
+					if ( !*(bool*)data ) {
+						this->currentCamera->SetWhiteBalanceRed( currentCamera->GetWhiteBalanceRed() );
+						this->currentCamera->SetWhiteBalanceGreen( currentCamera->GetWhiteBalanceGreen() );
+						this->currentCamera->SetWhiteBalanceBlue( currentCamera->GetWhiteBalanceBlue() );
+					}
 				}
 			}
 			break;
