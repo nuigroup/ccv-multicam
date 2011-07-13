@@ -38,6 +38,7 @@ public:
 	void setTitle( string name );
 	void setXYPos( int x, int y );
 	void setDrawInfo( bool draw = true );
+	void setCamSelected( bool selected = true );
 
 	PS3* getCamera();
 
@@ -59,6 +60,7 @@ private:
 	void drawImage();
 	void drawString( int x, int y, string str, bool center, ofRGBA color );
 	void drawInfo();
+	void drawSelectedText();
 
 	void setCanDrawInfo( bool draw );
 
@@ -70,6 +72,10 @@ private:
 
 	bool bDrawInfo;
 	bool bCanDrawInfo;
+
+	bool bCamSelected;
+
+	string strSelectedText;
 };
 
 // ----------------------------------------------

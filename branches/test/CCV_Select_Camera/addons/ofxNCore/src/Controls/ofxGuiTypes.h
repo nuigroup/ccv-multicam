@@ -129,6 +129,7 @@ enum
 	kofxGui_Set_String,
 
 	kofxGui_Set_Grid_Dragging,
+	kofxGui_Set_Grid_Released,
 };
 
 enum {	//! Added by Yishi Guo 2011-06-11

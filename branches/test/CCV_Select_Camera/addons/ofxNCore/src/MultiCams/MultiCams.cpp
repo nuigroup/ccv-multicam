@@ -143,6 +143,17 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 	// DEBUG
 	printf( "MultiCams::handGui\n" );
 	switch( parameterId ) {
+			////////////////////////////////
+			// CAMERA DISPLAY
+			//
+		case camerasDisplayPanel_grid:
+			if ( length == sizeof(int) ) {
+				if ( task == kofxGui_Set_Grid_Released ) {
+					//! Refresh the grid control
+					devGrid->setImages();
+				}
+			}
+			break;
 			//////////////////////////////////
 			// DEVICES LIST
 			//! 
@@ -294,11 +305,13 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 
 					//! Turn on the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable );
+					devGrid->setDrawSelectedText( true );
 				}
 			}
 			break;
 			////////////////////////////////////////
-			// STEP 3
+			// STEP 3 Selection
+
 			//! Reset All
 		case step3Panel_reset_all:
 			if ( length == sizeof( bool ) ) {
@@ -309,6 +322,11 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 					//! Refresh the images
 					if ( camsGrid != NULL ) {
 						camsGrid->resetAll();
+					}
+
+					//! Refresh the devices list
+					if ( devGrid != NULL ) {
+						devGrid->setImages();
 					}
 				}
 			}
@@ -322,6 +340,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 
 					//! Turn off the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable, false );
+					devGrid->setDrawSelectedText( false );
 				}
 			}
 			break;
@@ -334,6 +353,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 
 					//! Turn off the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable, false );
+					devGrid->setDrawSelectedText( false );
 				}
 			}
 			break;
@@ -348,6 +368,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 
 					//! Turn on the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable, true );
+					devGrid->setDrawSelectedText( true );
 				}
 			}
 			break;

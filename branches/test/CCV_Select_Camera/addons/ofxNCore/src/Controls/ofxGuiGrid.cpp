@@ -35,6 +35,7 @@ ofxGuiGrid::ofxGuiGrid() {
 
 	mIsActive = true;	// default: active
 
+	bDrawSelectedText = false;
 }
 
 // ----------------------------------------------
@@ -151,6 +152,14 @@ void ofxGuiGrid::setDrawInfo( bool draw ) {
 	for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
 		gridImages[i]->setDrawInfo( draw );
 	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setDrawSelectedText( bool draw ) {
+	bDrawSelectedText = draw;
+	//! Refresh the control
+	setImages();
 }
 
 // ----------------------------------------------
@@ -335,6 +344,7 @@ bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 					utils->setSelected( mDraggingRawIndex );
 					setImages();
 
+					mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Released, &mDraggingRawIndex, sizeof(int) );
 					//! reset the index
 					mDraggingRawIndex = -1;
 				}
@@ -568,6 +578,15 @@ void ofxGuiGrid::setImages() {
 					// TODO
 				}
 				//PS3* cam = utils->getRawCam(i);
+
+				//! camera selected ?
+				if ( bDrawSelectedText ) {
+					if ( utils->isSelected( i + mIndexOffset ) ) {
+						gridImages[i]->setCamSelected( true );
+					} else {
+						gridImages[i]->setCamSelected( false );
+					}
+				}
 			} else {
 				gridImages[i]->setBlank();
 			}

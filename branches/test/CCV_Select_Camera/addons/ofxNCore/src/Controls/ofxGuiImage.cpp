@@ -21,6 +21,10 @@ ofxGuiImage::ofxGuiImage() {
 
 	bDrawInfo =false;
 	bCanDrawInfo = false;
+
+	bCamSelected = false;
+
+	strSelectedText = "Selected!";
 }
 
 // ----------------------------------------------
@@ -122,6 +126,12 @@ void ofxGuiImage::setDrawInfo( bool draw ) {
 
 // ----------------------------------------------
 
+void ofxGuiImage::setCamSelected( bool selected ) {
+	bCamSelected = selected;
+}
+
+// ----------------------------------------------
+
 PS3* ofxGuiImage::getCamera() {
 	return pCam;
 }
@@ -167,6 +177,10 @@ void ofxGuiImage::draw() {
 
 		if ( bDrawInfo && bCanDrawInfo && pCam != NULL ) {
 			drawInfo();
+		}
+
+		if ( bCamSelected ) {
+			drawSelectedText();
 		}
 	glPopMatrix();
 }
@@ -264,6 +278,21 @@ void ofxGuiImage::drawInfo() {
 	//! draw text
 	color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
 	drawString( mCtrWidth - textWidth, 0, info, false, color );
+}
+
+// ----------------------------------------------
+
+void ofxGuiImage::drawSelectedText() {
+	int textWidth = mGlobals->mParamFont.stringWidth( strSelectedText );
+	int textHeight = mGlobals->mParamFont.stringHeight( strSelectedText );
+
+	//! Draw shadow
+	color.r = .0f;	color.g = .0f;	color.b = .0f;	color.a = 1.0f;
+	drawString( (mCtrWidth - textWidth) / 2 + 1, (mCtrHeight - textHeight) / 2 + 1, strSelectedText, false, color );
+
+	//! Draw red text
+	color.r = 1.0f;	color.g = .0f;	color.b = .0f;	color.a = 1.0f;
+	drawString( (mCtrWidth - textWidth) / 2, (mCtrHeight - textHeight) / 2, strSelectedText, false, color );
 }
 
 // ----------------------------------------------

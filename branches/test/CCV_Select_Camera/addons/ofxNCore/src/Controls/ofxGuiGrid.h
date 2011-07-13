@@ -44,6 +44,7 @@ public:
 	void resetAll();
 	void setActive( bool active = true );
 	void setDrawInfo( bool draw = true );
+	void setDrawSelectedText( bool draw = true );
 
 	bool next();
 	bool previous();
@@ -127,6 +128,8 @@ private:
 
 	//////////////////
 	bool mIsActive;
+
+	bool bDrawSelectedText;
 };
 // ----------------------------------------------
 #endif
