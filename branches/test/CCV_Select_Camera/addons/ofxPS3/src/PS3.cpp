@@ -424,6 +424,27 @@ bool PS3::SetWhiteBalanceBlue( int value ) {
 	return SetWhiteBalance( 2, value );	// 2: Blue
 }
 
+bool PS3::ResetCamParam() {
+	// TODO return false
+	//! Set the parameters value to default
+
+	SetHFlip( false );
+	SetVFlip( false );
+
+	SetAutoGain( true );
+	SetGainValue( 0 );
+
+	SetAutoExposure( true );
+	SetExposure( 0 );
+
+	SetAutoWhiteBalance( true );
+	SetWhiteBalanceRed( 0 );
+	SetWhiteBalanceGreen( 0 );
+	SetWhiteBalanceBlue( 0 );
+
+	return true;
+}
+
 int PS3::GetFrameCount() const {
 	return _frameCount;
 }

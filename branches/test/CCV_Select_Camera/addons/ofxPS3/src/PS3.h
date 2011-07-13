@@ -117,6 +117,9 @@ public:
 	//! Set the blue value of white balance
 	bool SetWhiteBalanceBlue( int value );
 
+	//! Reset the camera parameters to default value
+	bool ResetCamParam();
+
 	//! Get the frame count
 	int GetFrameCount() const;
 
