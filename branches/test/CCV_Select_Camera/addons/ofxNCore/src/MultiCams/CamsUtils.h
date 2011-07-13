@@ -48,6 +48,10 @@ public:
 	void setCam( int x, int y, PS3* cam );
 	void resetAll();
 
+	//! Reset the camera parameters
+	void resetCam( int rawIndex );
+	void resetCams();
+
 	//! Save the settings to XML file
 	void saveXML( string filename = "MultiCams.xml" );
 

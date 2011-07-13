@@ -260,6 +260,22 @@ void CamsUtils::resetAll() {
 
 // ----------------------------------------------
 
+void CamsUtils::resetCam( int rawIndex ) {
+	if ( rawIndex < camCount ) {
+		rawCams[rawIndex]->ResetCamParam();
+	}
+}
+
+// ----------------------------------------------
+
+void CamsUtils::resetCams() {
+	for( int i = 0; i < camCount; ++i ) {
+		rawCams[i]->ResetCamParam();
+	}
+}
+
+// ----------------------------------------------
+
 void CamsUtils::saveXML( string filename ) {
 	//! Clear previous data
 	XML.clear();

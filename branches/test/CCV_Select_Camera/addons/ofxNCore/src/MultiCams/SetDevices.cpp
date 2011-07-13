@@ -204,7 +204,14 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 		case settingsPanel_reset:
 			if ( length == sizeof(bool) ) {
 				if ( *(bool*)data ) {
-					// TODO
+					if ( utils != NULL ) {
+						utils->resetCams();
+						//! Refresh the panel info
+						if ( bShowInfo ) {
+							removePanel( informationPanel );
+							addPanel( informationPanel );
+						}
+					}
 				}
 			}
 			break;
