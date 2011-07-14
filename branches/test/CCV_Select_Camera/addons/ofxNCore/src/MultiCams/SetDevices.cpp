@@ -55,7 +55,7 @@ void SetDevices::handleGui( int parameterId, int task, void* data, int length ) 
 		//////////////////////////////////
 		// Devices List Panel
 		case devicesListPanel_grid:
-			if ( length == sizeof( int ) ) {
+			if ( length == sizeof( int ) && task == kofxGui_Set_Int ) {
 				this->mCamIndex = *(int*)data;
 				this->camGrid->setOffset( mCamIndex );
 				if ( this->camGrid->getFirstImage() != NULL ) {

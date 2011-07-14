@@ -462,7 +462,8 @@ int ofxGuiGrid::getIndexOffset() {
 // ----------------------------------------------
 
 ofxGuiImage* ofxGuiGrid::getFirstImage() {
-	if ( mIndexOffset + 0 < utils->getCount() ) {
+	if ( mIndexOffset >= 0
+		&& mIndexOffset + 0 < utils->getCount() ) {
 		return this->gridImages[0];
 	}
 
@@ -586,6 +587,8 @@ void ofxGuiGrid::setImages() {
 					} else {
 						gridImages[i]->setCamSelected( false );
 					}
+				} else {
+					gridImages[i]->setCamSelected( false );
 				}
 			} else {
 				gridImages[i]->setBlank();
