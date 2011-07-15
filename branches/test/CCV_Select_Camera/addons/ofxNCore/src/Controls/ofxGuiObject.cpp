@@ -83,6 +83,26 @@ void ofxGuiObject::drawParamString(float x, float y, string text, bool center)
 
 //	----------------------------------------------------------------------------------------------------
 
+void ofxGuiObject::drawHighlightParamString( float x, float y, string text, bool center ) {
+	if ( center ) {
+		x -= roundInt( mGlobals->mParamFont.stringWidth(text) / 2.0f );
+	} else {
+		x += mGlobals->mParamFontXOffset;
+	}
+
+	y += mGlobals->mParamFontYOffset;
+	
+	//! draw the shadow
+	glColor4f( mGlobals->mHighlightShadowColor.r, mGlobals->mHighlightShadowColor.g, mGlobals->mHighlightShadowColor.b, mGlobals->mHighlightShadowColor.a );
+	mGlobals->mParamFont.drawString( text, x + 1, y + 1 );
+
+	//! draw the foreground
+	glColor4f( mGlobals->mHighlightTextColor.r, mGlobals->mHighlightTextColor.g, mGlobals->mHighlightTextColor.b, mGlobals->mHighlightTextColor.a );
+	mGlobals->mParamFont.drawString( text, x, y );
+}
+
+//	----------------------------------------------------------------------------------------------------
+
 string ofxGuiObject::floatToString(float value, int display)
 {
 	string stringValue = "";

@@ -55,6 +55,19 @@ void ofxNCoreVision::setupControls()
 	controls->mGlobals->mSliderColor.b = 0;
 	controls->mGlobals->mSliderColor.a = .8;
 
+	//! Added by Yishi Guo
+	//! Highlight text color: white
+	controls->mGlobals->mHighlightTextColor.r = 1;
+	controls->mGlobals->mHighlightTextColor.g = 1;
+	controls->mGlobals->mHighlightTextColor.b = 1;
+	controls->mGlobals->mHighlightTextColor.a = 1;
+
+	//! Highlight text shadow color: black
+	controls->mGlobals->mHighlightShadowColor.r = 0;
+	controls->mGlobals->mHighlightShadowColor.g = 0;
+	controls->mGlobals->mHighlightShadowColor.b = 0;
+	controls->mGlobals->mHighlightShadowColor.a = 1;
+
 	this->addPanels();
 
 	//do update while inactive
