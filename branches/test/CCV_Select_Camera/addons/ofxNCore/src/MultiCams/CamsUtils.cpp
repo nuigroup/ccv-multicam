@@ -159,6 +159,18 @@ int CamsUtils::getYGrid() {
 
 // ----------------------------------------------
 
+int CamsUtils::getRawId( PS3* cam ) {
+	for ( int i = 0; i < camCount; i++ ) {
+		if ( PS3::EqualGUID( cam->GetGUID(), rawCams[i]->GetGUID() ) ) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+// ----------------------------------------------
+
 PS3* CamsUtils::getCam( int index ) {
 	if ( displayCams != NULL && xGrid * yGrid > index) {
 		// TODO
@@ -207,13 +219,16 @@ bool CamsUtils::isSelected( int rawId ) {
 
 // ----------------------------------------------
 
-void CamsUtils::setSelected( int rawId ) {
-	camsSelected[rawId] = true;
+void CamsUtils::setSelected( int rawId, bool reset ) {
+	camsSelected[rawId] = !reset;
 }
 
 // ----------------------------------------------
 
 bool CamsUtils::isUsed( int displayId ) {
+	if ( displayId < 0 || displayId > xGrid * yGrid ) {
+		return false;
+	}
 	return camsUsed[displayId];
 }
 
@@ -229,20 +244,21 @@ void CamsUtils::setXY( int x, int y ) {
 // ----------------------------------------------
 
 void CamsUtils::setCam( int index, PS3* cam ) {
-	if ( cam == NULL ) {
-		return;
-	}
+	//! if the cam == NULL, that will be RESET function
+	//if ( cam == NULL ) {
+	//	return;
+	//}
 
 	displayCams[index] = cam;
-	camsUsed[index] = true;
+	camsUsed[index] = cam == NULL ? false : true;
 }
 
 // ----------------------------------------------
 
 void CamsUtils::setCam( int x, int y, PS3* cam ) {
-	if ( cam == NULL ) {
-		return;
-	}
+	//if ( cam == NULL ) {
+	//	return;
+	//}
 
 	int index = x + xGrid * y;
 	setCam( index, cam );

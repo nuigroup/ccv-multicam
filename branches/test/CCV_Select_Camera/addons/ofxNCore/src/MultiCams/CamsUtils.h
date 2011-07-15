@@ -32,6 +32,8 @@ public:
 	int getXGrid();
 	int getYGrid();
 
+	int getRawId( PS3* cam );
+
 	PS3* getCam( int index );
 	PS3* getCam( int x, int y );
 	PS3* getRawCam( int index );
@@ -40,7 +42,7 @@ public:
 	PS3** getRawCams();
 
 	bool isSelected( int rawId );
-	void setSelected( int rawId );
+	void setSelected( int rawId, bool reset = false );
 	bool isUsed( int displayId );
 
 	void setXY( int x, int y );
