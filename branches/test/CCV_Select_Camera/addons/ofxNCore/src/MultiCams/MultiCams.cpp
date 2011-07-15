@@ -151,6 +151,19 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				if ( task == kofxGui_Set_Grid_Released ) {
 					//! Refresh the grid control
 					devGrid->setImages();
+				}/* else if ( task == kofxGui_Set_Int ) {
+					
+				}*/
+			}
+			break;
+		case camerasDisplayPanel_grid_reset:
+			if ( length == sizeof( bool ) && task == kofxGui_Set_Bool ) {
+				if ( *(bool*)data ) {
+					utils->setSelected( utils->getRawId( utils->getCam( camsGrid->getSelectedId() ) ), true );
+					utils->setCam( camsGrid->getSelectedId(), NULL );
+					devGrid->setImages();
+					camsGrid->setImages();
+					camsGrid->removeControls();
 				}
 			}
 			break;
@@ -306,6 +319,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 					//! Turn on the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable );
 					devGrid->setDrawSelectedText( true );
+					camsGrid->setShowResetBtn( true );
 				}
 			}
 			break;
@@ -341,6 +355,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 					//! Turn off the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable, false );
 					devGrid->setDrawSelectedText( false );
+					camsGrid->setShowResetBtn( false );
 				}
 			}
 			break;
@@ -354,6 +369,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 					//! Turn off the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable, false );
 					devGrid->setDrawSelectedText( false );
+					camsGrid->setShowResetBtn( false );
 				}
 			}
 			break;
@@ -369,6 +385,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 					//! Turn on the selection function
 					devGrid->setMode( kofxGui_Grid_Selectable, true );
 					devGrid->setDrawSelectedText( true );
+					camsGrid->setShowResetBtn( true );
 				}
 			}
 			break;
@@ -471,6 +488,7 @@ void MultiCams::addPanel( int id ) {
 				680, 320, XAxis, YAxis,
 				10, 5, kofxGui_Grid_Display );
 			camsGrid->setCamsUtils( utils );
+			camsGrid->setResetBtnId( camerasDisplayPanel_grid_reset );
 			pPanel->mObjWidth = 700;
 			pPanel->mObjHeight = 360;
 

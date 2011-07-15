@@ -23,6 +23,7 @@
 #include "ofxGuiTypes.h"
 #include "ofxGuiObject.h"
 #include "ofxGuiImage.h"
+#include "ofxGuiButton.h"
 #include "MultiCams/CamsUtils.h"
 
 // ----------------------------------------------
@@ -33,6 +34,11 @@ public:
 	~ofxGuiGrid();
 
 	void init( int id, string name, int x, int y, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode );
+
+	ofxGuiObject* addButton( int id, string name, int x, int y, int width, int height, bool value, int display );
+
+	bool removeControl( int id );
+	bool removeControls();
 
 	void setXY( int x, int y );
 	void setSelectedId( int index );
@@ -45,6 +51,8 @@ public:
 	void setActive( bool active = true );
 	void setDrawInfo( bool draw = true );
 	void setDrawSelectedText( bool draw = true );
+	void setShowResetBtn( bool show = true );
+	void setResetBtnId( int id );
 
 	bool next();
 	bool previous();
@@ -56,6 +64,8 @@ public:
 	float getDraggingXOffset();
 	float getDraggingYOffset();
 	int getIndexOffset();
+	int getSelectedId();
+	int getRawIdByDisplayId( int id );
 
 	//! Return the first image
 	ofxGuiImage* getFirstImage();
@@ -130,6 +140,13 @@ private:
 	bool mIsActive;
 
 	bool bDrawSelectedText;
+
+	//////////////////
+	vector<ofxGuiObject*> mObjects;
+	bool bShowResetBtn;
+	int mResetBtnId;
+
+	int rawIdArray[256];
 };
 // ----------------------------------------------
 #endif

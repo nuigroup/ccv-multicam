@@ -39,6 +39,7 @@ class MultiCams : public ofxGuiListener {
 	enum {
 		camerasDisplayPanel,
 		camerasDisplayPanel_grid,
+		camerasDisplayPanel_grid_reset,
 
 		generalSettingsPanel,
 		generalSettingsPanel_start,

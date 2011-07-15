@@ -36,6 +36,8 @@ ofxGuiGrid::ofxGuiGrid() {
 	mIsActive = true;	// default: active
 
 	bDrawSelectedText = false;
+
+	bShowResetBtn = false;
 }
 
 // ----------------------------------------------
@@ -70,6 +72,41 @@ void ofxGuiGrid::init( int id, string name, int x, int y, int width, int height,
 
 // ----------------------------------------------
 
+ofxGuiObject* ofxGuiGrid::addButton( int id, string name, int x, int y, int width, int height, bool value, int display ) {
+	ofxGuiButton *button = new ofxGuiButton();
+
+	button->init( id, name, x, y, width, height, value, display );
+
+	mObjects.push_back( button );
+
+	return button;
+}
+
+// ----------------------------------------------
+
+bool ofxGuiGrid::removeControl( int id ) {
+	for (vector<ofxGuiObject*>::iterator it = mObjects.begin(); it < mObjects.end(); it++ ) {
+		if ((*it)->mParamId == id ) {
+			mObjects.erase( it );
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// ----------------------------------------------
+
+bool ofxGuiGrid::removeControls() {
+	while( !mObjects.empty() ) {
+		mObjects.pop_back();
+	}
+
+	return true;
+}
+
+// ----------------------------------------------
+
 void ofxGuiGrid::setXY( int x, int y ) {
 	//! Just display mode can be set X/Y
 	if ( mDisplayMode == kofxGui_Grid_Display ) {
@@ -82,6 +119,8 @@ void ofxGuiGrid::setXY( int x, int y ) {
 		setSelectedId( -1 );	// Clear the selected value
 
 		createImages();
+
+		removeControls();
 	}
 }
 
@@ -160,6 +199,18 @@ void ofxGuiGrid::setDrawSelectedText( bool draw ) {
 	bDrawSelectedText = draw;
 	//! Refresh the control
 	setImages();
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setShowResetBtn( bool show ) {
+	bShowResetBtn = show;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setResetBtnId( int id ) {
+	mResetBtnId = id;
 }
 
 // ----------------------------------------------
@@ -260,6 +311,10 @@ void ofxGuiGrid::draw() {
 		ofRect( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
 
 	glPopMatrix();
+
+	for ( int i = 0; i < mObjects.size(); ++i ) {
+		mObjects[i]->draw();
+	}
 }
 
 // ----------------------------------------------
@@ -299,10 +354,21 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 	if ( !mIsActive ) {		//! This control is not active now
 		return false;
 	}
+
 	ofxPoint2f inside = mouseToLocal( x, y );
 	mMouseIsDown = isPointInsideMe( inside );
 
 	if ( mMouseIsDown ) {
+		//! Check the controls first
+		bool handled = false;
+		for ( int i = 0; i < mObjects.size(); i++ ) {
+			handled = (ofxGuiObject*)mObjects[i]->mousePressed( x, y, button );
+
+			if ( handled ) {
+				return true;	// we got the result
+			}
+		}
+
 		int id = mouseToGridId( inside );
 		
 		setSelectedId( id );
@@ -316,7 +382,32 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 		} else {
 			mValidSelection = false;
 		}
+
+		//! The reset button
+		if ( bShowResetBtn ) {
+			removeControl( mResetBtnId );
+
+			if ( id != -1 && utils->isUsed( id )) {
+				//! The position is relate with the panel
+				int x = mObjX + getGridX( id % mXGrid ) + 5;
+				int y = mObjY + getGridY( id / mXGrid ) + getGridHeight() - 5 - OFXGUI_BUTTON_HEIGHT;
+
+				//! If the grid is too small, we remove the text
+				string btnText = "Reset";
+				int textWidth = mGlobals->mParamFont.stringWidth( btnText );
+				if ( getGridWidth() < textWidth + 5 + OFXGUI_BUTTON_HEIGHT ) {
+					btnText = "";
+				}
+
+				ofxGuiButton* btn = (ofxGuiButton*)addButton( mResetBtnId, btnText, x, y,
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					kofxGui_Button_Off, kofxGui_Button_Trigger );
+				btn->setHighlightMode( true );
+
+			}
+		}
 	}
+
 	return mMouseIsDown;
 }
 
@@ -330,6 +421,14 @@ bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 
 	if ( mMouseIsDown ) {
 		mMouseIsDown = false;
+
+		//! Handle the controls
+		bool handled2 = false;
+		for ( int i = 0; i < mObjects.size(); ++i ) {
+			if ( (ofxGuiObject*)mObjects[i]->mouseReleased( x, y, button ) ) {
+				return true;
+			}
+		}
 	}
 
 	if ( mDisplayMode == kofxGui_Grid_Display && mDraggingRawIndex != -1) {
@@ -343,6 +442,9 @@ bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 					utils->setCam( id, utils->getRawCam(mDraggingRawIndex) );
 					utils->setSelected( mDraggingRawIndex );
 					setImages();
+
+					//! Save the info for reset
+					rawIdArray[id] = mDraggingRawIndex;
 
 					mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Released, &mDraggingRawIndex, sizeof(int) );
 					//! reset the index
@@ -457,6 +559,22 @@ float ofxGuiGrid::getDraggingYOffset() {
 
 int ofxGuiGrid::getIndexOffset() {
 	return this->mIndexOffset;
+}
+
+// ----------------------------------------------
+
+int ofxGuiGrid::getSelectedId() {
+	return this->mSelectedId;
+}
+
+// ----------------------------------------------
+
+int ofxGuiGrid::getRawIdByDisplayId( int id ) {
+	if ( id >= mXGrid * mYGrid || id < 0 ) {
+		return -1;	// error
+	}
+
+	return rawIdArray[id];
 }
 
 // ----------------------------------------------
