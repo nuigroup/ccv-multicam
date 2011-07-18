@@ -226,6 +226,9 @@ void CamsUtils::setSelected( int rawId, bool reset ) {
 // ----------------------------------------------
 
 bool CamsUtils::isUsed( int displayId ) {
+	if ( camCount < 1 ) {
+		return false;
+	}
 	if ( displayId < 0 || displayId > xGrid * yGrid ) {
 		return false;
 	}
@@ -303,7 +306,8 @@ void CamsUtils::saveXML( string filename ) {
 	for ( int y = 0; y < yGrid; ++y ) {
 		for ( int x = 0; x < xGrid; ++x ) {
 			int index = x + y * xGrid;
-			if ( displayCams[index] != NULL ) {
+			if ( camCount > 0
+				&& displayCams[index] != NULL ) {
 				XML.setValue( "CAMERA:TYPE", "PS3", index );
 				XML.setValue( "CAMERA:X", x, index );
 				XML.setValue( "CAMERA:Y", y, index );
