@@ -53,6 +53,8 @@ public:
 	void setDrawSelectedText( bool draw = true );
 	void setShowResetBtn( bool show = true );
 	void setResetBtnId( int id );
+	void setShowSettingBtn( bool show = true );
+	void setSettingBtnId( int id );
 
 	bool next();
 	bool previous();
@@ -145,6 +147,9 @@ private:
 	vector<ofxGuiObject*> mObjects;
 	bool bShowResetBtn;
 	int mResetBtnId;
+
+	bool bShowSettingBtn;
+	int mSettingBtnId;
 
 	int rawIdArray[256];
 };

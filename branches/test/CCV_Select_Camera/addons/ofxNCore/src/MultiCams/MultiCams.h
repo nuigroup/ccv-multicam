@@ -33,24 +33,49 @@ class ofxNCoreVision;
 #define GENERAL_AREA_NEXT_X 110
 #define GENERAL_AREA_NEXT_Y 140
 
+#define RIGHT_PANEL_WIDTH 190
+#define RIGHT_PANEL_X 740
+#define RIGHT_PANEL_SLIDER_WIDTH 170
+#define RIGHT_PANEL_SLIDER_HEIGHT 10
+#define RIGHT_PANEL_Y_OFFSET 100
+
 class MultiCams : public ofxGuiListener {
 
 	//! ofxGUI stuff
 	enum {
+		//! Cameras Display Panel
 		camerasDisplayPanel,
 		camerasDisplayPanel_grid,
 		camerasDisplayPanel_grid_reset,
+		camerasDisplayPanel_grid_setting,
+		camerasDisplayPanel_reset_all,
 
-		generalSettingsPanel,
-		generalSettingsPanel_start,
-		generalSettingsPanel_save,
-		generalSettingsPanel_exit,
-		generalSettingsPanel_label1,
-
+		//! Devices List Panel
 		devicesListPanel,
 		devicesListPanel_grid,
 		devicesListPanel_arrow_right,
 		devicesListPanel_arrow_left,
+
+		//! Grid Settings Panel
+		gridSettingsPanel,
+		gridSettingsPanel_x,
+		gridSettingsPanel_y,
+
+		//! Devices Settings Panel
+		devicesSettingsPanel,
+		devicesSettingsPanel_set,
+
+		//! Calibration Panel
+		calibrationPanel,
+		calibrationPanel_enter,
+
+		//! General Settings Panel
+		generalSettingsPanel,
+		generalSettingsPanel_start,
+		generalSettingsPanel_reset_all,
+		generalSettingsPanel_save,
+		generalSettingsPanel_exit,
+		generalSettingsPanel_label1,
 
 		dragging_image,
 

@@ -16,6 +16,8 @@
 #include "Controls/ofxgui.h"
 #include "MultiCams/CamsUtils.h"
 
+#define DEVGRID_Y_GRID 2
+
 class SetDevices : public ofxGuiListener {
 	//! Controls id
 	enum {
@@ -62,6 +64,9 @@ public:
 
 	// PASSIN
 	void passInCamsUtils( CamsUtils* utils );
+
+	// SETTER
+	void setShowCamRawId( int id );
 
 	// MOUSE EVENTS
 	void _mousePressed( ofMouseEventArgs &e );

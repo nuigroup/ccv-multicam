@@ -38,6 +38,7 @@ ofxGuiGrid::ofxGuiGrid() {
 	bDrawSelectedText = false;
 
 	bShowResetBtn = false;
+	bShowSettingBtn = false;
 }
 
 // ----------------------------------------------
@@ -215,6 +216,18 @@ void ofxGuiGrid::setResetBtnId( int id ) {
 
 // ----------------------------------------------
 
+void ofxGuiGrid::setShowSettingBtn( bool show ) {
+	bShowSettingBtn = show;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::setSettingBtnId( int id ) {
+	mSettingBtnId = id;
+}
+
+// ----------------------------------------------
+
 bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {
@@ -239,20 +252,6 @@ bool ofxGuiGrid::previous() {
 	}
 
 	return false;
-}
-
-// ----------------------------------------------
-
-bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
-	bool handled = false;
-	
-	if ( id == mParamId ) {
-		// TODO
-		handled = true;
-		mColorB += 0.1;
-	}
-
-	return handled;
 }
 
 // ----------------------------------------------
@@ -315,6 +314,20 @@ void ofxGuiGrid::draw() {
 	for ( int i = 0; i < mObjects.size(); ++i ) {
 		mObjects[i]->draw();
 	}
+}
+
+// ----------------------------------------------
+
+bool ofxGuiGrid::update( int id, int task, void* data, int length ) {
+	bool handled = false;
+
+	if ( id == mParamId ) {
+		// TODO
+		handled = true;
+		mColorB += 0.1;
+	}
+
+	return handled;
 }
 
 // ----------------------------------------------
@@ -383,27 +396,51 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 			mValidSelection = false;
 		}
 
+		//! Control temp values
+		int x, y, textWidth;
+		string btnText = "";
+		ofxGuiButton* btn;
+
 		//! The reset button
 		if ( bShowResetBtn ) {
 			removeControl( mResetBtnId );
 
 			if ( id != -1 && utils->isUsed( id )) {
 				//! The position is relate with the panel
-				int x = mObjX + getGridX( id % mXGrid ) + 5;
-				int y = mObjY + getGridY( id / mXGrid ) + getGridHeight() - 5 - OFXGUI_BUTTON_HEIGHT;
+				x = mObjX + getGridX( id % mXGrid ) + 5;
+				y = mObjY + getGridY( id / mXGrid ) + getGridHeight() - 5 - OFXGUI_BUTTON_HEIGHT;
 
 				//! If the grid is too small, we remove the text
-				string btnText = "Reset";
-				int textWidth = mGlobals->mParamFont.stringWidth( btnText );
+				btnText = "Reset";
+				textWidth = mGlobals->mParamFont.stringWidth( btnText );
 				if ( getGridWidth() < textWidth + 5 + OFXGUI_BUTTON_HEIGHT ) {
 					btnText = "";
 				}
 
-				ofxGuiButton* btn = (ofxGuiButton*)addButton( mResetBtnId, btnText, x, y,
+				btn = (ofxGuiButton*)addButton( mResetBtnId, btnText, x, y,
 					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 					kofxGui_Button_Off, kofxGui_Button_Trigger );
 				btn->setHighlightMode( true );
+			}
+		}
 
+		//! The setting button
+		if ( bShowSettingBtn ) {
+			removeControl( mSettingBtnId );
+
+			if ( id != -1 && utils->isUsed( id ) ) {
+				y -= 15;
+
+				btnText = "Setting";
+				textWidth = mGlobals->mParamFont.stringWidth( btnText );
+				if ( getGridWidth() < textWidth + 5 + OFXGUI_BUTTON_HEIGHT ) {
+					btnText = "";
+				}
+
+				btn = (ofxGuiButton*)addButton( mSettingBtnId, btnText, x, y,
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					kofxGui_Button_Off, kofxGui_Button_Trigger );
+				btn->setHighlightMode( true );				
 			}
 		}
 	}
@@ -447,10 +484,11 @@ bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 					rawIdArray[id] = mDraggingRawIndex;
 
 					mGlobals->mListener->handleGui( mParamId, kofxGui_Set_Grid_Released, &mDraggingRawIndex, sizeof(int) );
-					//! reset the index
-					mDraggingRawIndex = -1;
+
 				}
 			}
+			//! reset the index
+			mDraggingRawIndex = -1;
 		}
 	}
 

@@ -167,6 +167,15 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
+		case camerasDisplayPanel_grid_setting:
+			if ( length == sizeof( bool ) && task == kofxGui_Set_Bool ) {
+				if ( *(bool*)data ) {
+					// TODO
+					setDevices->setShowCamRawId( utils->getRawId( utils->getCam( camsGrid->getSelectedId() ) ) );
+
+					switchSetDevicesGUI( true );
+				}
+			}
 			//////////////////////////////////
 			// DEVICES LIST
 			//! 
@@ -213,9 +222,63 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
-		
+
+			///////////////////////
+			// GRID SETTINGS
+			//
+		case gridSettingsPanel_x:
+			if( length == sizeof(float) ) {
+				//! Modify the value just when that are not equal
+				if ( XAxis != (int)*(float*)data ) {
+					XAxis = *(float*)data;
+					_setXY( XAxis, YAxis );
+				}
+				//printf( "XAxis: %f\n", *(float*)data );
+			}
+			break;
+			//! Y axis camera number
+		case gridSettingsPanel_y:
+			if ( length == sizeof(float) ) {
+				if ( YAxis != (int)*(float*)data ) {
+					YAxis = *(float*)data;
+					_setXY( XAxis, YAxis );
+				}
+			}
+			break;
+
+			////////////////////////////////////
+			// DEVICES SETTINGS
+			//
+		case devicesSettingsPanel_set:
+			if ( length == sizeof( bool ) ) {
+				if (*(bool*)data) {
+					switchSetDevicesGUI( true );
+				}
+			}
+			break;
+
 			////////////////////////////////////
 			// GENERAL SETTINGS
+
+			//! Reset All
+		case generalSettingsPanel_reset_all:
+			if ( length == sizeof( bool ) ) {
+				if ( *(bool*)data ) {
+					if ( utils != NULL ) {
+						utils->resetAll();
+					}
+					//! Refresh the images
+					if ( camsGrid != NULL ) {
+						camsGrid->resetAll();
+					}
+
+					//! Refresh the devices list
+					if ( devGrid != NULL ) {
+						devGrid->setImages();
+					}
+				}
+			}
+			break;
 			//! Start settings
 		case generalSettingsPanel_start:
 			if ( length == sizeof(bool) ) {
@@ -457,9 +520,13 @@ void MultiCams::updateControls() {
 void MultiCams::addPanels() {
 
 	addPanel( camerasDisplayPanel );
-	addPanel( generalSettingsPanel );
 	addPanel( devicesListPanel );
-	addPanel( informationPanel );
+	addPanel( gridSettingsPanel );
+	addPanel( devicesSettingsPanel );
+	addPanel( calibrationPanel );
+	addPanel( generalSettingsPanel );
+
+	//addPanel( informationPanel );
 
 
 	//! Update the grid controls
@@ -482,57 +549,41 @@ void MultiCams::addPanel( int id ) {
 		//! Cameras display panel
 		case this->camerasDisplayPanel:
 			pPanel = controls->addPanel(
-				this->camerasDisplayPanel, "Cameras Display" , 30, 30,
+				this->camerasDisplayPanel, "Cameras Display" , 20, 20,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "",
-				680, 320, XAxis, YAxis,
+				680, 340, XAxis, YAxis,
 				10, 5, kofxGui_Grid_Display );
 			camsGrid->setCamsUtils( utils );
 			camsGrid->setResetBtnId( camerasDisplayPanel_grid_reset );
+			camsGrid->setSettingBtnId( camerasDisplayPanel_grid_setting );
+			camsGrid->setShowResetBtn( true );
+			camsGrid->setShowSettingBtn( true );
+
+			//pPanel->addButton( step3Panel_reset_all, "Reset All",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Trigger );
 			pPanel->mObjWidth = 700;
-			pPanel->mObjHeight = 360;
+			pPanel->mObjHeight = 380;
 
 			pPanel->adjustToNewContent( 600, 0 );
 
 			break;
-		//! General settings panel
-		case generalSettingsPanel:
-			pPanel = controls->addPanel(
-				this->generalSettingsPanel, "General Settings", GENERAL_AREA_X,GENERAL_AREA_Y,
-				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->addButton( this->generalSettingsPanel_start, "Start Settings",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->generalSettingsPanel_save, "Save",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->generalSettingsPanel_exit, "Exit",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
 
-			pPanel->mObjWidth = GENERAL_AREA_WIDTH;
-			pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
-
-			//pPanel->mObjects[1]->mObjX = 10;	// [0]: "Save" button
-			//pPanel->mObjects[1]->mObjY = 140;
-			//pPanel->mObjects[2]->mObjX = 100;	// [1]: "Cancel" button
-			//pPanel->mObjects[2]->mObjY = 140;
-
-			pPanel->adjustToNewContent( 100, 0 );
-
-			break;
 		//! Devices list panel
 		case devicesListPanel:
 			pPanel = controls->addPanel(
-				this->devicesListPanel, "Devices List", 30, 420,
+				this->devicesListPanel, "Devices List", 20, 420,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5, kofxGui_Grid_List );
 			devGrid->setCamsUtils( utils );
+			devGrid->setMode( kofxGui_Grid_Selectable, true );
+			devGrid->setDrawSelectedText( true );
+
 			pPanel->addArrow( devicesListPanel_arrow_left, "", 53, 109, kofxGui_Arrow_Left );
 			pPanel->addArrow( devicesListPanel_arrow_right, "", 50, 109, kofxGui_Arrow_Right );
 
 			pPanel->mObjWidth = 700;
-			pPanel->mObjHeight = 150;
+			pPanel->mObjHeight = 160;
 
 			pPanel->mObjects[0]->mObjX = 73;	//! [0]: devices grid
 			//pPanel->mObjects[0]->mObjY = 475;
@@ -545,6 +596,83 @@ void MultiCams::addPanel( int id ) {
 			pPanel->adjustToNewContent( 600, 0 );
 
 			break;
+		//! Grid Settings Panel
+		case gridSettingsPanel:
+			pPanel = controls->addPanel( gridSettingsPanel,
+				"Grid Settings", RIGHT_PANEL_X, 20 + RIGHT_PANEL_Y_OFFSET,
+				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			pPanel->addSlider( gridSettingsPanel_x, "X Axis",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT,
+				1, 8, XAxis, kofxGui_Display_Int, 0 );
+			pPanel->addSlider( gridSettingsPanel_y, "Y Axis",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT,
+				1, 8, YAxis, kofxGui_Display_Int, 0 );
+
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjHeight = 100;
+			
+			break;
+
+		//! Devices Settings Panel
+		case devicesSettingsPanel:
+			pPanel = controls->addPanel( devicesSettingsPanel,
+				"Devices Settings", RIGHT_PANEL_X, 130 + RIGHT_PANEL_Y_OFFSET,
+				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			pPanel->addButton( devicesSettingsPanel_set,
+				"Set Devices", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				kofxGui_Button_Off, kofxGui_Button_Trigger);
+
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjHeight = 50;
+
+			break;
+
+		//! Calibration Panel
+		case calibrationPanel:
+			pPanel = controls->addPanel( calibrationPanel,
+				"Calibration", RIGHT_PANEL_X, 190 + RIGHT_PANEL_Y_OFFSET,
+				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			pPanel->addButton( calibrationPanel_enter,
+				"Enter Calibration", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				kofxGui_Button_Off, kofxGui_Button_Trigger );
+
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjHeight = 50;
+
+			break;
+
+		//! General settings panel
+		case generalSettingsPanel:
+			pPanel = controls->addPanel(
+				this->generalSettingsPanel, "General Settings",
+				RIGHT_PANEL_X, 250 + RIGHT_PANEL_Y_OFFSET,
+				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			//pPanel->addButton( this->generalSettingsPanel_start, "Start Settings",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	kofxGui_Button_Off, kofxGui_Button_Trigger );
+			//! Alias
+			pPanel->addButton( this->generalSettingsPanel_reset_all, "Reset All",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				kofxGui_Button_Off, kofxGui_Button_Trigger );
+			pPanel->addButton( this->generalSettingsPanel_save, "Save",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				kofxGui_Button_Off, kofxGui_Button_Trigger );
+			pPanel->addButton( this->generalSettingsPanel_exit, "Back",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				kofxGui_Button_Off, kofxGui_Button_Trigger );
+
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjHeight = 90;
+
+			//pPanel->mObjects[1]->mObjX = 10;	// [0]: "Save" button
+			//pPanel->mObjects[1]->mObjY = 140;
+			//pPanel->mObjects[2]->mObjX = 100;	// [1]: "Cancel" button
+			//pPanel->mObjects[2]->mObjY = 140;
+
+			//pPanel->adjustToNewContent( 100, 0 );
+
+			break;
+
 		//! Information Panel
 		case informationPanel:
 			pPanel = controls->addPanel(
@@ -690,10 +818,16 @@ void MultiCams::addPanel( int id ) {
 
 void MultiCams::removePanels() {
 	controls->removePanel( this->camerasDisplayPanel );
-	controls->removePanel( this->generalSettingsPanel );
 	controls->removePanel( this->devicesListPanel );
+	controls->removePanel( this->gridSettingsPanel );
+	controls->removePanel( this->devicesSettingsPanel );
+	controls->removePanel( this->calibrationPanel );
+
+
 	controls->removePanel( this->informationPanel );
 
+
+	controls->removePanel( this->generalSettingsPanel );
 	controls->removePanel( this->step1Panel );
 	controls->removePanel( this->step2Panel );
 	controls->removePanel( this->step3Panel );
@@ -811,20 +945,29 @@ void MultiCams::switchSetDevicesGUI( bool showDevices ) {
 	} else {
 		setDevices->showInterface( false );
 		addPanels();
-		//! Goto step 2
-		removePanel( generalSettingsPanel );
-		addPanel( step2Panel );
+		////! Goto step 2
+		//removePanel( generalSettingsPanel );
+		//addPanel( step2Panel );
 		bDevicesConfiguration = false;
 	}
 }
 //--------------------------------------------------------------
 
 void MultiCams::_setXY( int x, int y ) {
+	if ( x * y > utils->getCount() ) {
+		devGrid->setMode( kofxGui_Grid_Selectable, false );
+	} else {
+		devGrid->setMode( kofxGui_Grid_Selectable, true );
+	}
+
+	if ( utils != NULL ) {
+		utils->setXY( XAxis, YAxis );
+	}
 	if ( camsGrid != NULL ) {
 		camsGrid->setXY( XAxis, YAxis );
 	}
-	if ( utils != NULL ) {
-		utils->setXY( XAxis, YAxis );
+	if ( devGrid != NULL ) {
+		devGrid->setImages();
 	}
 }
 

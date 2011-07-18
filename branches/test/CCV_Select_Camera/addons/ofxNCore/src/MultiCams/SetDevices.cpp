@@ -16,8 +16,8 @@ SetDevices::SetDevices() {
 	utils = NULL;
 	currentCamera = NULL;
 
-	//! do not display info at beginning
-	bShowInfo = false;
+	//! display info at beginning
+	bShowInfo = true;
 
 	//! init the camera index offset to zero
 	mCamIndex = 0;
@@ -47,6 +47,19 @@ void SetDevices::update() {
 
 void SetDevices::passInCamsUtils( CamsUtils* utils ) {
 	this->utils = utils;
+}
+
+//--------------------------------------------------------------
+
+void SetDevices::setShowCamRawId( int id ) {
+	if ( utils == NULL ) {
+		return;
+	}
+
+	if ( id < utils->getCount() ) {
+		this->mDevIndexOffset = id;
+		this->mCamIndex = id;
+	}
 }
 
 //--------------------------------------------------------------
@@ -265,6 +278,11 @@ void SetDevices::addPanels() {
 
 	//! Set the camera index offset
 	this->camGrid->setOffset( this->mCamIndex );
+
+	if ( this->camGrid->getFirstImage() != NULL ) {
+		this->currentCamera = this->camGrid->getFirstImage()->getCamera();
+	}
+
 	
 	if ( bShowInfo && currentCamera != NULL ) {
 		this->addPanel( informationPanel );
@@ -311,7 +329,7 @@ void SetDevices::addPanel( int id ) {
 			pPanel->addArrow( devicesListPanel_arrow_up, "",
 				180, 35, kofxGui_Arrow_Up, 5 );
 			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "",
-				180, 270, 1, 2, 10, 10, kofxGui_Grid_List );
+				180, 270, 1, DEVGRID_Y_GRID, 10, 10, kofxGui_Grid_List );
 			devGrid->setCamsUtils( utils );
 			pPanel->addArrow( devicesListPanel_arrow_down, "",
 				180, 35, kofxGui_Arrow_Down, 5 );
@@ -383,11 +401,11 @@ void SetDevices::addPanel( int id ) {
 				"Reset All", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
 			pPanel->addButton( settingsPanel_save,
-				"Save", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				"Back", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( settingsPanel_cancel,
-				"Cancel", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
+			//pPanel->addButton( settingsPanel_cancel,
+			//	"Cancel", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	kofxGui_Button_Off, kofxGui_Button_Trigger );
 			pPanel->mObjWidth = 200;
 			pPanel->mObjHeight = 110;
 			break;
