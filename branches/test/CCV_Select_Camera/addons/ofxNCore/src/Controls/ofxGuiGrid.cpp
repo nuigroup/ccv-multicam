@@ -39,6 +39,11 @@ ofxGuiGrid::ofxGuiGrid() {
 
 	bShowResetBtn = false;
 	bShowSettingBtn = false;
+
+	bDblClickMode = false;
+	bCanDblClickMode = false;
+	mPrevClickTime = 0;
+	dblClickImage = new ofxGuiImage();
 }
 
 // ----------------------------------------------
@@ -122,6 +127,7 @@ void ofxGuiGrid::setXY( int x, int y ) {
 		createImages();
 
 		removeControls();
+		switchDblClickMode( false );
 	}
 }
 
@@ -131,7 +137,11 @@ void ofxGuiGrid::setSelectedId( int index ) {
 	this->mSelectedId = index;
 	clearSelectedColor();
 
-	this->mCamIndex = this->mSelectedId + this->mIndexOffset;
+	if ( mDisplayMode == kofxGui_Grid_List ) {
+		this->mCamIndex = this->mSelectedId + this->mIndexOffset;
+	} else if ( mDisplayMode == kofxGui_Grid_Display ) {
+		this->mCamIndex = this->utils->getRawId( utils->getCam( mSelectedId ) );
+	}
 }
 
 // ----------------------------------------------
@@ -228,6 +238,12 @@ void ofxGuiGrid::setSettingBtnId( int id ) {
 
 // ----------------------------------------------
 
+void ofxGuiGrid::enableDblClickMode( bool enable ) {
+	bCanDblClickMode = enable;
+}
+
+// ----------------------------------------------
+
 bool ofxGuiGrid::next() {
 	if ( mDisplayMode == kofxGui_Grid_List ) {
 		if ( mXGrid * mYGrid + mIndexOffset + 1 <= utils->getCount() ) {
@@ -269,37 +285,40 @@ void ofxGuiGrid::draw() {
 	glPushMatrix();
 		glTranslatef( mObjX, mObjY, 0.0f );
 
-		if ( mParamName != "" ) {
-			drawParamString( 0.0, 0.0, mParamName, false );
-		}
+		if ( bDblClickMode ) {
+			this->dblClickImage->draw();
+		} else {
+			if ( mParamName != "" ) {
+				drawParamString( 0.0, 0.0, mParamName, false );
+			}
 
-		ofFill();
+			ofFill();
 
-		//! Background
-		//glColor4f( mGlobals->mCoverColor.r, mGlobals->mCoverColor.g, mGlobals->mCoverColor.b, mGlobals->mCoverColor.a );
+			//! Background
+			//glColor4f( mGlobals->mCoverColor.r, mGlobals->mCoverColor.g, mGlobals->mCoverColor.b, mGlobals->mCoverColor.a );
 
-		ofNoFill();
+			ofNoFill();
 
-		//! Grids
-		for ( int j = 0; j < mYGrid; j++ ) {
-			for ( int i = 0; i < mXGrid; i++ ) {
-				int index = i + j * mXGrid;
-				ofNoFill();
+			//! Grids
+			for ( int j = 0; j < mYGrid; j++ ) {
+				for ( int i = 0; i < mXGrid; i++ ) {
+					int index = i + j * mXGrid;
+					ofNoFill();
 
-				if ( mSelectedId == index ) {
-					drawSelectedRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
-				} else {
-					glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
-					//ofRect( mCtrX + mBorder + i * mSpacing + i * mGridWidth,
-					//	mCtrY + mBorder + j * mSpacing + j * mGridHeight,
-					//	mGridWidth, mGridHeight );
-					ofRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
+					if ( mSelectedId == index ) {
+						drawSelectedRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
+					} else {
+						glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
+						//ofRect( mCtrX + mBorder + i * mSpacing + i * mGridWidth,
+						//	mCtrY + mBorder + j * mSpacing + j * mGridHeight,
+						//	mGridWidth, mGridHeight );
+						ofRect( getGridX(i), getGridY(j), getGridWidth(), getGridHeight() );
+					}
+
+					if ( gridImages[index] != NULL ) {
+						gridImages[index]->draw();
+					}
 				}
-
-				if ( gridImages[index] != NULL ) {
-					gridImages[index]->draw();
-				}
-
 			}
 		}
 
@@ -307,12 +326,15 @@ void ofxGuiGrid::draw() {
 
 		//! Frame
 		glColor4f( mGlobals->mFrameColor.r, mGlobals->mFrameColor.g, mGlobals->mFrameColor.b, mGlobals->mFrameColor.a );
+
 		ofRect( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
 
 	glPopMatrix();
 
-	for ( int i = 0; i < mObjects.size(); ++i ) {
-		mObjects[i]->draw();
+	if ( !bDblClickMode ) {
+		for ( int i = 0; i < mObjects.size(); ++i ) {
+			mObjects[i]->draw();
+		}
 	}
 }
 
@@ -341,6 +363,10 @@ bool ofxGuiGrid::mouseDragged( int x, int y, int button ) {
 	mMouseIsDown = isPointInsideMe( inside );
 
 	if ( mMouseIsDown ) {
+		if ( bDblClickMode ) {
+			return true;
+		}
+
 		if ( mIsSelectable && mValidSelection) {
 			int id = mouseToGridId( inside );
 			if ( id + mIndexOffset < utils->getCount()
@@ -372,6 +398,21 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 	mMouseIsDown = isPointInsideMe( inside );
 
 	if ( mMouseIsDown ) {
+
+		// -----------------------
+		if ( bDblClickMode ) {
+			// TODO
+			mNowClickTime = ofGetSystemTime();
+			if ( mNowClickTime - mPrevClickTime <= OFXGUI_DBLCLICK_INTERVAL ) {
+				mPrevClickTime = 0;	// reset
+				switchDblClickMode( false );
+				return true;
+			}
+			mPrevClickTime = mNowClickTime;
+			return true;
+		}
+
+		// -----------------------
 		//! Check the controls first
 		bool handled = false;
 		for ( int i = 0; i < mObjects.size(); i++ ) {
@@ -382,6 +423,7 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 			}
 		}
 
+		// -----------------------
 		int id = mouseToGridId( inside );
 		
 		setSelectedId( id );
@@ -395,6 +437,22 @@ bool ofxGuiGrid::mousePressed( int x, int y, int button ) {
 		} else {
 			mValidSelection = false;
 		}
+
+		// -----------------------
+		//! Double click check
+		mNowClickTime = ofGetSystemTime();
+		if ( id != -1
+			&& utils->isUsed( id )
+			&& mNowClickTime - mPrevClickTime <= OFXGUI_DBLCLICK_INTERVAL ) {
+			mPrevClickTime = 0;	// reset the time
+			switchDblClickMode( true );
+			return true;
+		}
+
+		mPrevClickTime = mNowClickTime;
+
+		// ------------------------
+		//! ----- Add controls -----
 
 		//! Control temp values
 		int x, y, textWidth;
@@ -459,6 +517,11 @@ bool ofxGuiGrid::mouseReleased( int x, int y, int button ) {
 	if ( mMouseIsDown ) {
 		mMouseIsDown = false;
 
+		//! Check the Double Click Mode first
+		if ( bDblClickMode ) {
+			return true;
+		}
+
 		//! Handle the controls
 		bool handled2 = false;
 		for ( int i = 0; i < mObjects.size(); ++i ) {
@@ -522,6 +585,20 @@ void ofxGuiGrid::calculateWH() {
 
 	mGridWidth = unit * mWidthScale;
 	mGridHeight = unit * mHeightScale;
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::calculateDblClickImgWH( float &width, float &height ) {
+	float w, h, unit;
+
+	w = mObjWidth / mWidthScale;
+	h = mObjHeight / mHeightScale;
+
+	unit = w > h ? h : w;
+
+	width = unit * mWidthScale;
+	height = unit * mHeightScale;
 }
 
 // ----------------------------------------------
@@ -766,6 +843,25 @@ void ofxGuiGrid::setImages() {
 void ofxGuiGrid::setTitles() {
 	for ( int i = 0; i < mXGrid * mYGrid; ++i ) {
 		gridImages[i]->setTitle( "Cam " + ofToString( i + mIndexOffset ) );
+	}
+}
+
+// ----------------------------------------------
+
+void ofxGuiGrid::switchDblClickMode( bool dblClick ) {
+	printf( "\nofxGuiGrid::switchDblClickMode\n" );
+	float width, height;
+
+	if ( dblClick && bCanDblClickMode ) {
+		bDblClickMode = true;
+
+		calculateDblClickImgWH( width, height );
+		dblClickImage->init(
+			CAMERAS_ID_OFFSET + 101, "CAMERA " + ofToString(mSelectedId) + " PREVIEW MODE",
+			mCtrX - 1, mCtrY - 1, (int)width - 2, (int)height - 2 );
+		dblClickImage->setCamera( utils->getCam( mSelectedId ) );
+	} else {
+		bDblClickMode = false;
 	}
 }
 

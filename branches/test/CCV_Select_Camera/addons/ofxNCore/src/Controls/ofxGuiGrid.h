@@ -55,6 +55,7 @@ public:
 	void setResetBtnId( int id );
 	void setShowSettingBtn( bool show = true );
 	void setSettingBtnId( int id );
+	void enableDblClickMode( bool enable = true );
 
 	bool next();
 	bool previous();
@@ -100,6 +101,7 @@ public:
 
 private:
 	void calculateWH();
+	void calculateDblClickImgWH( float &width, float &height );
 
 	int  mouseToGridId( ofxPoint2f point );
 
@@ -112,10 +114,13 @@ private:
 	float getColorB();
 	float getColorA();
 
+
 	void clearImages();
 	void createImages();
 
 	void setTitles();
+
+	void switchDblClickMode( bool dblClick );
 
 	int mIndexOffset;
 	int mCamIndex;	//! index of all raw cams
@@ -152,6 +157,13 @@ private:
 	int mSettingBtnId;
 
 	int rawIdArray[256];
+	
+	//////////////////
+	bool bDblClickMode;
+	bool bCanDblClickMode;
+	unsigned long mPrevClickTime;
+	unsigned long mNowClickTime;
+	ofxGuiImage* dblClickImage;
 };
 // ----------------------------------------------
 #endif

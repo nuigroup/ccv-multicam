@@ -559,6 +559,7 @@ void MultiCams::addPanel( int id ) {
 			camsGrid->setSettingBtnId( camerasDisplayPanel_grid_setting );
 			camsGrid->setShowResetBtn( true );
 			camsGrid->setShowSettingBtn( true );
+			camsGrid->enableDblClickMode( true );
 
 			//pPanel->addButton( step3Panel_reset_all, "Reset All",
 			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Trigger );
