@@ -160,6 +160,10 @@ int CamsUtils::getYGrid() {
 // ----------------------------------------------
 
 int CamsUtils::getRawId( PS3* cam ) {
+	if ( cam == NULL ) {
+		return -1;
+	}
+
 	for ( int i = 0; i < camCount; i++ ) {
 		if ( PS3::EqualGUID( cam->GetGUID(), rawCams[i]->GetGUID() ) ) {
 			return i;
@@ -172,7 +176,10 @@ int CamsUtils::getRawId( PS3* cam ) {
 // ----------------------------------------------
 
 PS3* CamsUtils::getCam( int index ) {
-	if ( displayCams != NULL && xGrid * yGrid > index) {
+	if ( displayCams != NULL 
+		&& xGrid * yGrid > index
+		&& index >= 0
+		) {
 		// TODO
 		return displayCams[index];
 	}
