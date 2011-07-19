@@ -35,6 +35,9 @@
 #define OFXGUI_COLOR_HEIGHT		30
 #define OFXGUI_MATRIX_SPACING	 6
 
+//! Add by Yishi Guo
+#define OFXGUI_DBLCLICK_INTERVAL 300 // ms
+
 //	----------------------------------------------------------------------------------------------------
 
 static const string kofxGui_Tags[] =
