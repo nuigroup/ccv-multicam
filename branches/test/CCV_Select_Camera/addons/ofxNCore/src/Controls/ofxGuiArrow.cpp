@@ -168,7 +168,7 @@ void ofxGuiArrow::drawArrow( int direction ) {
 				glBegin( GL_TRIANGLES );
 					glVertex3f( mCtrX, mCtrY, 0.0f );
 					glVertex3f( mCtrX, mCtrY + mCtrHeight, 0.0f );
-					glVertex3f( mCtrX + mCtrWidth, mCtrY + mCtrHeight/2 - mOffset, 0.0f );
+					glVertex3f( mCtrX + mCtrWidth - mOffset, mCtrY + mCtrHeight/2, 0.0f );
 				glEnd();
 				break;
 				
