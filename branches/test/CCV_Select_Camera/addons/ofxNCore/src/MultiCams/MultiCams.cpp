@@ -103,8 +103,23 @@ void MultiCams::_mousePressed( ofMouseEventArgs &e ) {
 //--------------------------------------------------------------
 
 void MultiCams::_mouseDragged( ofMouseEventArgs &e ) {
+	//! Ref: http://www.youtube.com/watch?v=EZEWtmJ7WKg
+	
+	//! Hard mode solution
+	//if ( bDraggingImage ) {
+	//	e.x = e.x < 0 ? 0 : e.x;
+	//	e.y = e.y < 0 ? 0 : e.y;
+	//	draggingXOffset = e.x < draggingXOffset ? e.x : draggingXOffset;
+	//	draggingYOffset = e.y < draggingYOffset ? e.y : draggingYOffset;
+
+	//	draggingImage->setXYPos( e.x - draggingXOffset , e.y - draggingYOffset );
+	//}
+
+	//! Soft mode solution
 	if ( bDraggingImage ) {
-		draggingImage->setXYPos( e.x - draggingXOffset, e.y - draggingYOffset );
+		draggingImage->setXYPos(
+			e.x - draggingXOffset < 0 ? 0 : e.x - draggingXOffset,
+			e.y - draggingYOffset < 0 ? 0 : e.y - draggingYOffset );
 	}
 }
 
