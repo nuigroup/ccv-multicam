@@ -858,8 +858,9 @@ void ofxGuiGrid::switchDblClickMode( bool dblClick ) {
 		calculateDblClickImgWH( width, height );
 		dblClickImage->init(
 			CAMERAS_ID_OFFSET + 101, "CAMERA " + ofToString(mSelectedId) + " PREVIEW MODE",
-			mCtrX - 1, mCtrY - 1, (int)width - 2, (int)height - 2 );
+			mCtrX + 1, mCtrY + 1, (int)width - 2, (int)height - 2 );
 		dblClickImage->setCamera( utils->getCam( mSelectedId ) );
+		dblClickImage->setDrawInfo( true );
 	} else {
 		bDblClickMode = false;
 	}
