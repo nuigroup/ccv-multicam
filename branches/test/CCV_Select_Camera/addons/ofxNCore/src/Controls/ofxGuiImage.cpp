@@ -260,24 +260,35 @@ void ofxGuiImage::drawString( int x, int y, string str, bool center, ofRGBA colo
 // ----------------------------------------------
 
 void ofxGuiImage::drawInfo() {
-	string info = "";
+	int i = 0;
+	string info = "foo";
+	int textHeight = mGlobals->mParamFont.stringHeight( info );
 	if ( pCam != NULL ) {
+		info += "\nFPS: ";
 		info += ofToString( pCam->GetFPS() );
-		info += " FPS";
+		info += "\nmeiyou.org\nmeiyou.oeg\nmeiyou.org\nType: ";
+		info += "PS3";	// TODO
+		info += "\nGUID: ";
+		info += PS3::GUID2String( pCam->GetGUID(), '_' );
 	}
 
-	int textWidth = mGlobals->mParamFont.stringWidth( info );
-	//int x = mCtrWidth - textWidth;
-	//int y = 0;
+	//! Display order: Bottom -> Top
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "GUID: " + PS3::GUID2String( pCam->GetGUID(), '_' ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Res: " + ofToString( pCam->GetWidth() ) + "x" + ofToString( pCam->GetHeight() ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Type: PS3", false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "FPS: " + ofToString( pCam->GetFPS() ), false );
+
+	////int x = mCtrWidth - textWidth;
+	////int y = 0;
 
 
-	//! draw shadow
-	color.r = .0f;	color.g = .0f;	color.b = .0f;	color.a = 1.0f;
-	drawString( mCtrWidth - textWidth + 1, 1, info, false, color );
+	////! draw shadow
+	//color.r = .0f;	color.g = .0f;	color.b = .0f;	color.a = 1.0f;
+	//drawString( PARAM_TEXT_OFFSET_X + 1, roundInt(mCtrHeight - textHeight - PARAM_TEXT_OFFSET_X + 1), info, false, color );
 
-	//! draw text
-	color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
-	drawString( mCtrWidth - textWidth, 0, info, false, color );
+	////! draw text
+	//color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
+	//drawString( PARAM_TEXT_OFFSET_X + 0, roundInt(mCtrHeight - textHeight - PARAM_TEXT_OFFSET_X + 0), info, false, color );
 }
 
 // ----------------------------------------------
