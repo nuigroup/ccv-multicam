@@ -68,6 +68,7 @@ public:
 	ofxGuiObject*	addLabel( int id, string name, int width, int height, string text, ofTrueTypeFont* font, ofRGBA color );
 	ofxGuiObject*	addGrid( int id, string name, int width, int height, int xGrid, int yGrid, int border, int spacing, int mode );
 	ofxGuiObject*	addArrow( int id, string name, int width, int height, int direction, int offset = 0 );
+	ofxGuiObject*	addImage( int id, string name, int width, int height );
 
 	void			adjustToNewContent(int w, int h);
 

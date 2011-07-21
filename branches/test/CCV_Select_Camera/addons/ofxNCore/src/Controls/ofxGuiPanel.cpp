@@ -386,6 +386,20 @@ ofxGuiObject* ofxGuiPanel::addArrow( int id, string name, int width, int height,
 
 //	----------------------------------------------------------------------------------------------------
 
+ofxGuiObject* ofxGuiPanel::addImage( int id, string name, int width, int height ){
+	int offset = (mObjects.size() == 0 && mParamName == "" ) ? 0 : mSpacing;
+
+	ofxGuiImage* image = new ofxGuiImage();
+	image->init( id, name, mBorder, mObjHeight - mBorder + offset, width, height );
+	mObjects.push_back( image );
+
+	adjustToNewContent( image->mObjWidth, image->mObjHeight + offset );
+
+	return image;
+}
+
+//	----------------------------------------------------------------------------------------------------
+
 void ofxGuiPanel::adjustToNewContent(int width, int height)
 {
 	if(width > mObjWidth - mBorder * 2)
