@@ -507,7 +507,7 @@ void MultiCams::addPanel( int id ) {
 				this->camerasDisplayPanel, "Cameras Display" , 20, 20,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "",
-				515, 350, XAxis, YAxis,
+				653, 350, XAxis, YAxis,	// 515->680
 				10, 5, kofxGui_Grid_Display );
 			camsGrid->setCamsUtils( utils );
 			camsGrid->setResetBtnId( camerasDisplayPanel_grid_reset );
@@ -518,7 +518,7 @@ void MultiCams::addPanel( int id ) {
 
 			//pPanel->addButton( step3Panel_reset_all, "Reset All",
 			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->mObjWidth = 535;
+			pPanel->mObjWidth = 673;	//535->700
 			pPanel->mObjHeight = 390;
 
 			pPanel->adjustToNewContent( 500, 0 );
@@ -530,7 +530,7 @@ void MultiCams::addPanel( int id ) {
 			pPanel = controls->addPanel(
 				this->devicesListPanel, "Devices List", 20, 430,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553-138, 109, 3, 1, 5, 5, kofxGui_Grid_List );
+			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5, kofxGui_Grid_List );
 			devGrid->setCamsUtils( utils );
 			devGrid->setMode( kofxGui_Grid_Selectable, true );
 			devGrid->setDrawSelectedText( true );
@@ -542,10 +542,10 @@ void MultiCams::addPanel( int id ) {
 			//pPanel->mObjects[0]->mObjY = 475;
 			pPanel->mObjects[1]->mObjX = 10;		//! [1]: left arrow
 			pPanel->mObjects[1]->mObjY = 32;
-			pPanel->mObjects[2]->mObjX = 485;	//! [2]: right arrow
+			pPanel->mObjects[2]->mObjX = 485+138;	//! [2]: right arrow
 			pPanel->mObjects[2]->mObjY = 32;
 
-			pPanel->mObjWidth = 535;
+			pPanel->mObjWidth = 673;	//535->680
 			pPanel->mObjHeight = 150;
 
 			pPanel->adjustToNewContent( 500, 0 );
@@ -554,7 +554,7 @@ void MultiCams::addPanel( int id ) {
 		//! Grid Settings Panel
 		case gridSettingsPanel:
 			pPanel = controls->addPanel( gridSettingsPanel,
-				"Grid Settings", 575, 20,
+				"Grid Settings", RIGHT_PANEL_X, RIGHT_PANEL_Y_OFFSET,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addSlider( gridSettingsPanel_x, "X Axis",
 				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT,
@@ -563,7 +563,7 @@ void MultiCams::addPanel( int id ) {
 				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT,
 				1, 8, YAxis, kofxGui_Display_Int, 0 );
 
-			pPanel->mObjWidth = 175;
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
 			pPanel->mObjHeight = 100;
 			
 			break;
@@ -577,7 +577,7 @@ void MultiCams::addPanel( int id ) {
 				"Set Devices", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger);
 
-			pPanel->mObjWidth = 170;
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
 			pPanel->mObjHeight = 50;
 
 			break;
@@ -585,7 +585,7 @@ void MultiCams::addPanel( int id ) {
 		//! Calibration Panel
 		case calibrationPanel:
 			pPanel = controls->addPanel( calibrationPanel,
-				"Calibration", 760, 20,
+				"Calibration", RIGHT_PANEL_X, RIGHT_PANEL_Y_OFFSET + 110,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addButton( calibrationPanel_enter,
 				"Enter Calibration", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
@@ -600,7 +600,7 @@ void MultiCams::addPanel( int id ) {
 		case generalSettingsPanel:
 			pPanel = controls->addPanel(
 				this->generalSettingsPanel, "General Settings",
-				760, 80,
+				RIGHT_PANEL_X, 170 + RIGHT_PANEL_Y_OFFSET,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			//pPanel->addButton( this->generalSettingsPanel_start, "Start Settings",
 			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
@@ -631,18 +631,19 @@ void MultiCams::addPanel( int id ) {
 		//! Information Panel
 		case informationPanel:
 			pPanel = controls->addPanel(
-				this->informationPanel, "Camera Settings", 575, 130,
+				this->informationPanel, "Camera Settings",
+				RIGHT_PANEL_X, 270 + RIGHT_PANEL_Y_OFFSET,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			previewImage = (ofxGuiImage*)pPanel->addImage( informationPanel, "Present",
-				RIGHT_PANEL_SLIDER_WIDTH,
-				(RIGHT_PANEL_SLIDER_WIDTH / GRID_WIDTH_SCALE) * GRID_HEIGHT_SCALE );
-			previewImage->setCamera( currentCamera );
-			pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				this->currentCamera->GetHFlip(), kofxGui_Button_Switch );
-			pPanel->addButton( informationPanel_vflip, "Vertical Flip",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
+			//previewImage = (ofxGuiImage*)pPanel->addImage( informationPanel, "Present",
+			//	RIGHT_PANEL_SLIDER_WIDTH,
+			//	(RIGHT_PANEL_SLIDER_WIDTH / GRID_WIDTH_SCALE) * GRID_HEIGHT_SCALE );
+			//previewImage->setCamera( currentCamera );
+			//pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	this->currentCamera->GetHFlip(), kofxGui_Button_Switch );
+			//pPanel->addButton( informationPanel_vflip, "Vertical Flip",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
 			//! Gain
 			pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
 				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
@@ -674,8 +675,8 @@ void MultiCams::addPanel( int id ) {
 				this->currentCamera->GetWhiteBalanceBlue(), kofxGui_Display_Int, 0 );
 
 
-			pPanel->mObjWidth = 175;
-			pPanel->mObjHeight = 450;
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjHeight = 290;
 
 			break;
 		////! Step 1 Panel
