@@ -56,6 +56,9 @@ MultiCams::MultiCams() {
 	// set the value explicit
 	devGrid = NULL;
 	camsGrid = NULL;
+
+	currentCamera = new PS3();
+	previewImage = new ofxGuiImage();
 }
 //--------------------------------------------------------------
 
@@ -166,9 +169,9 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				if ( task == kofxGui_Set_Grid_Released ) {
 					//! Refresh the grid control
 					devGrid->setImages();
-				}/* else if ( task == kofxGui_Set_Int ) {
-					
-				}*/
+				} else if ( task == kofxGui_Set_Int ) {
+					updateInfoPanel( *(int*)data );
+				}
 			}
 			break;
 		case camerasDisplayPanel_grid_reset:
@@ -217,6 +220,8 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 					} else {
 						bDraggingImage = false;
 					}
+				} else if ( task == kofxGui_Set_Int ) {
+					updateInfoPanel( *(int*)data );
 				}
 			}
 			break;
@@ -324,158 +329,93 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
-			////////////////////////////////////////
-			// STEP 1
-			//! X axis camera number
-		case step1Panel_Xaxis:
-			if( length == sizeof(float) ) {
-				//! Modify the value just when that are not equal
-				if ( XAxis != (int)*(float*)data ) {
-					XAxis = *(float*)data;
-					_setXY( XAxis, YAxis );
-				}
-				//printf( "XAxis: %f\n", *(float*)data );
-			}
-			break;
-			//! Y axis camera number
-		case step1Panel_Yaxis:
-			if ( length == sizeof(float) ) {
-				if ( YAxis != (int)*(float*)data ) {
-					YAxis = *(float*)data;
-					_setXY( XAxis, YAxis );
-				}
-			}
-			break;
-			//! Previous
-		case step1Panel_previous:
+			/////////////////////////////////////
+			// INFORMATION PANEL
+		case informationPanel_hflip:
 			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( step1Panel );
-					addPanel( generalSettingsPanel );
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetHFlip( *(bool*)data );
 				}
 			}
 			break;
-			//! Next - Go to step 2
-		case step1Panel_next:
-			if ( length == sizeof(bool) ) {
-				if ( *(bool*)data) {
-					//! user must set the correct value
-					if ( this->XAxis * this->YAxis <= this->utils->getCount() ) {
-						removePanel( step1Panel );
-						addPanel( step2Panel );
+		case informationPanel_vflip:
+			if ( length == sizeof( bool ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetVFlip( *(bool*)data );
+				}
+			}
+			break;
+		case informationPanel_auto_gain:
+			if ( length == sizeof( bool ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetAutoGain( *(bool*)data );
+
+					if ( !*(bool*)data ) {	// use the manual value
+						this->currentCamera->SetGainValue( currentCamera->GetGainValue() );
 					}
 				}
 			}
 			break;
-
-			////////////////////////////////////////
-			// STEP 2
-			//! Set Devices
-		case step2Panel_setDevices:
+		case informationPanel_gain:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetGainValue( (int)*(float*)data );
+				}
+			}
+			break;
+		case informationPanel_auto_exposure:
 			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					switchSetDevicesGUI( true );
-				}
-			}
-			break;
-			//! Previous
-		case step2Panel_previous:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( step2Panel );
-					addPanel( step1Panel );
-				}
-			}
-			break;
-			//! Next - Go to step 3
-		case step2Panel_next:
-			if ( length == sizeof(bool) ) {
-				if (*(bool*)data) {
-					removePanel( step2Panel );
-					addPanel( step3Panel );
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetAutoExposure( *(bool*)data );
 
-					//! Turn on the selection function
-					devGrid->setMode( kofxGui_Grid_Selectable );
-					devGrid->setDrawSelectedText( true );
-					camsGrid->setShowResetBtn( true );
-				}
-			}
-			break;
-			////////////////////////////////////////
-			// STEP 3 Selection
-
-			//! Reset All
-		case step3Panel_reset_all:
-			if ( length == sizeof( bool ) ) {
-				if ( *(bool*)data ) {
-					if ( utils != NULL ) {
-						utils->resetAll();
-					}
-					//! Refresh the images
-					if ( camsGrid != NULL ) {
-						camsGrid->resetAll();
-					}
-
-					//! Refresh the devices list
-					if ( devGrid != NULL ) {
-						devGrid->setImages();
+					if ( !*(bool*)data ) {	// use the manual value
+						this->currentCamera->SetExposure( currentCamera->GetExposure() );
 					}
 				}
 			}
 			break;
-			//! Previous step
-		case step3Panel_previous:
+		case informationPanel_exposure:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetExposure( (int)*(float*)data );
+				}
+			}
+			break;
+		case informationPanel_auto_whitebalance:
 			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step3Panel );
-					addPanel( step2Panel );
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetAutoWhiteBalance( *(bool*)data );
 
-					//! Turn off the selection function
-					devGrid->setMode( kofxGui_Grid_Selectable, false );
-					devGrid->setDrawSelectedText( false );
-					camsGrid->setShowResetBtn( false );
+					if ( !*(bool*)data ) {
+						this->currentCamera->SetWhiteBalanceRed( currentCamera->GetWhiteBalanceRed() );
+						this->currentCamera->SetWhiteBalanceGreen( currentCamera->GetWhiteBalanceGreen() );
+						this->currentCamera->SetWhiteBalanceBlue( currentCamera->GetWhiteBalanceBlue() );
+					}
 				}
 			}
 			break;
-			//! Next - Go to step 4
-		case step3Panel_next:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step3Panel );
-					addPanel( step4Panel );
-
-					//! Turn off the selection function
-					devGrid->setMode( kofxGui_Grid_Selectable, false );
-					devGrid->setDrawSelectedText( false );
-					camsGrid->setShowResetBtn( false );
+		case informationPanel_whitebalance_red:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetWhiteBalanceRed( (int)*(float*)data );
 				}
 			}
 			break;
-			///////////////////////////////////////
-			// STEP 4
-			//! Previous step
-		case step4Panel_previous:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step4Panel );
-					addPanel( step3Panel );
-
-					//! Turn on the selection function
-					devGrid->setMode( kofxGui_Grid_Selectable, true );
-					devGrid->setDrawSelectedText( true );
-					camsGrid->setShowResetBtn( true );
+		case informationPanel_whitebalance_green:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetWhiteBalanceGreen( (int)*(float*)data );
 				}
 			}
 			break;
-			//! Return to general settings panel
-		case step4Panel_finish:
-			if ( length == sizeof( bool ) ) {
-				if (*(bool*)data) {
-					removePanel( step4Panel );
-					addPanel( generalSettingsPanel );
+		case informationPanel_whitebalance_blue:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					this->currentCamera->SetWhiteBalanceBlue( (int)*(float*)data );
 				}
 			}
 			break;
+			// STEPS PANEL REMOVED 07/21/2011
 		default:
 			break;
 	}
@@ -537,11 +477,11 @@ void MultiCams::addPanels() {
 	addPanel( camerasDisplayPanel );
 	addPanel( devicesListPanel );
 	addPanel( gridSettingsPanel );
-	addPanel( devicesSettingsPanel );
+	//addPanel( devicesSettingsPanel );
 	addPanel( calibrationPanel );
 	addPanel( generalSettingsPanel );
 
-	//addPanel( informationPanel );
+	addPanel( informationPanel );
 
 
 	//! Update the grid controls
@@ -567,7 +507,7 @@ void MultiCams::addPanel( int id ) {
 				this->camerasDisplayPanel, "Cameras Display" , 20, 20,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			camsGrid = (ofxGuiGrid*)pPanel->addGrid( camerasDisplayPanel_grid, "",
-				680, 340, XAxis, YAxis,
+				515, 350, XAxis, YAxis,
 				10, 5, kofxGui_Grid_Display );
 			camsGrid->setCamsUtils( utils );
 			camsGrid->setResetBtnId( camerasDisplayPanel_grid_reset );
@@ -578,44 +518,43 @@ void MultiCams::addPanel( int id ) {
 
 			//pPanel->addButton( step3Panel_reset_all, "Reset All",
 			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT, kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->mObjWidth = 700;
-			pPanel->mObjHeight = 380;
+			pPanel->mObjWidth = 535;
+			pPanel->mObjHeight = 390;
 
-			pPanel->adjustToNewContent( 600, 0 );
+			pPanel->adjustToNewContent( 500, 0 );
 
 			break;
 
 		//! Devices list panel
 		case devicesListPanel:
 			pPanel = controls->addPanel(
-				this->devicesListPanel, "Devices List", 20, 420,
+				this->devicesListPanel, "Devices List", 20, 430,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553, 109, 4, 1, 5, 5, kofxGui_Grid_List );
+			devGrid = (ofxGuiGrid*)pPanel->addGrid( devicesListPanel_grid, "", 553-138, 109, 3, 1, 5, 5, kofxGui_Grid_List );
 			devGrid->setCamsUtils( utils );
 			devGrid->setMode( kofxGui_Grid_Selectable, true );
 			devGrid->setDrawSelectedText( true );
 
-			pPanel->addArrow( devicesListPanel_arrow_left, "", 53, 109, kofxGui_Arrow_Left );
-			pPanel->addArrow( devicesListPanel_arrow_right, "", 50, 109, kofxGui_Arrow_Right );
+			pPanel->addArrow( devicesListPanel_arrow_left, "", 40, 109, kofxGui_Arrow_Left );
+			pPanel->addArrow( devicesListPanel_arrow_right, "", 40, 109, kofxGui_Arrow_Right );
 
-			pPanel->mObjWidth = 700;
-			pPanel->mObjHeight = 160;
-
-			pPanel->mObjects[0]->mObjX = 73;	//! [0]: devices grid
+			pPanel->mObjects[0]->mObjX = 60;	//! [0]: devices grid
 			//pPanel->mObjects[0]->mObjY = 475;
 			pPanel->mObjects[1]->mObjX = 10;		//! [1]: left arrow
 			pPanel->mObjects[1]->mObjY = 32;
-			pPanel->mObjects[2]->mObjX = 637;	//! [2]: right arrow
+			pPanel->mObjects[2]->mObjX = 485;	//! [2]: right arrow
 			pPanel->mObjects[2]->mObjY = 32;
 
+			pPanel->mObjWidth = 535;
+			pPanel->mObjHeight = 150;
 
-			pPanel->adjustToNewContent( 600, 0 );
+			pPanel->adjustToNewContent( 500, 0 );
 
 			break;
 		//! Grid Settings Panel
 		case gridSettingsPanel:
 			pPanel = controls->addPanel( gridSettingsPanel,
-				"Grid Settings", RIGHT_PANEL_X, 20 + RIGHT_PANEL_Y_OFFSET,
+				"Grid Settings", 575, 20,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addSlider( gridSettingsPanel_x, "X Axis",
 				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT,
@@ -624,7 +563,7 @@ void MultiCams::addPanel( int id ) {
 				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT,
 				1, 8, YAxis, kofxGui_Display_Int, 0 );
 
-			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjWidth = 175;
 			pPanel->mObjHeight = 100;
 			
 			break;
@@ -638,7 +577,7 @@ void MultiCams::addPanel( int id ) {
 				"Set Devices", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 				kofxGui_Button_Off, kofxGui_Button_Trigger);
 
-			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjWidth = 170;
 			pPanel->mObjHeight = 50;
 
 			break;
@@ -646,7 +585,7 @@ void MultiCams::addPanel( int id ) {
 		//! Calibration Panel
 		case calibrationPanel:
 			pPanel = controls->addPanel( calibrationPanel,
-				"Calibration", RIGHT_PANEL_X, 190 + RIGHT_PANEL_Y_OFFSET,
+				"Calibration", 760, 20,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			pPanel->addButton( calibrationPanel_enter,
 				"Enter Calibration", OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
@@ -661,7 +600,7 @@ void MultiCams::addPanel( int id ) {
 		case generalSettingsPanel:
 			pPanel = controls->addPanel(
 				this->generalSettingsPanel, "General Settings",
-				RIGHT_PANEL_X, 250 + RIGHT_PANEL_Y_OFFSET,
+				760, 80,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
 			//pPanel->addButton( this->generalSettingsPanel_start, "Start Settings",
 			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
@@ -692,138 +631,179 @@ void MultiCams::addPanel( int id ) {
 		//! Information Panel
 		case informationPanel:
 			pPanel = controls->addPanel(
-				this->informationPanel, "Information Settings", 760, 220,
+				this->informationPanel, "Camera Settings", 575, 130,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->mObjWidth = 160;
-			pPanel->mObjHeight = 350;
+			previewImage = (ofxGuiImage*)pPanel->addImage( informationPanel, "Present",
+				RIGHT_PANEL_SLIDER_WIDTH,
+				(RIGHT_PANEL_SLIDER_WIDTH / GRID_WIDTH_SCALE) * GRID_HEIGHT_SCALE );
+			previewImage->setCamera( currentCamera );
+			pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetHFlip(), kofxGui_Button_Switch );
+			pPanel->addButton( informationPanel_vflip, "Vertical Flip",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
+			//! Gain
+			pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetAutoGain(), kofxGui_Button_Switch );
+			pPanel->addSlider( informationPanel_gain, "Gain",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
+				this->currentCamera->GetGainValue(), kofxGui_Display_Int, 0 );
+
+			//! Exposure
+			pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetAutoExposure(), kofxGui_Button_Switch );
+			pPanel->addSlider( informationPanel_exposure, "Exposure",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
+				this->currentCamera->GetExposure(), kofxGui_Display_Int, 0 );
+
+			//! White balance
+			pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
+				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+				this->currentCamera->GetAutoWhiteBalance(), kofxGui_Button_Switch );
+			pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+				this->currentCamera->GetWhiteBalanceRed(), kofxGui_Display_Int, 0 );
+			pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+				this->currentCamera->GetWhiteBalanceGreen(), kofxGui_Display_Int, 0 );
+			pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
+				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+				this->currentCamera->GetWhiteBalanceBlue(), kofxGui_Display_Int, 0 );
+
+
+			pPanel->mObjWidth = 175;
+			pPanel->mObjHeight = 450;
 
 			break;
-		//! Step 1 Panel
-		case step1Panel:
-			pPanel = controls->addPanel(
-				this->step1Panel, "Step 1", GENERAL_AREA_X, GENERAL_AREA_Y,
-				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->addLabel( step1Panel_tip, "",
-				GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
-				"Set matrix:", controls->mGlobals->mLabelColor );
-			pPanel->addSlider( this->step1Panel_Xaxis, "X axis", 
-				GENERAL_AREA_SLIDER_WIDTH, GENERAL_AREA_SLIDER_HEIGHT,
-				1, 8, XAxis, kofxGui_Display_Int, 0 );
-			pPanel->addSlider( this->step1Panel_Yaxis, "Y axis",
-				GENERAL_AREA_SLIDER_WIDTH, GENERAL_AREA_SLIDER_HEIGHT,
-				1, 8, YAxis, kofxGui_Display_Int, 0 );
-			pPanel->addButton( this->step1Panel_previous, "previous",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step1Panel_next, "next",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->mObjWidth = GENERAL_AREA_WIDTH;
-			pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
+		////! Step 1 Panel
+		//case step1Panel:
+		//	pPanel = controls->addPanel(
+		//		this->step1Panel, "Step 1", GENERAL_AREA_X, GENERAL_AREA_Y,
+		//		OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+		//	pPanel->addLabel( step1Panel_tip, "",
+		//		GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
+		//		"Set matrix:", controls->mGlobals->mLabelColor );
+		//	pPanel->addSlider( this->step1Panel_Xaxis, "X axis", 
+		//		GENERAL_AREA_SLIDER_WIDTH, GENERAL_AREA_SLIDER_HEIGHT,
+		//		1, 8, XAxis, kofxGui_Display_Int, 0 );
+		//	pPanel->addSlider( this->step1Panel_Yaxis, "Y axis",
+		//		GENERAL_AREA_SLIDER_WIDTH, GENERAL_AREA_SLIDER_HEIGHT,
+		//		1, 8, YAxis, kofxGui_Display_Int, 0 );
+		//	pPanel->addButton( this->step1Panel_previous, "previous",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step1Panel_next, "next",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->mObjWidth = GENERAL_AREA_WIDTH;
+		//	pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
 
-			pPanel->mObjects[3]->mObjX = GENERAL_AREA_PREV_X;	// [3]: "previous"
-			pPanel->mObjects[3]->mObjY = GENERAL_AREA_PREV_Y;
-			pPanel->mObjects[4]->mObjX = GENERAL_AREA_NEXT_X; // [4]: "next"
-			pPanel->mObjects[4]->mObjY = GENERAL_AREA_NEXT_Y;
+		//	pPanel->mObjects[3]->mObjX = GENERAL_AREA_PREV_X;	// [3]: "previous"
+		//	pPanel->mObjects[3]->mObjY = GENERAL_AREA_PREV_Y;
+		//	pPanel->mObjects[4]->mObjX = GENERAL_AREA_NEXT_X; // [4]: "next"
+		//	pPanel->mObjects[4]->mObjY = GENERAL_AREA_NEXT_Y;
 
-			pPanel->adjustToNewContent( 100, 0 );
+		//	pPanel->adjustToNewContent( 100, 0 );
 
-			break;
-		//! Step 2 panel
-		case step2Panel:
-			pPanel = controls->addPanel(
-				this->step2Panel, "Step 2", GENERAL_AREA_X, GENERAL_AREA_Y,
-				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->addLabel( this->step2Panel_tip, "",
-				GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
-				"Set Devices (optional)", controls->mGlobals->mLabelColor );
-			pPanel->addButton( this->step2Panel_setDevices, "Set Devices",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step2Panel_previous, "previous",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step2Panel_next, "next",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	break;
+		////! Step 2 panel
+		//case step2Panel:
+		//	pPanel = controls->addPanel(
+		//		this->step2Panel, "Step 2", GENERAL_AREA_X, GENERAL_AREA_Y,
+		//		OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+		//	pPanel->addLabel( this->step2Panel_tip, "",
+		//		GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
+		//		"Set Devices (optional)", controls->mGlobals->mLabelColor );
+		//	pPanel->addButton( this->step2Panel_setDevices, "Set Devices",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step2Panel_previous, "previous",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step2Panel_next, "next",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
 
-			pPanel->mObjWidth = GENERAL_AREA_WIDTH;
-			pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
+		//	pPanel->mObjWidth = GENERAL_AREA_WIDTH;
+		//	pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
 
-			pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	// [2]: "previous"
-			pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
-			pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	// [3]: "next"
-			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
+		//	pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	// [2]: "previous"
+		//	pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
+		//	pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	// [3]: "next"
+		//	pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
 
-			pPanel->adjustToNewContent( 100, 0 );
+		//	pPanel->adjustToNewContent( 100, 0 );
 
-			break;
-		//! Step 3 panel
-		case step3Panel:
-			pPanel = controls->addPanel(
-				this->step3Panel, "Step 3", GENERAL_AREA_X, GENERAL_AREA_Y,
-				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->addLabel( this->step3Panel_tip, "",
-				GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
-				"Arrange the cameras", controls->mGlobals->mLabelColor );
-			//pPanel->addMatrix( this->step3Panel_matrix, "Thumbnails",
-			//	GENERAL_AREA_MATRIX_WIDTH, GENERAL_AREA_MATRIX_HEIGHT,
-			//	XAxis, YAxis, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
-			pPanel->addButton( this->step3Panel_reset_all, "Reset All",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step3Panel_previous,"Previous",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step3Panel_next, "Next",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->mObjWidth = GENERAL_AREA_WIDTH;
-			pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
+		//	break;
+		////! Step 3 panel
+		//case step3Panel:
+		//	pPanel = controls->addPanel(
+		//		this->step3Panel, "Step 3", GENERAL_AREA_X, GENERAL_AREA_Y,
+		//		OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+		//	pPanel->addLabel( this->step3Panel_tip, "",
+		//		GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
+		//		"Arrange the cameras", controls->mGlobals->mLabelColor );
+		//	//pPanel->addMatrix( this->step3Panel_matrix, "Thumbnails",
+		//	//	GENERAL_AREA_MATRIX_WIDTH, GENERAL_AREA_MATRIX_HEIGHT,
+		//	//	XAxis, YAxis, kofxGui_Matrix_Clear, kofxGui_Button_Trigger, OFXGUI_MATRIX_SPACING );
+		//	pPanel->addButton( this->step3Panel_reset_all, "Reset All",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step3Panel_previous,"Previous",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step3Panel_next, "Next",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->mObjWidth = GENERAL_AREA_WIDTH;
+		//	pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
 
-			//pPanel->mObjects[1]->mObjX = 10;	//! [1]: Matrix
-			//pPanel->mObjects[1]->mObjY = 45;
-			pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
-			pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
-			pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
-			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
+		//	//pPanel->mObjects[1]->mObjX = 10;	//! [1]: Matrix
+		//	//pPanel->mObjects[1]->mObjY = 45;
+		//	pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;	//! [2]: Previous
+		//	pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
+		//	pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;	//! [3]: Next
+		//	pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
 
-			//pPanel->mObjects[1]->mObjX = GENERAL_AREA_PREV_X;	//! [1]: Previous
-			//pPanel->mObjects[1]->mObjY = GENERAL_AREA_PREV_Y;
-			//pPanel->mObjects[2]->mObjX = GENERAL_AREA_NEXT_X;	//! [2]: Next
-			//pPanel->mObjects[2]->mObjY = GENERAL_AREA_NEXT_Y;
+		//	//pPanel->mObjects[1]->mObjX = GENERAL_AREA_PREV_X;	//! [1]: Previous
+		//	//pPanel->mObjects[1]->mObjY = GENERAL_AREA_PREV_Y;
+		//	//pPanel->mObjects[2]->mObjX = GENERAL_AREA_NEXT_X;	//! [2]: Next
+		//	//pPanel->mObjects[2]->mObjY = GENERAL_AREA_NEXT_Y;
 
-			pPanel->adjustToNewContent( 140, 0 );
+		//	pPanel->adjustToNewContent( 140, 0 );
 
-			break;
+		//	break;
 
-		case step4Panel:
-			pPanel = controls->addPanel(
-				this->step4Panel, "Step 4", GENERAL_AREA_X, GENERAL_AREA_Y,
-				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
-			pPanel->addLabel( this->step4Panel_tip, "",
-				GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
-				"Finishing (optional)", controls->mGlobals->mLabelColor );
-			pPanel->addButton( this->step4Panel_calibration, "Calibration",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step4Panel_previous, "Previous",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
-			pPanel->addButton( this->step4Panel_finish, "Finish",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//case step4Panel:
+		//	pPanel = controls->addPanel(
+		//		this->step4Panel, "Step 4", GENERAL_AREA_X, GENERAL_AREA_Y,
+		//		OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+		//	pPanel->addLabel( this->step4Panel_tip, "",
+		//		GENERAL_AREA_LABEL_WIDTH, GENERAL_AREA_LABEL_HEIGHT,
+		//		"Finishing (optional)", controls->mGlobals->mLabelColor );
+		//	pPanel->addButton( this->step4Panel_calibration, "Calibration",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step4Panel_previous, "Previous",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
+		//	pPanel->addButton( this->step4Panel_finish, "Finish",
+		//		OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+		//		kofxGui_Button_Off, kofxGui_Button_Trigger );
 
-			pPanel->mObjWidth = GENERAL_AREA_WIDTH;
-			pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
+		//	pPanel->mObjWidth = GENERAL_AREA_WIDTH;
+		//	pPanel->mObjHeight = GENERAL_AREA_HEIGHT;
 
-			pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;
-			pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
-			pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;
-			pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
+		//	pPanel->mObjects[2]->mObjX = GENERAL_AREA_PREV_X;
+		//	pPanel->mObjects[2]->mObjY = GENERAL_AREA_PREV_Y;
+		//	pPanel->mObjects[3]->mObjX = GENERAL_AREA_NEXT_X;
+		//	pPanel->mObjects[3]->mObjY = GENERAL_AREA_NEXT_Y;
 
-			pPanel->adjustToNewContent( 100, 0 );
-			break;
+		//	pPanel->adjustToNewContent( 100, 0 );
+		//	break;
 
 		default:
 			break;
@@ -839,9 +819,7 @@ void MultiCams::removePanels() {
 	controls->removePanel( this->devicesSettingsPanel );
 	controls->removePanel( this->calibrationPanel );
 
-
 	controls->removePanel( this->informationPanel );
-
 
 	controls->removePanel( this->generalSettingsPanel );
 	controls->removePanel( this->step1Panel );
@@ -853,6 +831,14 @@ void MultiCams::removePanels() {
 
 void MultiCams::removePanel( int id ) {
 	controls->removePanel( id );
+}
+//--------------------------------------------------------------
+void MultiCams::updateInfoPanel(int rawId) {
+	currentCamera = utils->getRawCam( rawId );
+	if ( currentCamera != NULL ) {
+		removePanel( informationPanel );
+		addPanel( informationPanel );
+	}
 }
 //--------------------------------------------------------------
 

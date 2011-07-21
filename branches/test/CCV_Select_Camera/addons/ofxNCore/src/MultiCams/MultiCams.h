@@ -33,9 +33,9 @@ class ofxNCoreVision;
 #define GENERAL_AREA_NEXT_X 110
 #define GENERAL_AREA_NEXT_Y 140
 
-#define RIGHT_PANEL_WIDTH 190
+#define RIGHT_PANEL_WIDTH 170
 #define RIGHT_PANEL_X 740
-#define RIGHT_PANEL_SLIDER_WIDTH 170
+#define RIGHT_PANEL_SLIDER_WIDTH 155
 #define RIGHT_PANEL_SLIDER_HEIGHT 10
 #define RIGHT_PANEL_Y_OFFSET 100
 
@@ -80,6 +80,20 @@ class MultiCams : public ofxGuiListener {
 		dragging_image,
 
 		informationPanel,
+		informationPanel_image,
+		informationPanel_uuid,
+		informationPanel_type,
+		informationPanel_hflip,
+		informationPanel_vflip,
+		informationPanel_auto_gain,
+		informationPanel_gain,
+		informationPanel_auto_exposure,
+		informationPanel_exposure,
+		informationPanel_auto_whitebalance,
+		informationPanel_whitebalance_red,
+		informationPanel_whitebalance_green,
+		informationPanel_whitebalance_blue,
+
 
 		step1Panel,
 		step1Panel_tip,
@@ -139,6 +153,7 @@ public:
 	void addPanel( int id );
 	void removePanels();
 	void removePanel( int id);
+	void updateInfoPanel( int rawId);
 
 	// PASS IN
 	void passInCoreVision( ofxNCoreVision * core );
@@ -224,7 +239,6 @@ private:
 	bool bShowInterface;
 	bool bShowConfiguration;
 
-
 	//! window
 	string windowTitle;
 	int winWidth;
@@ -241,6 +255,10 @@ private:
 
 	//! XML load/save
 	ofxXmlSettings XML;
+
+	///////////////////////////
+	PS3* currentCamera;
+	ofxGuiImage* previewImage;
 
 };
 
