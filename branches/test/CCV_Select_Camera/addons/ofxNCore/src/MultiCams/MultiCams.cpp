@@ -513,7 +513,7 @@ void MultiCams::addPanel( int id ) {
 			camsGrid->setResetBtnId( camerasDisplayPanel_grid_reset );
 			camsGrid->setSettingBtnId( camerasDisplayPanel_grid_setting );
 			camsGrid->setShowResetBtn( true );
-			camsGrid->setShowSettingBtn( true );
+			camsGrid->setShowSettingBtn( false );
 			camsGrid->enableDblClickMode( true );
 
 			//pPanel->addButton( step3Panel_reset_all, "Reset All",
