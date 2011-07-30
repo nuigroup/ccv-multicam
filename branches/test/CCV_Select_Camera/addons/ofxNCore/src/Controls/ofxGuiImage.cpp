@@ -85,23 +85,38 @@ void ofxGuiImage::setBlank( bool bBlank ) {
 
 // ----------------------------------------------
 
-void ofxGuiImage::setCamera( PS3* cam ) {
+//void ofxGuiImage::setCamera( PS3* cam ) {
+//	if ( cam != NULL ) {
+//		//! DEBUG
+//		printf( "\nofxGuiImage::setCamera()\tcam = %p\n", cam );
+//
+//		//printf( "pCam = %p\n", pCam );
+//		this->pCam = cam;
+//		//printf( "pCam!!!\n" );
+//		//printf( "pCam = %p\n", pCam );
+//		//cam->PrintInfo();
+//		setImage( pCam->GetPixels(), pCam->GetWidth(), pCam->GetHeight() );
+//		//printf( "pCam = %p\n", pCam );
+//
+//		// cam->PrintInfo();
+//		setCanDrawInfo( true );
+//	} else {
+//		setBlank( true );	//! camera is NULL so we show blank image.
+//	}
+//}
+
+void ofxGuiImage::setCamera( ofxCameraBase *cam ) {
 	if ( cam != NULL ) {
-		//! DEBUG
-		printf( "\nofxGuiImage::setCamera()\tcam = %p\n", cam );
-
-		//printf( "pCam = %p\n", pCam );
 		this->pCam = cam;
-		//printf( "pCam!!!\n" );
-		//printf( "pCam = %p\n", pCam );
-		//cam->PrintInfo();
-		setImage( pCam->GetPixels(), pCam->GetWidth(), pCam->GetHeight() );
-		//printf( "pCam = %p\n", pCam );
 
-		// cam->PrintInfo();
+		pCam->getCameraFrame( pImage );
+		pCam->getCameraSize( &mCamWidth, &mCamHeight, &mCamDepth );
+
+		setImage( pImage, mCamWidth, mCamHeight );
+
 		setCanDrawInfo( true );
 	} else {
-		setBlank( true );	//! camera is NULL so we show blank image.
+		setBlank( true );
 	}
 }
 
@@ -132,7 +147,7 @@ void ofxGuiImage::setCamSelected( bool selected ) {
 
 // ----------------------------------------------
 
-PS3* ofxGuiImage::getCamera() {
+ofxCameraBase* ofxGuiImage::getCamera() {
 	return pCam;
 }
 
@@ -166,13 +181,14 @@ void ofxGuiImage::draw() {
 		}
 
 		if ( mParamName != "" ) {
-			//! draw the shadow
-			color.r = 0.0f;	color.g = 0.0f;	color.b = 0.0f;	color.a = 1.0f;
-			drawString( PARAM_TEXT_OFFSET_X + 1, 1.0f, mParamName, false, color );
+			drawHighlightParamString( PARAM_TEXT_OFFSET_X, .0f, mParamName, false );
+			////! draw the shadow
+			//color.r = 0.0f;	color.g = 0.0f;	color.b = 0.0f;	color.a = 1.0f;
+			//drawString( PARAM_TEXT_OFFSET_X + 1, 1.0f, mParamName, false, color );
 
-			//! draw the text
-			color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
-			drawString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false, color );
+			////! draw the text
+			//color.r = 1.0f;	color.g = 1.0f;	color.b = 1.0f;	color.a = 1.0f;
+			//drawString( PARAM_TEXT_OFFSET_X, 0.0f, mParamName, false, color );
 		}
 
 		if ( bDrawInfo && bCanDrawInfo && pCam != NULL ) {
@@ -234,7 +250,8 @@ void ofxGuiImage::drawBlank() {
 void ofxGuiImage::drawImage() {
 	if ( bImageSet ) {
 		if ( pCam != NULL ) {
-			setImage( pCam->GetPixels(), pCam->GetWidth(), pCam->GetHeight() );
+			pCam->getCameraFrame( pImage );
+			setImage( pImage, mCamWidth, mCamHeight );
 		}
 		if ( pCvImage != NULL ) {
 			pCvImage->draw( mCtrX, mCtrY, mCtrWidth, mCtrHeight );
@@ -261,22 +278,23 @@ void ofxGuiImage::drawString( int x, int y, string str, bool center, ofRGBA colo
 
 void ofxGuiImage::drawInfo() {
 	int i = 0;
-	string info = "foo";
-	int textHeight = mGlobals->mParamFont.stringHeight( info );
-	if ( pCam != NULL ) {
-		info += "\nFPS: ";
-		info += ofToString( pCam->GetFPS() );
-		info += "\nmeiyou.org\nmeiyou.oeg\nmeiyou.org\nType: ";
-		info += "PS3";	// TODO
-		info += "\nGUID: ";
-		info += PS3::GUID2String( pCam->GetGUID(), '_' );
-	}
+	int textHeight = mGlobals->mParamFont.stringHeight( "foo" );
+
+	//string info = "foo";
+	//if ( pCam != NULL ) {
+	//	info += "\nFPS: ";
+	//	info += ofToString( pCam->GetFPS() );
+	//	info += "\nmeiyou.org\nmeiyou.oeg\nmeiyou.org\nType: ";
+	//	info += "PS3";	// TODO
+	//	info += "\nGUID: ";
+	//	info += PS3::GUID2String( pCam->GetGUID(), '_' );
+	//}
 
 	//! Display order: Bottom -> Top
-	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "GUID: " + PS3::GUID2String( pCam->GetGUID(), '_' ), false );
-	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Res: " + ofToString( pCam->GetWidth() ) + "x" + ofToString( pCam->GetHeight() ), false );
-	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Type: PS3", false );
-	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "FPS: " + ofToString( pCam->GetFPS() ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "GUID: " + GUIDToString( pCam->getCameraGUID(), '_' ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Res: " + ofToString( (int)mCamWidth ) + "x" + ofToString( (int)mCamHeight ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Type: " + CameraTypeToStr( pCam->getCameraType() ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "FPS: " + ofToString( pCam->getCameraFramerate() ), false );
 
 	////int x = mCtrWidth - textWidth;
 	////int y = 0;

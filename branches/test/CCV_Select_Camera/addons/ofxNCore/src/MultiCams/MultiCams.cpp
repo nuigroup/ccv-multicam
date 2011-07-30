@@ -43,7 +43,7 @@ MultiCams::MultiCams() {
 
 	//////////////////////////
 	// SetDevices
-	setDevices = NULL;
+	//setDevices = NULL;
 	bDevicesConfiguration = false;
 
 	//////////////////////////
@@ -57,7 +57,7 @@ MultiCams::MultiCams() {
 	devGrid = NULL;
 	camsGrid = NULL;
 
-	currentCamera = new PS3();
+	currentCamera = new ofxCameraBase();
 	previewImage = new ofxGuiImage();
 }
 //--------------------------------------------------------------
@@ -74,12 +74,12 @@ void MultiCams::setup() {
 	controls = ofxGui::Instance( this );
 	setupControls();
 
-	//! SetDevices
-	if (setDevices == NULL ) {
-		setDevices = new SetDevices();
-		setDevices->passInCamsUtils( utils );
-		setDevices->setup();
-	}
+	////! SetDevices
+	//if (setDevices == NULL ) {
+	//	setDevices = new SetDevices();
+	//	setDevices->passInCamsUtils( utils );
+	//	setDevices->setup();
+	//}
 
 	//! init the X/Y
 	XAxis = utils->getXGrid();
@@ -90,7 +90,7 @@ void MultiCams::setup() {
 void MultiCams::update( ofEventArgs &e ) {
 	utils->update();
 	if ( bDevicesConfiguration ) {
-		setDevices->update();
+		//setDevices->update();
 	} else { 
 		devGrid->update();
 	}
@@ -151,7 +151,7 @@ void MultiCams::_keyReleased( ofKeyEventArgs &e ) {
 ********************************************************/
 void MultiCams::handleGui(int parameterId, int task, void* data, int length) {
 	if ( bDevicesConfiguration ) {
-		setDevices->handleGui( parameterId, task, data, length );
+		//setDevices->handleGui( parameterId, task, data, length );
 	} else {
 		_handleGui( parameterId, task, data, length );
 	}
@@ -186,14 +186,15 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 			}
 			break;
 		case camerasDisplayPanel_grid_setting:
-			if ( length == sizeof( bool ) && task == kofxGui_Set_Bool ) {
-				if ( *(bool*)data ) {
-					// TODO
-					setDevices->setShowCamRawId( utils->getRawId( utils->getCam( camsGrid->getSelectedId() ) ) );
+			//if ( length == sizeof( bool ) && task == kofxGui_Set_Bool ) {
+			//	if ( *(bool*)data ) {
+			//		// TODO
+			//		setDevices->setShowCamRawId( utils->getRawId( utils->getCam( camsGrid->getSelectedId() ) ) );
 
-					switchSetDevicesGUI( true );
-				}
-			}
+			//		switchSetDevicesGUI( true );
+			//	}
+			//}
+			break;
 			//////////////////////////////////
 			// DEVICES LIST
 			//! 
@@ -334,84 +335,84 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 		case informationPanel_hflip:
 			if ( length == sizeof(bool) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetHFlip( *(bool*)data );
+					//this->currentCamera->SetHFlip( *(bool*)data );
 				}
 			}
 			break;
 		case informationPanel_vflip:
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetVFlip( *(bool*)data );
+					//this->currentCamera->SetVFlip( *(bool*)data );
 				}
 			}
 			break;
 		case informationPanel_auto_gain:
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetAutoGain( *(bool*)data );
+					//this->currentCamera->SetAutoGain( *(bool*)data );
 
-					if ( !*(bool*)data ) {	// use the manual value
-						this->currentCamera->SetGainValue( currentCamera->GetGainValue() );
-					}
+					//if ( !*(bool*)data ) {	// use the manual value
+					//	this->currentCamera->SetGainValue( currentCamera->GetGainValue() );
+					//}
 				}
 			}
 			break;
 		case informationPanel_gain:
 			if ( length == sizeof( float ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetGainValue( (int)*(float*)data );
+					//this->currentCamera->SetGainValue( (int)*(float*)data );
 				}
 			}
 			break;
 		case informationPanel_auto_exposure:
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetAutoExposure( *(bool*)data );
+					//this->currentCamera->SetAutoExposure( *(bool*)data );
 
-					if ( !*(bool*)data ) {	// use the manual value
-						this->currentCamera->SetExposure( currentCamera->GetExposure() );
-					}
+					//if ( !*(bool*)data ) {	// use the manual value
+					//	this->currentCamera->SetExposure( currentCamera->GetExposure() );
+					//}
 				}
 			}
 			break;
 		case informationPanel_exposure:
 			if ( length == sizeof( float ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetExposure( (int)*(float*)data );
+					//this->currentCamera->SetExposure( (int)*(float*)data );
 				}
 			}
 			break;
 		case informationPanel_auto_whitebalance:
 			if ( length == sizeof( bool ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetAutoWhiteBalance( *(bool*)data );
+					//this->currentCamera->SetAutoWhiteBalance( *(bool*)data );
 
-					if ( !*(bool*)data ) {
-						this->currentCamera->SetWhiteBalanceRed( currentCamera->GetWhiteBalanceRed() );
-						this->currentCamera->SetWhiteBalanceGreen( currentCamera->GetWhiteBalanceGreen() );
-						this->currentCamera->SetWhiteBalanceBlue( currentCamera->GetWhiteBalanceBlue() );
-					}
+					//if ( !*(bool*)data ) {
+					//	this->currentCamera->SetWhiteBalanceRed( currentCamera->GetWhiteBalanceRed() );
+					//	this->currentCamera->SetWhiteBalanceGreen( currentCamera->GetWhiteBalanceGreen() );
+					//	this->currentCamera->SetWhiteBalanceBlue( currentCamera->GetWhiteBalanceBlue() );
+					//}
 				}
 			}
 			break;
 		case informationPanel_whitebalance_red:
 			if ( length == sizeof( float ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetWhiteBalanceRed( (int)*(float*)data );
+					//this->currentCamera->SetWhiteBalanceRed( (int)*(float*)data );
 				}
 			}
 			break;
 		case informationPanel_whitebalance_green:
 			if ( length == sizeof( float ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetWhiteBalanceGreen( (int)*(float*)data );
+					//this->currentCamera->SetWhiteBalanceGreen( (int)*(float*)data );
 				}
 			}
 			break;
 		case informationPanel_whitebalance_blue:
 			if ( length == sizeof( float ) ) {
 				if ( this->currentCamera != NULL ) {
-					this->currentCamera->SetWhiteBalanceBlue( (int)*(float*)data );
+					//this->currentCamera->SetWhiteBalanceBlue( (int)*(float*)data );
 				}
 			}
 			break;
@@ -422,47 +423,7 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 }
 //--------------------------------------------------------------
 void MultiCams::setupControls() {
-
-	////panel border color
-	//controls->mGlobals->mBorderColor.r = 0;
-	//controls->mGlobals->mBorderColor.g = 0;
-	//controls->mGlobals->mBorderColor.b = 0;
-	//controls->mGlobals->mBorderColor.a = .3;
-	////panel color
-	//controls->mGlobals->mCoverColor.r = 1;
-	//controls->mGlobals->mCoverColor.g = 1;
-	//controls->mGlobals->mCoverColor.b = 1;
-	//controls->mGlobals->mCoverColor.a = .4;
-	////control outline color
-	//controls->mGlobals->mFrameColor.r = 0;
-	//controls->mGlobals->mFrameColor.g = 0;
-	//controls->mGlobals->mFrameColor.b = 0;
-	//controls->mGlobals->mFrameColor.a = .3;
-	////text color
-	//controls->mGlobals->mTextColor.r = 0;
-	//controls->mGlobals->mTextColor.g = 0;
-	//controls->mGlobals->mTextColor.b = 0;
-	//controls->mGlobals->mTextColor.a = 1;
-	////button color
-	//controls->mGlobals->mButtonColor.r = 1;
-	//controls->mGlobals->mButtonColor.g = 0;
-	//controls->mGlobals->mButtonColor.b = 0;
-	//controls->mGlobals->mButtonColor.a = .8;
-	////slider tip color
-	//controls->mGlobals->mHandleColor.r = 0;
-	//controls->mGlobals->mHandleColor.g = 0;
-	//controls->mGlobals->mHandleColor.b = 0;
-	////slider color
-	//controls->mGlobals->mSliderColor.r = 1;
-	//controls->mGlobals->mSliderColor.g = 0;
-	//controls->mGlobals->mSliderColor.b = 0;
-	//controls->mGlobals->mSliderColor.a = .8;
-
-	////! label color
-	//controls->mGlobals->mLabelColor.r = 0;
-	//controls->mGlobals->mLabelColor.g = 0;
-	//controls->mGlobals->mLabelColor.b = .2;
-	//controls->mGlobals->mLabelColor.a = .8;
+	// TODO
 }
 //--------------------------------------------------------------
 
@@ -473,6 +434,7 @@ void MultiCams::updateControls() {
 //--------------------------------------------------------------
 
 void MultiCams::addPanels() {
+	printf( "\nMultiCams::addPanels()\n" );
 
 	addPanel( camerasDisplayPanel );
 	addPanel( devicesListPanel );
@@ -495,6 +457,7 @@ void MultiCams::addPanels() {
 	//!
 	controls->forceUpdate( true );
 	controls->activate( true );
+	printf( "\n\tEND:\tMultiCams::addPanels()\n" );
 }
 //--------------------------------------------------------------
 //! Add the panel and the controls of it
@@ -645,34 +608,34 @@ void MultiCams::addPanel( int id ) {
 			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
 			//	this->currentCamera->GetVFlip(), kofxGui_Button_Switch );
 			//! Gain
-			pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				this->currentCamera->GetAutoGain(), kofxGui_Button_Switch );
-			pPanel->addSlider( informationPanel_gain, "Gain",
-				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
-				this->currentCamera->GetGainValue(), kofxGui_Display_Int, 0 );
+			//pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	this->currentCamera->GetAutoGain(), kofxGui_Button_Switch );
+			//pPanel->addSlider( informationPanel_gain, "Gain",
+			//	RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
+			//	this->currentCamera->GetGainValue(), kofxGui_Display_Int, 0 );
 
-			//! Exposure
-			pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				this->currentCamera->GetAutoExposure(), kofxGui_Button_Switch );
-			pPanel->addSlider( informationPanel_exposure, "Exposure",
-				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
-				this->currentCamera->GetExposure(), kofxGui_Display_Int, 0 );
+			////! Exposure
+			//pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	this->currentCamera->GetAutoExposure(), kofxGui_Button_Switch );
+			//pPanel->addSlider( informationPanel_exposure, "Exposure",
+			//	RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
+			//	this->currentCamera->GetExposure(), kofxGui_Display_Int, 0 );
 
-			//! White balance
-			pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
-				OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-				this->currentCamera->GetAutoWhiteBalance(), kofxGui_Button_Switch );
-			pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
-				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-				this->currentCamera->GetWhiteBalanceRed(), kofxGui_Display_Int, 0 );
-			pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
-				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-				this->currentCamera->GetWhiteBalanceGreen(), kofxGui_Display_Int, 0 );
-			pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
-				RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-				this->currentCamera->GetWhiteBalanceBlue(), kofxGui_Display_Int, 0 );
+			////! White balance
+			//pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
+			//	OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+			//	this->currentCamera->GetAutoWhiteBalance(), kofxGui_Button_Switch );
+			//pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
+			//	RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+			//	this->currentCamera->GetWhiteBalanceRed(), kofxGui_Display_Int, 0 );
+			//pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
+			//	RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+			//	this->currentCamera->GetWhiteBalanceGreen(), kofxGui_Display_Int, 0 );
+			//pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
+			//	RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+			//	this->currentCamera->GetWhiteBalanceBlue(), kofxGui_Display_Int, 0 );
 
 
 			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
@@ -848,11 +811,11 @@ void MultiCams::updateInfoPanel(int rawId) {
 ********************************************************/
 void MultiCams::draw() {
 	//! Move this to "update" function
-	if ( bDevicesConfiguration && setDevices->bShowInterface == false ) {
+	if ( bDevicesConfiguration /*&& setDevices->bShowInterface == false*/ ) {
 		switchSetDevicesGUI( false );	//! Close the SetDevices, show MultiCams
 	}
 	if ( bDevicesConfiguration ) {
-		setDevices->draw();
+		//setDevices->draw();
 	} else {
 		_draw();	//! Draw the self interface
 	}
@@ -938,21 +901,21 @@ void MultiCams::SaveXMLSettings() {
 //--------------------------------------------------------------
 
 void MultiCams::switchSetDevicesGUI( bool showDevices ) {
-	if ( setDevices == NULL ) {
-		return;
-	}
-	if ( showDevices ) {
-		removePanels();
-		setDevices->showInterface( true );
-		bDevicesConfiguration = true;
-	} else {
-		setDevices->showInterface( false );
-		addPanels();
-		////! Goto step 2
-		//removePanel( generalSettingsPanel );
-		//addPanel( step2Panel );
-		bDevicesConfiguration = false;
-	}
+	//if ( setDevices == NULL ) {
+	//	return;
+	//}
+	//if ( showDevices ) {
+	//	removePanels();
+	//	setDevices->showInterface( true );
+	//	bDevicesConfiguration = true;
+	//} else {
+	//	setDevices->showInterface( false );
+	//	addPanels();
+	//	////! Goto step 2
+	//	//removePanel( generalSettingsPanel );
+	//	//addPanel( step2Panel );
+	//	bDevicesConfiguration = false;
+	//}
 }
 //--------------------------------------------------------------
 

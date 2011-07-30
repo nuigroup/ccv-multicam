@@ -13,7 +13,7 @@
 #include "ofxXmlSettings.h"
 #include "Controls/ofxGuiTypes.h"
 #include "Controls/ofxGui.h"
-#include "MultiCams/SetDevices.h"
+//#include "MultiCams/SetDevices.h"
 #include "MultiCams/CamsUtils.h"
 // #include "Modules/ofxNCoreVision.h"
 class ofxNCoreVision;
@@ -199,7 +199,7 @@ private:
 	//////////////////////////////////
 	// SET DEVICES
 	//! SetDevices pointer
-	SetDevices* setDevices;
+	//SetDevices* setDevices;
 	bool		bDevicesConfiguration;
 
 	//! Horizontal and vertical camera count
@@ -257,7 +257,8 @@ private:
 	ofxXmlSettings XML;
 
 	///////////////////////////
-	PS3* currentCamera;
+	//PS3* currentCamera;
+	ofxCameraBase* currentCamera;
 	ofxGuiImage* previewImage;
 
 };

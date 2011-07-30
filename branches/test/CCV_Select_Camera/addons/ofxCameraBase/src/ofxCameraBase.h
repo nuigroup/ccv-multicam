@@ -13,8 +13,9 @@
 #define _MAX_FRAME_LIFETIME_ 3
 #include <windows.h>
 #include "ofxCameraBaseSettings.h"
-#include "ofMain.h"
+//#include "ofMain.h"
 #include "ofxGUIDHelper.h"
+#include "ofVideoPlayer.h"
 //#include "ofxVideoWriter.h"
 
 class ofxCameraBase
@@ -62,7 +63,9 @@ public:
 	//get current value of feature with min and max value
 	virtual void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled,int* minValue,int* maxValue) {}
 	//get number of connected cameras
-	virtual int getCameraBaseCount() {return 0;}	
+	virtual int getCameraBaseCount() {return 0;}
+	// get camera type
+	virtual CAMERATYPE getCameraType() { return PS3; }
 	////start video recording from this camera. Due to some specific of video coding/decoding - video will be recorded with 30 fps
 	//void startRecording();
 	////stop video recording from this camera. Due to some specific of video coding/decoding - video will be recorded with 30 fps
@@ -83,6 +86,8 @@ public:
 	bool isCapturedNewFrame() { return isNewFrame;}
 	//start camera logic
 	void startCamera();
+	// public getter of camera framerate property
+	int getCameraFramerate() { return framerate; }
 protected:
 	//logic for updating current frame
 	void updateCurrentFrame();

@@ -21,6 +21,7 @@ public:
 	void setCameraFeature(CAMERA_BASE_FEATURE featureCode,int firstValue,int secondValue,bool isAuto,bool isEnabled);
 	void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled,int* minValue,int* maxValue);
 	int getCameraBaseCount();
+	CAMERATYPE getCameraType();
 protected:
 	void getNewFrame(unsigned char* newFrame);
 	void cameraInitializationLogic();

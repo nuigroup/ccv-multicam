@@ -118,3 +118,7 @@ int ofxPS3::getCameraBaseCount()
 {
 	return CLEyeGetCameraCount();
 }
+
+CAMERATYPE ofxPS3::getCameraType() {
+	return PS3;
+}

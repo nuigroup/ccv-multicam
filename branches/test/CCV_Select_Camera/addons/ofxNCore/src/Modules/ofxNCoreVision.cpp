@@ -86,7 +86,8 @@ void ofxNCoreVision::_setup(ofEventArgs &e)
 
 	if ( camsUtils == NULL ) {
 		camsUtils = new CamsUtils();
-		camsUtils->setup( CLEYE_MONO_PROCESSED, CLEYE_QVGA, 60 );
+		//camsUtils->setup( CLEYE_MONO_PROCESSED, CLEYE_QVGA, 60 );
+		camsUtils->setup();
 	}
 	if ( multiCams == NULL ) {
 		multiCams = new MultiCams();
@@ -1210,6 +1211,7 @@ void ofxNCoreVision::_exit(ofEventArgs &e)
 * MULTIPLE CAMERAS
 *****************************************************************************/
 void ofxNCoreVision::switchMultiCamsGUI( bool showCams ) {
+	printf( "\nofxNCoreVision::switchMultiCamsGUI\n" );
 	if ( showCams ) {
 		bMultiCamsInterface = true;
 		bShowInterface = false;

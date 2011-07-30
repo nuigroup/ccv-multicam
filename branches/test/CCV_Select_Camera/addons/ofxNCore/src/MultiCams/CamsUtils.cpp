@@ -16,12 +16,15 @@
 CamsUtils::CamsUtils() {
 	displayCams = NULL;
 	rawCams = NULL;
+	xmlCams = NULL;
+
+	rawCamsSettings = NULL;
+	xmlCamsSettings = NULL;
+
 	camCount = 0;
 
 	camsUsed = NULL;
 
-	//! Set the XML cameras to NULL
-	xmlCams = NULL;
 	xGrid = 1;
 	yGrid = 1;
 }
@@ -37,100 +40,181 @@ CamsUtils::~CamsUtils() {
 // ----------------------------------------------
 
 void CamsUtils::setup( CLEyeCameraColorMode colorMode, CLEyeCameraResolution camRes, float frameRate ) {
-	this->camCount = getDevicesCount();
+	//this->camCount = getDevicesCount();
+	//if ( camCount <= 0 ) {
+	//	return;
+	//}
+
+	//this->colorMode = colorMode;
+	//this->camRes = camRes;
+	//this->frameRate = frameRate;
+
+	//rawCams = new PS3*[camCount];
+	////! init the bool array.
+	//camsSelected = new bool[camCount];
+	//for ( int i = 0; i < camCount; ++i ) {
+	//	camsSelected[i] = false;
+	//}
+
+	////! Load XML settings
+	//loadXML();
+	////! 
+	//if ( xGrid * yGrid > camCount ) {
+	//	xGrid = 1;
+	//	yGrid = 1;
+	//	xmlCams = NULL;
+	//}
+	//setXY( xGrid, yGrid );
+
+	//start();
+}
+
+void CamsUtils::setup() {
+	int i, j, index;
+	camCount = getDevicesCount();
+	printf( "\nCamsUtils::setup()\n\tcamCount = %d\n", camCount );
 	if ( camCount <= 0 ) {
 		return;
 	}
 
-	this->colorMode = colorMode;
-	this->camRes = camRes;
-	this->frameRate = frameRate;
-
-	rawCams = new PS3*[camCount];
-	//! init the bool array.
+	rawCams = new ofxCameraBase*[camCount];
+	rawCamsSettings = new ofxCameraBaseSettings*[camCount];
 	camsSelected = new bool[camCount];
-	for ( int i = 0; i < camCount; ++i ) {
+	for ( i = 0; i < camCount; ++i ) {
 		camsSelected[i] = false;
 	}
 
-	//! Load XML settings
+	//! Load Settings from XML
 	loadXML();
-	//! 
+
+	//! Wrong settings
 	if ( xGrid * yGrid > camCount ) {
 		xGrid = 1;
-		yGrid = 1;
+		xGrid = 1;
 		xmlCams = NULL;
 	}
+
 	setXY( xGrid, yGrid );
 
-	start();
+	index = 0;
+
+	//! PS3 cameras settings apply
+	for ( i = 0; i < getDevicesCount( false, PS3 ) && index < getDevicesCount(); ++i, ++index ) {
+		GUID guid = getGUID( PS3, i );
+
+		printf( "\n\ti=%d, index=%d, guid=%s\n", i, index, GUIDToString(guid).c_str() );
+
+		rawCams[index] = (ofxCameraBase*)(new ofxPS3());
+		rawCamsSettings[index] = new ofxCameraBaseSettings();
+		rawCamsSettings[index]->cameraType = PS3;
+		rawCamsSettings[index]->cameraGuid = guid;
+		
+		setupCameraSettings( rawCamsSettings[index] );
+
+		printf( "\nCamsUtils::setup()\nrawCams[%d].GUID = %s\n", index, GUIDToString( rawCamsSettings[index]->cameraGuid ).c_str() );
+
+		for ( j = 0; j < numCamTags; ++j ) {
+			printf( "CamsUtils::start\tGUID1 = %s\n\t\t\tGUID2 = %s\n\n",
+				GUIDToString(guid).c_str(),
+				GUIDToString(xmlCamsSettings[j]->cameraGuid).c_str() );
+			if ( EqualGUID( guid, xmlCamsSettings[j]->cameraGuid ) ) {
+				rawCamsSettings[index] = xmlCamsSettings[j];
+				setCam( xmlCamsSettings[j]->cameraX, xmlCamsSettings[j]->cameraY, rawCams[index] );
+				setSelected( index );
+			}
+		}
+
+		rawCams[index]->initializeWithGUID(
+			rawCamsSettings[index]->cameraGuid,
+			rawCamsSettings[index]->cameraWidth,
+			rawCamsSettings[index]->cameraHeight,
+			rawCamsSettings[index]->cameraLeft,
+			rawCamsSettings[index]->cameraTop,
+			rawCamsSettings[index]->cameraDepth,
+			rawCamsSettings[index]->cameraFramerate );
+
+	}
+
+	//! CMU
+	for ( i = 0; i < getDevicesCount( false, CMU ) && index < getDevicesCount(); ++i, ++index ) {
+		// TODO
+	}
+
+	//! FFMV
+	for ( i = 0; i < getDevicesCount( false, FFMV ) && index < getDevicesCount(); ++i, ++index ) {
+		// TODO
+	}
+
+	//! DIRECTSHOW
+
+	//! KINECT
+
+	applyCameraSettings();
+
+	startCameras();
 }
 
 // ----------------------------------------------
 
 void CamsUtils::update() {
-	for ( int i = 0; i < camCount; ++i ) {
-		//printf( "CamsUtils::update()\t i = %d\n", i );
-		bool newF = rawCams[i]->IsFrameNew();
-		//printf( "CamsUtils::update()\t new = %d\n", newF );
-	}
+	// TODO
 }
 
 // ----------------------------------------------
 void CamsUtils::start() {
 	//! init each camera.
-	for ( int i = 0; i < camCount; ++i ) {
-		GUID guid = getGUID( i );
+	//for ( int i = 0; i < camCount; ++i ) {
+	//	GUID guid = getGUID( i );
 
-		rawCams[i] = new PS3();
+	//	rawCams[i] = new PS3();
 
-		if ( xmlCams != NULL ) {
-			for ( int j = 0; j < xGrid * yGrid; ++j ) {
-				if ( xmlCams[j] != NULL ) {
-					printf( "CamsUtils::start\tGUID1 = %s\n\t\t\tGUID2 = %s\n\n",
-						PS3::GUID2String(guid).c_str(),
-						PS3::GUID2String(xmlCams[j]->GetGUID()).c_str() );
+	//	if ( xmlCams != NULL ) {
+	//		for ( int j = 0; j < xGrid * yGrid; ++j ) {
+	//			if ( xmlCams[j] != NULL ) {
+	//				printf( "CamsUtils::start\tGUID1 = %s\n\t\t\tGUID2 = %s\n\n",
+	//					PS3::GUID2String(guid).c_str(),
+	//					PS3::GUID2String(xmlCams[j]->GetGUID()).c_str() );
 
-					if ( PS3::EqualGUID( guid, xmlCams[j]->GetGUID() ) ) {
-						printf ( "\nGUID1 = GUID2\n" );
-						setCam( j, rawCams[i] );
-						setSelected( i );
-						guid = xmlCams[j]->GetGUID();
+	//				if ( PS3::EqualGUID( guid, xmlCams[j]->GetGUID() ) ) {
+	//					printf ( "\nGUID1 = GUID2\n" );
+	//					setCam( j, rawCams[i] );
+	//					setSelected( i );
+	//					guid = xmlCams[j]->GetGUID();
 
-						//! Setup the camera
-						rawCams[i]->SetHFlip( xmlCams[j]->GetHFlip() );
-						rawCams[i]->SetVFlip( xmlCams[j]->GetVFlip() );
-						rawCams[i]->SetAutoGain( xmlCams[j]->GetAutoGain() );
-						rawCams[i]->SetGainValue( xmlCams[j]->GetGainValue() );
-						rawCams[i]->SetAutoExposure( xmlCams[j]->GetAutoExposure() );
-						rawCams[i]->SetExposure( xmlCams[j]->GetExposure() );
-						rawCams[i]->SetAutoWhiteBalance( xmlCams[j]->GetAutoWhiteBalance() );
-						rawCams[i]->SetWhiteBalanceRed( xmlCams[j]->GetWhiteBalanceRed() );
-						rawCams[i]->SetWhiteBalanceGreen( xmlCams[j]->GetWhiteBalanceGreen() );
-						rawCams[i]->SetWhiteBalanceBlue( xmlCams[j]->GetWhiteBalanceBlue() );
+	//					//! Setup the camera
+	//					rawCams[i]->SetHFlip( xmlCams[j]->GetHFlip() );
+	//					rawCams[i]->SetVFlip( xmlCams[j]->GetVFlip() );
+	//					rawCams[i]->SetAutoGain( xmlCams[j]->GetAutoGain() );
+	//					rawCams[i]->SetGainValue( xmlCams[j]->GetGainValue() );
+	//					rawCams[i]->SetAutoExposure( xmlCams[j]->GetAutoExposure() );
+	//					rawCams[i]->SetExposure( xmlCams[j]->GetExposure() );
+	//					rawCams[i]->SetAutoWhiteBalance( xmlCams[j]->GetAutoWhiteBalance() );
+	//					rawCams[i]->SetWhiteBalanceRed( xmlCams[j]->GetWhiteBalanceRed() );
+	//					rawCams[i]->SetWhiteBalanceGreen( xmlCams[j]->GetWhiteBalanceGreen() );
+	//					rawCams[i]->SetWhiteBalanceBlue( xmlCams[j]->GetWhiteBalanceBlue() );
 
-						printf( "Now GUID = %s\n", PS3::GUID2String( guid ).c_str() );
-						printf( "H = %d\tV = %d\n", rawCams[i]->GetHFlip(), rawCams[i]->GetVFlip() );
+	//					printf( "Now GUID = %s\n", PS3::GUID2String( guid ).c_str() );
+	//					printf( "H = %d\tV = %d\n", rawCams[i]->GetHFlip(), rawCams[i]->GetVFlip() );
 
-						break;
-					}
-				}
-			}
-		}
+	//					break;
+	//				}
+	//			}
+	//		}
+	//	}
 
 
-		rawCams[i]->SetCamera( guid, colorMode, camRes, frameRate );
-		if ( rawCams[i]->StartCamera() ) {
-			//printf( "rawCams[%d]->StartCamera() return true\n", i );
-		}
-	}
+	//	rawCams[i]->SetCamera( guid, colorMode, camRes, frameRate );
+	//	if ( rawCams[i]->StartCamera() ) {
+	//		//printf( "rawCams[%d]->StartCamera() return true\n", i );
+	//	}
+	//}
 }
 // ----------------------------------------------
 
 void CamsUtils::stop() {
 	if ( rawCams != NULL ) {
 		for ( int i = 0; i < camCount; ++i ) {
-			rawCams[i]->StopCamera();
+			rawCams[i]->deinitializeCamera();
 			delete rawCams[i];
 			rawCams[i] = NULL;
 		}
@@ -157,25 +241,52 @@ int CamsUtils::getYGrid() {
 	return yGrid;
 }
 
-// ----------------------------------------------
+//// ----------------------------------------------
+//
+//int CamsUtils::getRawId( PS3* cam ) {
+//	if ( cam == NULL ) {
+//		return -1;
+//	}
+//
+//	for ( int i = 0; i < camCount; i++ ) {
+//		if ( PS3::EqualGUID( cam->GetGUID(), rawCams[i]->GetGUID() ) ) {
+//			return i;
+//		}
+//	}
+//
+//	return -1;
+//}
+//
 
-int CamsUtils::getRawId( PS3* cam ) {
+int CamsUtils::getRawId( ofxCameraBase* cam ) {
 	if ( cam == NULL ) {
 		return -1;
 	}
 
 	for ( int i = 0; i < camCount; i++ ) {
-		if ( PS3::EqualGUID( cam->GetGUID(), rawCams[i]->GetGUID() ) ) {
+		if ( EqualGUID( cam->getCameraGUID(), rawCams[i]->getCameraGUID() ) ) {
 			return i;
 		}
 	}
 
 	return -1;
 }
+//// ----------------------------------------------
+//
+//PS3* CamsUtils::getCam( int index ) {
+//	if ( displayCams != NULL 
+//		&& xGrid * yGrid > index
+//		&& index >= 0
+//		) {
+//		// TODO
+//		return displayCams[index];
+//	}
+//
+//	return NULL;	// error
+//}
+//
 
-// ----------------------------------------------
-
-PS3* CamsUtils::getCam( int index ) {
+ofxCameraBase* CamsUtils::getCam( int index ) {
 	if ( displayCams != NULL 
 		&& xGrid * yGrid > index
 		&& index >= 0
@@ -187,34 +298,61 @@ PS3* CamsUtils::getCam( int index ) {
 	return NULL;	// error
 }
 
-// ----------------------------------------------
+//// ----------------------------------------------
+//
+//PS3* CamsUtils::getCam( int x, int y ) {
+//	int index = x + xGrid * y;
+//
+//	return getCam( index );
+//}
+//
 
-PS3* CamsUtils::getCam( int x, int y ) {
+ofxCameraBase* CamsUtils::getCam( int x, int y ) {
 	int index = x + xGrid * y;
 
 	return getCam( index );
 }
 
-// ----------------------------------------------
+//// ----------------------------------------------
+//
+//PS3* CamsUtils::getRawCam( int index ) {
+//	if ( rawCams != NULL && camCount > index && index >= 0 ) {	//! index can not less than 0
+//		//printf( "CamsUtils::getRawCam()\t return\n" );
+//		return rawCams[index];
+//	}
+//
+//	return NULL;
+//}
+//
 
-PS3* CamsUtils::getRawCam( int index ) {
-	if ( rawCams != NULL && camCount > index && index >= 0 ) {	//! index can not less than 0
-		//printf( "CamsUtils::getRawCam()\t return\n" );
+ofxCameraBase* CamsUtils::getRawCam( int index ) {
+	if ( rawCams != NULL
+		&& camCount > index
+		&& index >= 0
+		) {	//! index can not less than 0
 		return rawCams[index];
 	}
 
 	return NULL;
 }
 
-// ----------------------------------------------
+//// ----------------------------------------------
+//
+//PS3** CamsUtils::getCams() {
+//	return displayCams;
+//}
+//
+//// ----------------------------------------------
+//
+//PS3** CamsUtils::getRawCams() {
+//	return rawCams;
+//}
 
-PS3** CamsUtils::getCams() {
+ofxCameraBase** CamsUtils::getCams() {
 	return displayCams;
 }
 
-// ----------------------------------------------
-
-PS3** CamsUtils::getRawCams() {
+ofxCameraBase** CamsUtils::getRawCams() {
 	return rawCams;
 }
 
@@ -253,11 +391,29 @@ void CamsUtils::setXY( int x, int y ) {
 
 // ----------------------------------------------
 
-void CamsUtils::setCam( int index, PS3* cam ) {
+//void CamsUtils::setCam( int index, PS3* cam ) {
+//	//! if the cam == NULL, that will be RESET function
+//	//if ( cam == NULL ) {
+//	//	return;
+//	//}
+//
+//	displayCams[index] = cam;
+//	camsUsed[index] = cam == NULL ? false : true;
+//}
+//
+//// ----------------------------------------------
+//
+//void CamsUtils::setCam( int x, int y, PS3* cam ) {
+//	//if ( cam == NULL ) {
+//	//	return;
+//	//}
+//
+//	int index = x + xGrid * y;
+//	setCam( index, cam );
+//}
+
+void CamsUtils::setCam( int index, ofxCameraBase* cam ) {
 	//! if the cam == NULL, that will be RESET function
-	//if ( cam == NULL ) {
-	//	return;
-	//}
 
 	displayCams[index] = cam;
 	camsUsed[index] = cam == NULL ? false : true;
@@ -265,11 +421,7 @@ void CamsUtils::setCam( int index, PS3* cam ) {
 
 // ----------------------------------------------
 
-void CamsUtils::setCam( int x, int y, PS3* cam ) {
-	//if ( cam == NULL ) {
-	//	return;
-	//}
-
+void CamsUtils::setCam( int x, int y, ofxCameraBase* cam ) {
 	int index = x + xGrid * y;
 	setCam( index, cam );
 }
@@ -288,7 +440,8 @@ void CamsUtils::resetAll() {
 
 void CamsUtils::resetCam( int rawIndex ) {
 	if ( rawIndex < camCount ) {
-		rawCams[rawIndex]->ResetCamParam();
+		//rawCams[rawIndex]->ResetCamParam();
+		// TODO
 	}
 }
 
@@ -296,7 +449,8 @@ void CamsUtils::resetCam( int rawIndex ) {
 
 void CamsUtils::resetCams() {
 	for( int i = 0; i < camCount; ++i ) {
-		rawCams[i]->ResetCamParam();
+		//rawCams[i]->ResetCamParam();
+		// TODO
 	}
 }
 
@@ -314,24 +468,47 @@ void CamsUtils::saveXML( string filename ) {
 		for ( int x = 0; x < xGrid; ++x ) {
 			int index = x + y * xGrid;
 			if ( camCount > 0
-				&& displayCams[index] != NULL ) {
-				XML.setValue( "CAMERA:TYPE", "PS3", index );
-				XML.setValue( "CAMERA:X", x, index );
-				XML.setValue( "CAMERA:Y", y, index );
-				XML.setValue( "CAMERA:UUID", displayCams[index]->GetGUIDStr(), index );
-				XML.setValue( "CAMERA:WIDTH", displayCams[index]->GetWidth(), index );
-				XML.setValue( "CAMERA:HEIGHT", displayCams[index]->GetHeight(), index );
-				XML.setValue( "CAMERA:HFLIP", displayCams[index]->GetHFlip(), index );
-				XML.setValue( "CAMERA:VFLIP", displayCams[index]->GetVFlip(), index );
-				XML.setValue( "CAMERA:AUTOGAIN", displayCams[index]->GetAutoGain(), index );
-				XML.setValue( "CAMERA:GAIN", displayCams[index]->GetGainValue(), index );
-				XML.setValue( "CAMERA:AUTOEXPOSURE", displayCams[index]->GetAutoExposure(), index );
-				XML.setValue( "CAMERA:EXPOSURE", displayCams[index]->GetExposure(), index );
-				XML.setValue( "CAMERA:AUTOWHITEBALANCE", displayCams[index]->GetAutoWhiteBalance(), index );
-				XML.setValue( "CAMERA:WHITEBALANCE:RED", displayCams[index]->GetWhiteBalanceRed(), index );
-				XML.setValue( "CAMERA:WHITEBALANCE:GREEN", displayCams[index]->GetWhiteBalanceGreen(), index );
-				XML.setValue( "CAMERA:WHITEBALANCE:BLUE", displayCams[index]->GetWhiteBalanceBlue(), index );
+				&& displayCamsSettings[index] != NULL ) {
+					ofxCameraBaseSettings* setting = displayCamsSettings[index];
+					switch( setting->cameraType ) {
+						case PS3:
+							XML.setValue( "CAMERA:TYPE", "PS3", index );
+							XML.setValue( "CAMERA:GUID", GUIDToString(setting->cameraGuid), index );
+							break;
+							// CMU
+							// FFMV
+							// DIRECTSHOW
+							// KINECT
+
+						default:
+							break;
+					}
+					XML.setValue( "CAMERA:X", setting->cameraX, index );
+					XML.setValue( "CAMERA:Y", setting->cameraY, index );
+					XML.setValue( "CAMERA:WIDTH", setting->cameraWidth, index );
+					XML.setValue( "CAMERA:HEIGHT", setting->cameraHeight, index );
+					XML.setValue( "CAMERA:FRAMERATE", setting->cameraFramerate, index );
+					// TODO
 			}
+			//if ( camCount > 0
+			//	&& displayCams[index] != NULL ) {
+			//	XML.setValue( "CAMERA:TYPE", "PS3", index );
+			//	XML.setValue( "CAMERA:X", x, index );
+			//	XML.setValue( "CAMERA:Y", y, index );
+			//	XML.setValue( "CAMERA:UUID", displayCams[index]->GetGUIDStr(), index );
+			//	XML.setValue( "CAMERA:WIDTH", displayCams[index]->GetWidth(), index );
+			//	XML.setValue( "CAMERA:HEIGHT", displayCams[index]->GetHeight(), index );
+			//	XML.setValue( "CAMERA:HFLIP", displayCams[index]->GetHFlip(), index );
+			//	XML.setValue( "CAMERA:VFLIP", displayCams[index]->GetVFlip(), index );
+			//	XML.setValue( "CAMERA:AUTOGAIN", displayCams[index]->GetAutoGain(), index );
+			//	XML.setValue( "CAMERA:GAIN", displayCams[index]->GetGainValue(), index );
+			//	XML.setValue( "CAMERA:AUTOEXPOSURE", displayCams[index]->GetAutoExposure(), index );
+			//	XML.setValue( "CAMERA:EXPOSURE", displayCams[index]->GetExposure(), index );
+			//	XML.setValue( "CAMERA:AUTOWHITEBALANCE", displayCams[index]->GetAutoWhiteBalance(), index );
+			//	XML.setValue( "CAMERA:WHITEBALANCE:RED", displayCams[index]->GetWhiteBalanceRed(), index );
+			//	XML.setValue( "CAMERA:WHITEBALANCE:GREEN", displayCams[index]->GetWhiteBalanceGreen(), index );
+			//	XML.setValue( "CAMERA:WHITEBALANCE:BLUE", displayCams[index]->GetWhiteBalanceBlue(), index );
+			//}
 		}
 	}
 	XML.saveFile( filename );
@@ -355,10 +532,10 @@ void CamsUtils::loadXML( string filename ) {
 	//! Leave the missing camera blank
 	if ( xGrid * yGrid >= numCamTags && numCamTags > 0 ) {
 		//! Create the XML cameras array
-		xmlCams = new PS3*[ xGrid * yGrid ];
+		xmlCamsSettings = new ofxCameraBaseSettings*[numCamTags];
 		//! Set the cameras to blank
 		for ( int i = 0; i < numCamTags; ++i ) {
-			xmlCams[i] = NULL;
+			xmlCamsSettings[i] = NULL;
 		}
 		//! Load settings from each camera.
 		for ( int i = 0; i < numCamTags; ++i ) {
@@ -386,25 +563,25 @@ void CamsUtils::loadXML( string filename ) {
 				continue;
 			}
 			// TODO guid code should be improved!
-			GUID guid = PS3::String2GUID( XML.getValue( "CAMERA:UUID", "00000000-0000-0000-0000-000000000000", i ) );
-			printf( "CamsUtils::loadXML\ti = %d\tGUID = %s\n", i, PS3::GUID2String(guid).c_str() );
+			GUID guid = StringToGUID( XML.getValue( "CAMERA:UUID", "00000000-0000-0000-0000-000000000000", i ) );
+			printf( "CamsUtils::loadXML\ti = %d\tGUID = %s\n", i, GUIDToString(guid).c_str() );
 
 			// TODO check the guid validation
 			
 			int index = x + y * xGrid;
-			xmlCams[index] = new PS3();
+			xmlCamsSettings[index] = new ofxCameraBaseSettings();
 			//! Set the guid of camera
-			xmlCams[index]->SetGUID( guid );
-			xmlCams[index]->SetHFlip( hFlip == 0 ? false : true );
-			xmlCams[index]->SetVFlip( vFlip == 0 ? false : true );
-			xmlCams[index]->SetAutoGain( bAutoGain == 0 ? false : true );
-			xmlCams[index]->SetGainValue( gainValue );
-			xmlCams[index]->SetAutoExposure( bAutoExposure == 0 ? false : true );
-			xmlCams[index]->SetExposure( exposureValue );
-			xmlCams[index]->SetAutoWhiteBalance( bAutoWhiteBalance == 0 ? false : true );
-			xmlCams[index]->SetWhiteBalanceRed( WBRed );
-			xmlCams[index]->SetWhiteBalanceGreen( WBGreen );
-			xmlCams[index]->SetWhiteBalanceBlue( WBBlue );
+			//xmlCams[index]->SetGUID( guid );
+			//xmlCams[index]->SetHFlip( hFlip == 0 ? false : true );
+			//xmlCams[index]->SetVFlip( vFlip == 0 ? false : true );
+			//xmlCams[index]->SetAutoGain( bAutoGain == 0 ? false : true );
+			//xmlCams[index]->SetGainValue( gainValue );
+			//xmlCams[index]->SetAutoExposure( bAutoExposure == 0 ? false : true );
+			//xmlCams[index]->SetExposure( exposureValue );
+			//xmlCams[index]->SetAutoWhiteBalance( bAutoWhiteBalance == 0 ? false : true );
+			//xmlCams[index]->SetWhiteBalanceRed( WBRed );
+			//xmlCams[index]->SetWhiteBalanceGreen( WBGreen );
+			//xmlCams[index]->SetWhiteBalanceBlue( WBBlue );
 		}
 	}
 }
@@ -412,14 +589,54 @@ void CamsUtils::loadXML( string filename ) {
 
 // ----------------------------------------------
 
-int CamsUtils::getDevicesCount() {
-	return CLEyeGetCameraCount();
+int CamsUtils::getDevicesCount( bool bAll, CAMERATYPE type ) {
+	// TODO
+	int count = 0;
+
+	// PS3
+	if ( bAll || type == PS3 ) {
+		ofxPS3* ps3 = new ofxPS3();
+		count += ps3->getCameraBaseCount();
+		delete ps3;	ps3 = NULL;
+	}
+
+	// CMU
+
+	// FFMV
+
+	// DIRECTSHOW
+
+	// KINECT
+
+	return count;
 }
 
 // ----------------------------------------------
 
-GUID CamsUtils::getGUID( int camId ) {
-	return CLEyeGetCameraUUID( camId );
+GUID CamsUtils::getGUID( CAMERATYPE type, int camId ) {
+	GUID guid;
+
+	switch( type ) {
+		case PS3:
+			guid = CLEyeGetCameraUUID( camId );
+			break;
+		case FFMV:
+			// TODO
+			break;
+		case CMU:
+			// TODO
+			break;
+		case DIRECTSHOW:
+			// TODO
+			break;
+		case KINECT:
+			// TODO
+			break;
+		default:
+			break;
+	}
+
+	return guid;
 }
 
 // ----------------------------------------------
@@ -431,7 +648,8 @@ void CamsUtils::createDisplayCams( int x, int y ) {
 	if ( displayCams != NULL ) {
 		delete displayCams;
 	}
-	displayCams = new PS3*[count];
+	//displayCams = new PS3*[count];
+	displayCams = new ofxCameraBase*[count];
 	for ( int i = 0; i < count; ++i ) {
 		displayCams[i] = NULL;
 	}
@@ -446,6 +664,15 @@ void CamsUtils::createDisplayCams( int x, int y ) {
 		printf( "\ncamsUsed[%d]=%d\n", i, camsUsed[i] );
 	}
 
+	//! Display camera settings
+	if ( displayCamsSettings != NULL ) {
+		delete displayCamsSettings;
+	}
+	displayCamsSettings = new ofxCameraBaseSettings*[count];
+	for ( int i = 0; i < count; ++i ) {
+		displayCamsSettings[i] = NULL;
+	}
+
 	printf( "\nCamsUtils::createDisplayCams()\tx=%d, y=%d\n", x, y );
 }
 
@@ -458,3 +685,52 @@ void CamsUtils::resetCamsSelected() {
 }
 
 // ----------------------------------------------
+
+void CamsUtils::setupCameraSettings( ofxCameraBaseSettings *settings) {
+	switch( settings->cameraType ) {
+		case PS3:
+			settings->cameraWidth = 320;
+			settings->cameraHeight = 240;
+			settings->cameraFramerate = 60;
+			settings->cameraDepth = 1;
+			settings->cameraLeft = 0;
+			settings->cameraTop = 0;
+			break;
+		case CMU:
+			// TODO
+			break;
+		case FFMV:
+			// TODO
+			break;
+		case DIRECTSHOW:
+			// TODO
+			break;
+		case KINECT:
+			// TODO
+			break;
+		default:
+			break;
+	}
+}
+
+// ----------------------------------------------
+
+void CamsUtils::applyCameraSettings() {
+	for ( int i = 0; i < camCount; ++i ) {
+		for ( int j = 0; j < rawCamsSettings[i]->propertyType.size(); ++j ) {
+			rawCams[i]->setCameraFeature(
+				rawCamsSettings[i]->propertyType[j],
+				rawCamsSettings[i]->propertyFirstValue[j],
+				rawCamsSettings[i]->propertySecondValue[j],
+				rawCamsSettings[i]->isPropertyAuto[j],
+				rawCamsSettings[i]->isPropertyOn[j] );
+		}
+	}
+}
+
+// ----------------------------------------------
+
+void CamsUtils::startCameras() {
+	for (int i=0;i<camCount;i++)
+		rawCams[i]->startCamera();
+}

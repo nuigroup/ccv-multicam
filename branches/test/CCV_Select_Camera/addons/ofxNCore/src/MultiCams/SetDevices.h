@@ -16,6 +16,8 @@
 #include "Controls/ofxgui.h"
 #include "MultiCams/CamsUtils.h"
 
+#include "PS3.h"
+
 #define DEVGRID_Y_GRID 2
 
 class SetDevices : public ofxGuiListener {

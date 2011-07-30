@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <windows.h>
+#include <string.h>
 #include "Calibration/vector2d.h"
 
 typedef enum 
@@ -59,13 +60,13 @@ typedef enum
 	DEPTH_FAR_BOUND
 } CAMERA_BASE_FEATURE;
 
-
 typedef struct ofxCameraBaseSettings
 {
 	GUID cameraGuid;
 	CAMERATYPE cameraType;
 	PIXEL_MODE pixelMode;
 	unsigned char cameraDepth;
+	int cameraX, cameraY;
 	int cameraWidth,cameraHeight,cameraLeft,cameraTop,cameraIndex,cameraFramerate;
 	bool videoPlayerOn,videoRecorderOn;
 	std::vector<bool> isPropertyOn;
@@ -74,7 +75,10 @@ typedef struct ofxCameraBaseSettings
 	std::vector<int> propertySecondValue;
 	std::vector<CAMERA_BASE_FEATURE> propertyType;
 	std::vector<vector2df> calibrationPoints;
+
+	ofxCameraBaseSettings& operator = ( const ofxCameraBaseSettings& temp );
 } ofxCameraBaseSettings;
 
+std::string CameraTypeToStr( const CAMERATYPE &type );
 
 #endif // OFX_CAMERABASE_SETTINGS_H

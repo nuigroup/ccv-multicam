@@ -848,14 +848,6 @@
 							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\MultiCams.h"
 							>
 						</File>
-						<File
-							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\SetDevices.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\..\addons\ofxNCore\src\MultiCams\SetDevices.h"
-							>
-						</File>
 					</Filter>
 				</Filter>
 			</Filter>
@@ -995,6 +987,10 @@
 					</File>
 					<File
 						RelativePath="..\..\..\addons\ofxCameraBase\src\ofxCameraBase.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\addons\ofxCameraBase\src\ofxCameraBaseSettings.cpp"
 						>
 					</File>
 					<File

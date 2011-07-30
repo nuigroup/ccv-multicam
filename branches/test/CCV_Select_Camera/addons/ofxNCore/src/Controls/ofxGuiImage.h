@@ -20,7 +20,8 @@
 
 #include "ofxGuiTypes.h"
 #include "ofxGuiObject.h"
-#include "PS3.h"
+//#include "PS3.h"
+#include "ofxCameraBase.h"
 #include "ofxCvGrayscaleImage.h"
 
 // ----------------------------------------------
@@ -34,13 +35,15 @@ public:
 
 	void setImage( unsigned char* pImage, int width, int height );
 	void setBlank( bool bBlank = true );
-	void setCamera( PS3* cam );
+	//void setCamera( PS3* cam );
+	void setCamera( ofxCameraBase *cam );
 	void setTitle( string name );
 	void setXYPos( int x, int y );
 	void setDrawInfo( bool draw = true );
 	void setCamSelected( bool selected = true );
 
-	PS3* getCamera();
+	//PS3* getCamera();
+	ofxCameraBase* getCamera();
 
 	bool update( int parameterId, int task, void* data, int length);
 	void draw();
@@ -64,11 +67,13 @@ private:
 
 	void setCanDrawInfo( bool draw );
 
-	PS3* pCam;
+	//PS3* pCam;
+	ofxCameraBase* pCam;
 	ofxCvGrayscaleImage* pCvImage;
 	ofRGBA color;
 
-	int mCamWidth, mCamHeight;
+	unsigned int mCamWidth, mCamHeight;
+	unsigned char mCamDepth;
 
 	bool bDrawInfo;
 	bool bCanDrawInfo;
