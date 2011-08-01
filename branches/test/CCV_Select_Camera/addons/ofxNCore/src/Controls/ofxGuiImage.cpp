@@ -109,7 +109,7 @@ void ofxGuiImage::setCamera( ofxCameraBase *cam ) {
 	if ( cam != NULL ) {
 		this->pCam = cam;
 
-		pCam->getCameraFrame( pImage );
+		pImage = pCam->getCameraFrame();
 		pCam->getCameraSize( &mCamWidth, &mCamHeight, &mCamDepth );
 
 		setImage( pImage, mCamWidth, mCamHeight );
@@ -250,7 +250,7 @@ void ofxGuiImage::drawBlank() {
 void ofxGuiImage::drawImage() {
 	if ( bImageSet ) {
 		if ( pCam != NULL ) {
-			pCam->getCameraFrame( pImage );
+			pImage = pCam->getCameraFrame();
 			setImage( pImage, mCamWidth, mCamHeight );
 		}
 		if ( pCvImage != NULL ) {
@@ -294,7 +294,7 @@ void ofxGuiImage::drawInfo() {
 	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "GUID: " + GUIDToString( pCam->getCameraGUID(), '_' ), false );
 	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Res: " + ofToString( (int)mCamWidth ) + "x" + ofToString( (int)mCamHeight ), false );
 	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "Type: " + CameraTypeToStr( pCam->getCameraType() ), false );
-	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "FPS: " + ofToString( pCam->getCameraFramerate() ), false );
+	drawHighlightParamString( PARAM_TEXT_OFFSET_X, mCtrHeight - PARAM_TEXT_OFFSET_X - ++i * textHeight, "FPS: " + ofToString( (int)pCam->getCameraFramerate() ), false );
 
 	////int x = mCtrWidth - textWidth;
 	////int y = 0;

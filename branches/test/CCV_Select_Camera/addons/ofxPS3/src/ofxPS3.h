@@ -18,16 +18,18 @@ class ofxPS3 : ofxCameraBase
 public:
 	ofxPS3();
 	~ofxPS3();
-	void setCameraFeature(CAMERA_BASE_FEATURE featureCode,int firstValue,int secondValue,bool isAuto,bool isEnabled);
-	void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled,int* minValue,int* maxValue);
 	int getCameraBaseCount();
-	CAMERATYPE getCameraType();
-protected:
-	void getNewFrame(unsigned char* newFrame);
-	void cameraInitializationLogic();
-	void cameraDeinitializationLogic();
-	void setCameraType();
+	unsigned char* getCameraFrame();
+	void setCameraFeature(CAMERA_BASE_FEATURE featureCode,int firstValue,int secondValue,bool isAuto,bool isEnabled);
+	void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled);
+	void callCameraSettingsDialog();
+	void initializeWithGUID(GUID cameraGuid,int cameraWidth,int cameraHeight,int cameraLeft,int cameraTop,unsigned char cameraDepth,int cameraFramerate,bool isEmulating,PIXEL_MODE pixelMode);
+	void deinitializeCamera();
+	void updateCurrentFrame();
+	void setVideoRecordingMode(bool isRecording);
 private:
+	unsigned char* cameraFrame;
+	unsigned char* videoFrame;
 	CLEyeCameraInstance ps3EyeCamera;
 };
 #endif // OFXPS3_H_

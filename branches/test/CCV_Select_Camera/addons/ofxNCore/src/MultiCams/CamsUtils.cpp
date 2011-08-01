@@ -731,6 +731,6 @@ void CamsUtils::applyCameraSettings() {
 // ----------------------------------------------
 
 void CamsUtils::startCameras() {
-	for (int i=0;i<camCount;i++)
-		rawCams[i]->startCamera();
+	//for (int i=0;i<camCount;i++)
+	//	rawCams[i]->startCamera();
 }
