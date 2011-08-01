@@ -34,6 +34,23 @@ std::string CameraTypeToStr( const CAMERATYPE &type ) {
 	return str;
 }
 
+CAMERATYPE StrToCameraType( const std::string &str ) {
+	CAMERATYPE type = PS3;
+	if ( str == "PS3" ) {
+		type = PS3;
+	} else if ( str == "FFMV" ) {
+		type = FFMV;
+	} else if ( str == "CMU" ) {
+		type = CMU;
+	} else if ( str == "DIRECTSHOW" ) {
+		type = DIRECTSHOW;
+	} else if ( str == "KINECT" ) {
+		type = KINECT;
+	}
+
+	return type;
+}
+
 ofxCameraBaseSettings& ofxCameraBaseSettings::operator=( const ofxCameraBaseSettings &temp ) {
 	this->cameraGuid	= temp.cameraGuid;
 	this->cameraType	= temp.cameraType;

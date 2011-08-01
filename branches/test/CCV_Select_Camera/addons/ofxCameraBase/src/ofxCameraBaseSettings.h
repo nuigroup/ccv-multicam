@@ -13,6 +13,7 @@
 #include <vector>
 #include <windows.h>
 #include <string.h>
+#include <string>
 #include "Calibration/vector2d.h"
 
 typedef enum 
@@ -80,5 +81,6 @@ typedef struct ofxCameraBaseSettings
 } ofxCameraBaseSettings;
 
 std::string CameraTypeToStr( const CAMERATYPE &type );
+CAMERATYPE StrToCameraType( const std::string &str );
 
 #endif // OFX_CAMERABASE_SETTINGS_H
