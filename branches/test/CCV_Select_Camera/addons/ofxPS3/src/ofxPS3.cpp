@@ -13,7 +13,8 @@ ofxPS3::ofxPS3()
 {
 	cameraFrame = 0;
 	ps3EyeCamera = NULL;
-	//img = 0;
+
+	cameraType = PS3;
 }
 
 ofxPS3::~ofxPS3() 
@@ -180,6 +181,7 @@ void ofxPS3::updateCurrentFrame()
 
 unsigned char* ofxPS3::getCameraFrame()
 {
+	updateCurrentFrame();
 	return cameraFrame;
 }
 
