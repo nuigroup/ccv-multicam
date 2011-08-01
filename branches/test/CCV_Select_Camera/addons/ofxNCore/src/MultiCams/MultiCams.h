@@ -33,11 +33,22 @@ class ofxNCoreVision;
 #define GENERAL_AREA_NEXT_X 110
 #define GENERAL_AREA_NEXT_Y 140
 
-#define RIGHT_PANEL_WIDTH 217
-#define RIGHT_PANEL_X 713
-#define RIGHT_PANEL_SLIDER_WIDTH 197
+//! One column
+//#define RIGHT_PANEL_WIDTH 217
+//#define RIGHT_PANEL_X 713
+//#define RIGHT_PANEL_SLIDER_WIDTH 197
+//#define RIGHT_PANEL_SLIDER_HEIGHT 10
+//#define RIGHT_PANEL_Y_OFFSET 20
+
+//! Two column
+#define RIGHT_PANEL_WIDTH 175
+#define RIGHT_PANEL_X 575
+#define RIGHT_PANEL_SLIDER_WIDTH 155
 #define RIGHT_PANEL_SLIDER_HEIGHT 10
 #define RIGHT_PANEL_Y_OFFSET 20
+
+#define RIGHT_PANEL_SECOND_WIDTH 170
+#define RIGHT_PANEL_SECOND_X 760
 
 class MultiCams : public ofxGuiListener {
 
@@ -93,6 +104,7 @@ class MultiCams : public ofxGuiListener {
 		informationPanel_whitebalance_red,
 		informationPanel_whitebalance_green,
 		informationPanel_whitebalance_blue,
+		// TODO other feature controls
 
 
 		step1Panel,
