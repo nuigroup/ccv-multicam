@@ -94,3 +94,54 @@ ofxCameraBaseSettings& ofxCameraBaseSettings::operator=( const ofxCameraBaseSett
 
 	return *this;
 }
+
+void ofxCameraBaseSettings::setFeature( const CAMERA_BASE_FEATURE &feature, const int &firstValue, const int &secondValue, const bool &isAuto, const bool &isEnable ) {
+	for ( int i = 0; i < propertyType.size(); ++i ) {
+		if ( propertyType[i] == feature ) {
+			propertyFirstValue[i] = firstValue;
+			propertySecondValue[i] = secondValue;
+			isPropertyAuto[i] = isAuto;
+			isPropertyOn[i] = isEnable;
+
+			break;
+		}
+	}
+}
+
+int ofxCameraBaseSettings::getFirstValue( const CAMERA_BASE_FEATURE &feature ) {
+	for ( int i = 0; i < propertyType.size(); ++i ) {
+		if ( propertyType[i] == feature ) {
+			return propertyFirstValue[i];
+		}
+	}
+
+	return -1;
+}
+int ofxCameraBaseSettings::getSecondValue( const CAMERA_BASE_FEATURE &feature ) {
+	for ( int i = 0; i < propertyType.size(); ++i ) {
+		if ( propertyType[i] == feature ) {
+			return propertySecondValue[i];
+		}
+	}
+
+	return -1;
+}
+bool ofxCameraBaseSettings::isFeatureAuto( const CAMERA_BASE_FEATURE &feature ) {
+	for ( int i = 0; i < propertyType.size(); ++i ) {
+		if ( propertyType[i] == feature ) {
+			return isPropertyAuto[i];
+		}
+	}
+
+	return false;
+}
+bool ofxCameraBaseSettings::isFeatureOn( const CAMERA_BASE_FEATURE &feature ) {
+	int errorResult = -1;
+	for ( int i = 0; i < propertyType.size(); ++i ) {
+		if ( propertyType[i] == feature ) {
+			return isPropertyOn[i];
+		}
+	}
+
+	return false;
+}

@@ -38,25 +38,36 @@ typedef enum
 
 typedef enum 
 {
+	//! Sort by alphabet
+	BASE_AUTO_EXPOSURE,			// [false, true]	PS3
+	BASE_AUTO_GAIN,				// [false, true]	PS3
+	BASE_AUTO_WHITE_BALANCE,	// [false, true]	PS3
+
 	BASE_BRIGHTNESS,
-	BASE_EXPOSURE,
-	BASE_SHARPNESS,
-	BASE_WHITE_BALANCE,
-	BASE_HUE,
 	BASE_CONTRAST,
-	BASE_SATURATION,
-	BASE_GAMMA,
-	BASE_SHUTTER,
-	BASE_GAIN,
-	BASE_IRIS,
+	BASE_EXPOSURE,				// [0, 511]			PS3
 	BASE_FOCUS,
-	BASE_ZOOM,
-	BASE_PAN,
-	BASE_TILT,
-	BASE_ROLL,
 	BASE_FRAMERATE,
+	BASE_GAIN,					// [0, 79]			PS3
+	BASE_GAMMA,
+	BASE_HFLIP,					// [false, true]	PS3
+	BASE_HUE,
+	BASE_IRIS,
 	BASE_MOTOR_POSITION,
 	BASE_MOTOR_LED,
+	BASE_PAN,
+	BASE_ROLL,
+	BASE_SATURATION,
+	BASE_SHARPNESS,
+	BASE_SHUTTER,
+	BASE_TILT,
+	BASE_VFLIP,					// [false, true]	PS3
+	BASE_WHITE_BALANCE,			
+	BASE_WHITE_BALANCE_BLUE,	// [0, 255]			PS3
+	BASE_WHITE_BALANCE_GREEN,	// [0, 255]			PS3
+	BASE_WHITE_BALANCE_RED,		// [0, 255]			PS3
+	BASE_ZOOM,
+
 	DEPTH_NEAR_BOUND,
 	DEPTH_FAR_BOUND
 } CAMERA_BASE_FEATURE;
@@ -78,6 +89,11 @@ typedef struct ofxCameraBaseSettings
 	std::vector<vector2df> calibrationPoints;
 
 	ofxCameraBaseSettings& operator = ( const ofxCameraBaseSettings& temp );
+	void setFeature( const CAMERA_BASE_FEATURE &feature, const int &firstValue, const int &secondValue, const bool &isAuto, const bool &isEnable );
+	int getFirstValue( const CAMERA_BASE_FEATURE &feature );
+	int getSecondValue( const CAMERA_BASE_FEATURE &feature );
+	bool isFeatureOn( const CAMERA_BASE_FEATURE &feature );
+	bool isFeatureAuto( const CAMERA_BASE_FEATURE &feature );
 } ofxCameraBaseSettings;
 
 std::string CameraTypeToStr( const CAMERATYPE &type );
