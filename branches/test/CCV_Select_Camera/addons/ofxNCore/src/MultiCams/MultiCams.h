@@ -166,6 +166,7 @@ public:
 	void removePanels();
 	void removePanel( int id);
 	void updateInfoPanel( int rawId);
+	void addInfoPanel();
 
 	// PASS IN
 	void passInCoreVision( ofxNCoreVision * core );
@@ -271,7 +272,10 @@ private:
 	///////////////////////////
 	//PS3* currentCamera;
 	ofxCameraBase* currentCamera;
+	ofxCameraBaseSettings* currentCameraSettings;
 	ofxGuiImage* previewImage;
+
+	int rawCamId;
 
 };
 

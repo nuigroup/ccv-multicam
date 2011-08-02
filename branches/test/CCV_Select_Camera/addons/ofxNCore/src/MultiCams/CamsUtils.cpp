@@ -336,6 +336,8 @@ ofxCameraBase* CamsUtils::getRawCam( int index ) {
 	return NULL;
 }
 
+// ----------------------------------------------
+
 //// ----------------------------------------------
 //
 //PS3** CamsUtils::getCams() {
@@ -354,6 +356,33 @@ ofxCameraBase** CamsUtils::getCams() {
 
 ofxCameraBase** CamsUtils::getRawCams() {
 	return rawCams;
+}
+
+// ----------------------------------------------
+
+ofxCameraBaseSettings* CamsUtils::getRawCamSettings( int index ) {
+	if ( rawCamsSettings != NULL
+		&& camCount > index
+		&& index >= 0
+		) {
+			return rawCamsSettings[index];
+	}
+
+	return NULL;
+}
+
+// ----------------------------------------------
+
+void CamsUtils::setRawCamFeature( int rawId, CAMERA_BASE_FEATURE feature, int firstValue, int secondValue, bool isAuto, bool isEnable ) {
+	ofxCameraBase* camera = getRawCam( rawId );
+	ofxCameraBaseSettings* settings = getRawCamSettings( rawId );
+
+	if ( camera != NULL ) {
+		camera->setCameraFeature( feature, firstValue, secondValue, isAuto, isEnable );
+	}
+	if ( settings != NULL ) {
+		settings->setFeature( feature, firstValue, secondValue, isAuto, isEnable );
+	}
 }
 
 // ----------------------------------------------
@@ -469,11 +498,11 @@ void CamsUtils::saveXML( string filename ) {
 			int index = x + y * xGrid;
 			if ( camCount > 0
 				&& displayCamsSettings[index] != NULL ) {
-					ofxCameraBaseSettings* setting = displayCamsSettings[index];
-					switch( setting->cameraType ) {
+					ofxCameraBaseSettings* settings = displayCamsSettings[index];
+					switch( settings->cameraType ) {
 						case PS3:
-							XML.setValue( "CAMERA:TYPE", "PS3", index );
-							XML.setValue( "CAMERA:GUID", GUIDToString(setting->cameraGuid), index );
+							XML.setValue( "CAMERA:TYPE", CameraTypeToStr( settings->cameraType ), index );
+							XML.setValue( "CAMERA:GUID", GUIDToString(settings->cameraGuid), index );
 							break;
 							// CMU
 							// FFMV
@@ -483,11 +512,65 @@ void CamsUtils::saveXML( string filename ) {
 						default:
 							break;
 					}
-					XML.setValue( "CAMERA:X", setting->cameraX, index );
-					XML.setValue( "CAMERA:Y", setting->cameraY, index );
-					XML.setValue( "CAMERA:WIDTH", setting->cameraWidth, index );
-					XML.setValue( "CAMERA:HEIGHT", setting->cameraHeight, index );
-					XML.setValue( "CAMERA:FRAMERATE", setting->cameraFramerate, index );
+					XML.setValue( "CAMERA:X", settings->cameraX, index );
+					XML.setValue( "CAMERA:Y", settings->cameraY, index );
+					XML.setValue( "CAMERA:WIDTH", settings->cameraWidth, index );
+					XML.setValue( "CAMERA:HEIGHT", settings->cameraHeight, index );
+					XML.setValue( "CAMERA:FRAMERATE", settings->cameraFramerate, index );
+					XML.setValue( "CAMERA:DEPTH", settings->cameraDepth, index );
+					XML.setValue( "CAMERA:LEFT", settings->cameraLeft, index );
+					XML.setValue( "CAMERA:TOP", settings->cameraTop, index );
+					XML.setValue( "CAMERA:INDEX", settings->cameraIndex, index );
+					XML.setValue( "CAMERA:VIDEOPLAYERON", settings->videoPlayerOn, index );
+					XML.setValue( "CAMERA:VIDEORECORDERON", settings->videoRecorderOn, index );
+
+					for ( int i = 0; i < settings->propertyType.size(); ++i ) {
+						switch( settings->propertyType[i] ) {
+							case BASE_AUTO_EXPOSURE:
+								XML.setValue( "CAMERA:AUTOEXPOSURE", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_AUTO_GAIN:
+								XML.setValue( "CAMERA:AUTOGAIN", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_AUTO_WHITE_BALANCE:
+								XML.setValue( "CAMERA:AUTOWHITEBALANCE", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_EXPOSURE:
+								XML.setValue( "CAMERA:EXPOSURE", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_GAIN:
+								XML.setValue( "CAMERA:GAIN", settings->propertyFirstValue[i], index );
+								//XML.setAttribute( "CAMERA:GAIN", "ON", settings->isPropertyOn[i], index );
+								break;
+							case BASE_HFLIP:
+								XML.setValue( "CAMERA:HFLIP", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_VFLIP:
+								XML.setValue( "CAMERA:VFLIP", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_WHITE_BALANCE_BLUE:
+								XML.setValue( "CAMERA:WHITEBALANCEBLUE", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_WHITE_BALANCE_GREEN:
+								XML.setValue( "CAMERA:WHITEBALANCEGREEN", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_WHITE_BALANCE_RED:
+								XML.setValue( "CAMERA:WHITEBALANCERED", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_WHITE_BALANCE:
+								XML.setValue( "CAMERA:WHITE_BALANCE", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_BRIGHTNESS:
+								XML.setValue( "CAMERA:BRIGHTNESS", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_SHARPNESS:
+								// TODO
+								break;
+								// TODO other features
+							default:
+								break;
+						}
+					}
 					// TODO
 			}
 			//if ( camCount > 0
@@ -695,6 +778,68 @@ void CamsUtils::setupCameraSettings( ofxCameraBaseSettings *settings) {
 			settings->cameraDepth = 1;
 			settings->cameraLeft = 0;
 			settings->cameraTop = 0;
+			
+			settings->propertyType.push_back( BASE_HFLIP );
+			settings->propertyFirstValue.push_back( 0 );	// false
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_VFLIP );
+			settings->propertyFirstValue.push_back( 0 );	// false
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_AUTO_GAIN );
+			settings->propertyFirstValue.push_back( 1 );	// true
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_GAIN );
+			settings->propertyFirstValue.push_back( 0 );	// 0
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_AUTO_EXPOSURE );
+			settings->propertyFirstValue.push_back( 1 );	// true
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_EXPOSURE );
+			settings->propertyFirstValue.push_back( 0 );	// 0
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_AUTO_WHITE_BALANCE );
+			settings->propertyFirstValue.push_back( 1 );	// true
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_WHITE_BALANCE_BLUE );
+			settings->propertyFirstValue.push_back( 0 );	// 0
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_WHITE_BALANCE_GREEN );
+			settings->propertyFirstValue.push_back( 0 );	// 0
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_WHITE_BALANCE_RED );
+			settings->propertyFirstValue.push_back( 0 );	// 0
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+
 			break;
 		case CMU:
 			// TODO

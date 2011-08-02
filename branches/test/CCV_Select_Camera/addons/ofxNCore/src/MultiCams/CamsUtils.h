@@ -56,6 +56,11 @@ public:
 	ofxCameraBase** getCams();
 	ofxCameraBase** getRawCams();
 
+	ofxCameraBaseSettings* getRawCamSettings( int index );
+
+	//! Set the camera feature by raw cam id
+	void setRawCamFeature( int rawId, CAMERA_BASE_FEATURE feature, int firstValue, int secondValue, bool isAuto, bool isEnable );
+
 	bool isSelected( int rawId );
 	void setSelected( int rawId, bool reset = false );
 	bool isUsed( int displayId );

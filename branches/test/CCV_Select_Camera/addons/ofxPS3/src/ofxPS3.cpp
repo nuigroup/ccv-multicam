@@ -111,13 +111,38 @@ void ofxPS3::setCameraFeature(CAMERA_BASE_FEATURE featureCode,int firstValue,int
 	CLEyeCameraParameter deviceProperty = (CLEyeCameraParameter)0xFFFFFFFF;
 	switch (featureCode)
 	{
+	case BASE_HFLIP:
+		deviceProperty = CLEYE_HFLIP;
+		break;
+	case BASE_VFLIP:
+		deviceProperty = CLEYE_VFLIP;
+		break;
+
+	case BASE_AUTO_GAIN:
+		deviceProperty = CLEYE_AUTO_GAIN;
+		break;
 	case BASE_GAIN:
-		CLEyeSetCameraParameter(ps3EyeCamera,CLEYE_AUTO_GAIN,isAuto);
 		deviceProperty = CLEYE_GAIN;
 		break;
+
+	case BASE_AUTO_EXPOSURE:
+		deviceProperty = CLEYE_AUTO_EXPOSURE;
+		break;
 	case BASE_EXPOSURE:
-		CLEyeSetCameraParameter(ps3EyeCamera,CLEYE_AUTO_EXPOSURE,isAuto);
 		deviceProperty = CLEYE_EXPOSURE;
+		break;
+
+	case BASE_AUTO_WHITE_BALANCE:
+		deviceProperty = CLEYE_AUTO_WHITEBALANCE;
+		break;
+	case BASE_WHITE_BALANCE_BLUE:
+		deviceProperty = CLEYE_WHITEBALANCE_BLUE;
+		break;
+	case BASE_WHITE_BALANCE_GREEN:
+		deviceProperty = CLEYE_WHITEBALANCE_GREEN;
+		break;
+	case BASE_WHITE_BALANCE_RED:
+		deviceProperty = CLEYE_WHITEBALANCE_RED;
 		break;
 	}
 	if (deviceProperty!=0xFFFFFFFF)
