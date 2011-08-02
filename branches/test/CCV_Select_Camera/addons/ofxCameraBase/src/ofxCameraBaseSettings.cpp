@@ -145,3 +145,11 @@ bool ofxCameraBaseSettings::isFeatureOn( const CAMERA_BASE_FEATURE &feature ) {
 
 	return false;
 }
+
+void ofxCameraBaseSettings::print() {
+	printf( "\nGUID:\t%s\n", (GUIDToString(cameraGuid)).c_str() );
+	printf( "\nType:\t%s\n", (CameraTypeToStr(cameraType)).c_str() );
+	printf( "\nX:\t%d\n", cameraX );
+	printf( "\nY:\t%d\n", cameraY );
+	printf( "\nProperty Count:\t%d\n", propertyType.size() );
+}

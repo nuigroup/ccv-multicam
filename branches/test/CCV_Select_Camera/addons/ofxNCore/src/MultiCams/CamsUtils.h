@@ -102,6 +102,7 @@ private:
 	void applyCameraSettings();
 	void receiveSettingsFromCameras();
 	void receiveSettingsFromRawSettings();
+	void copySettingsFromXmlSettings( ofxCameraBaseSettings *src, ofxCameraBaseSettings *dst );
 	void startCameras();
 
 	CLEyeCameraColorMode colorMode;

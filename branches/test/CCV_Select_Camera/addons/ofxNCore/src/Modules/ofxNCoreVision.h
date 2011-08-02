@@ -189,6 +189,8 @@ public:
 		//delete PS3;		PS3 = NULL;
 		delete ffmv; 	ffmv = NULL;
 		delete dsvl;	dsvl = NULL;
+		delete camsUtils;	camsUtils = NULL;
+		delete multiCams;	multiCams = NULL;
 		#endif
 	}
 

@@ -14,6 +14,8 @@
 #include <windows.h>
 #include <string.h>
 #include <string>
+#include <stdio.h>
+#include "ofxGUIDHelper.h"
 #include "Calibration/vector2d.h"
 
 typedef enum 
@@ -94,6 +96,7 @@ typedef struct ofxCameraBaseSettings
 	int getSecondValue( const CAMERA_BASE_FEATURE &feature );
 	bool isFeatureOn( const CAMERA_BASE_FEATURE &feature );
 	bool isFeatureAuto( const CAMERA_BASE_FEATURE &feature );
+	void print();
 } ofxCameraBaseSettings;
 
 std::string CameraTypeToStr( const CAMERATYPE &type );
