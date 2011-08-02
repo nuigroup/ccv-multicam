@@ -21,7 +21,7 @@ public:
 	int getCameraBaseCount();
 	unsigned char* getCameraFrame();
 	void setCameraFeature(CAMERA_BASE_FEATURE featureCode,int firstValue,int secondValue,bool isAuto,bool isEnabled);
-	void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled);
+	void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled, int* minValue, int* maxValue);
 	void callCameraSettingsDialog();
 	void initializeWithGUID(GUID cameraGuid,int cameraWidth,int cameraHeight,int cameraLeft,int cameraTop,unsigned char cameraDepth,int cameraFramerate,bool isEmulating,PIXEL_MODE pixelMode);
 	void deinitializeCamera();

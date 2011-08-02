@@ -23,7 +23,7 @@ class ofxCameraBase
 public:
 	virtual int getCameraBaseCount(){return 0;}
 	virtual void setCameraFeature(CAMERA_BASE_FEATURE featureCode,int firstValue,int secondValue,bool isAuto,bool isEnabled){}
-	virtual void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled) {}
+	virtual void getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled, int* minValue, int* maxValue) {}
 	virtual void callCameraSettingsDialog() {}
 	virtual void initializeWithGUID(GUID cameraGuid,int cameraWidth,int cameraHeight,int cameraLeft,int cameraTop,unsigned char cameraDepth,int cameraFramerate,bool isEmulating = false,PIXEL_MODE pixelMode = MODE0) {}
 	virtual void deinitializeCamera(){}

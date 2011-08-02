@@ -1224,8 +1224,8 @@ void ofxNCoreVision::switchMultiCamsGUI( bool showCams ) {
 		bMultiCamsInterface = false;
 		bShowInterface = true;
 
-		this->addPanels();
 		multiCams->removePanels();
+		this->addPanels();
 	}
 }
 

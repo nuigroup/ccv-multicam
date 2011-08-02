@@ -210,19 +210,61 @@ unsigned char* ofxPS3::getCameraFrame()
 	return cameraFrame;
 }
 
-void ofxPS3::getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled)
+void ofxPS3::getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,int* secondValue, bool* isAuto, bool* isEnabled, int* minValue, int* maxValue)
 {
 	CLEyeCameraParameter deviceProperty = (CLEyeCameraParameter)0xFFFFFFFF;
 	switch (featureCode)
 	{
+	case BASE_HFLIP:
+		deviceProperty = CLEYE_HFLIP;
+		*minValue = 0;
+		*maxValue = 1;
+		break;
+	case BASE_VFLIP:
+		deviceProperty = CLEYE_VFLIP;
+		*minValue = 0;
+		*maxValue = 1;
+		break;
+
+	case BASE_AUTO_GAIN:
+		deviceProperty = CLEYE_AUTO_GAIN;
+		*minValue = 0;
+		*maxValue = 1;
+		break;
 	case BASE_GAIN:
 		deviceProperty = CLEYE_GAIN;
+		*minValue = 0;
+		*maxValue = 79;
+		break;
+
+	case BASE_AUTO_EXPOSURE:
+		deviceProperty = CLEYE_AUTO_EXPOSURE;
+		*minValue = 0;
+		*maxValue = 1;
 		break;
 	case BASE_EXPOSURE:
 		deviceProperty = CLEYE_EXPOSURE;
+		*minValue = 0;
+		*maxValue = 511;
 		break;
-	case BASE_WHITE_BALANCE:
+		
+	case BASE_AUTO_WHITE_BALANCE:
+		deviceProperty = CLEYE_AUTO_WHITEBALANCE;
+		*minValue = 0;
+		*maxValue = 1;
+		break;
+	case BASE_WHITE_BALANCE_RED:
 		deviceProperty = CLEYE_WHITEBALANCE_RED;
+		*minValue = 0;
+		*maxValue = 255;
+	case BASE_WHITE_BALANCE_GREEN:
+		deviceProperty = CLEYE_WHITEBALANCE_GREEN;
+		*minValue = 0;
+		*maxValue = 255;
+	case BASE_WHITE_BALANCE_BLUE:
+		deviceProperty = CLEYE_WHITEBALANCE_BLUE;
+		*minValue = 0;
+		*maxValue = 255;
 		break;
 	}
 	if ((deviceProperty!=0xFFFFFFFF) && (isInitialized) && (ps3EyeCamera!=NULL))

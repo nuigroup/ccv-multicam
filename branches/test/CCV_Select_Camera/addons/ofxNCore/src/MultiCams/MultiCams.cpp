@@ -753,6 +753,10 @@ void MultiCams::addInfoPanel() {
 				this->informationPanel, "Camera Settings",
 				RIGHT_PANEL_X, 105 + RIGHT_PANEL_Y_OFFSET,
 				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			//! Blank image box
+			previewImage = (ofxGuiImage*)pPanel->addImage( informationPanel, "Present",
+				RIGHT_PANEL_SLIDER_WIDTH,
+				(RIGHT_PANEL_SLIDER_WIDTH / GRID_WIDTH_SCALE) * GRID_HEIGHT_SCALE );
 
 			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
 			pPanel->mObjHeight = 455;

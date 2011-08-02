@@ -34,7 +34,6 @@ public:
 	void stop();
 
 	int getCount();
-	int getAllCameraCount();
 	int getXGrid();
 	int getYGrid();
 
@@ -98,8 +97,11 @@ private:
 	
 	void resetCamsSelected();
 
+	//! Set the default value for camera
 	void setupCameraSettings( ofxCameraBaseSettings *settings );
 	void applyCameraSettings();
+	void receiveSettingsFromCameras();
+	void receiveSettingsFromRawSettings();
 	void startCameras();
 
 	CLEyeCameraColorMode colorMode;
