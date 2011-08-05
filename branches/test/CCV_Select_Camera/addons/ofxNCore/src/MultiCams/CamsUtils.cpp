@@ -94,8 +94,8 @@ void CamsUtils::setup() {
 	//! Wrong settings
 	if ( xGrid * yGrid > camCount ) {
 		xGrid = 1;
-		xGrid = 1;
-		xmlCams = NULL;
+		yGrid = 1;
+		xmlCamsSettings = NULL;
 	}
 
 	setXY( xGrid, yGrid );
@@ -174,22 +174,25 @@ void CamsUtils::start() {
 
 		printf( "\nCamsUtils::setup()\nrawCams[%d].GUID = %s\n", index, GUIDToString( rawCamsSettings[index]->cameraGuid ).c_str() );
 
-		for ( j = 0; j < numCamTags; ++j ) {
-			printf( "CamsUtils::start\tGUID1 = %s\n\t\t\tGUID2 = %s\n\n",
-				GUIDToString(guid).c_str(),
-				GUIDToString(xmlCamsSettings[j]->cameraGuid).c_str() );
+		if ( xmlCamsSettings != NULL ) {
+			for ( j = 0; j < numCamTags; ++j ) {
+				printf( "CamsUtils::start\tGUID1 = %s\n\t\t\tGUID2 = %s\n\n",
+					GUIDToString(guid).c_str(),
+					GUIDToString(xmlCamsSettings[j]->cameraGuid).c_str() );
 
-			if ( xmlCamsSettings[j] != NULL
-				&& EqualGUID( guid, xmlCamsSettings[j]->cameraGuid ) ) {
+				if ( xmlCamsSettings[j] != NULL
+					&& EqualGUID( guid, xmlCamsSettings[j]->cameraGuid ) ) {
 
-					printf( "\nEqual BEGIN\n" );
-					copySettingsFromXmlSettings( xmlCamsSettings[j], rawCamsSettings[index] );
+						printf( "\nEqual BEGIN\n" );
+						copySettingsFromXmlSettings( xmlCamsSettings[j], rawCamsSettings[index] );
 
-					setCam( xmlCamsSettings[j]->cameraX, xmlCamsSettings[j]->cameraY, rawCams[index] );
-					setSelected( index );
-					printf( "\nEqual END\n" );
+						setCam( xmlCamsSettings[j]->cameraX, xmlCamsSettings[j]->cameraY, rawCams[index] );
+						setSelected( index );
+						printf( "\nEqual END\n" );
+				}
 			}
 		}
+
 
 		rawCams[index]->initializeWithGUID(
 			rawCamsSettings[index]->cameraGuid,
@@ -636,7 +639,7 @@ void CamsUtils::loadXML( string filename ) {
 	printf( "CamsUtils::loadXML\tnumCamTags = %d\n", numCamTags );
 
 	//! Leave the missing camera blank
-	if ( xGrid > 0 && yGrid > 0 && xGrid * yGrid >= numCamTags && numCamTags > 0 ) {
+	if ( xGrid > 0 && yGrid > 0 /*&& xGrid * yGrid >= numCamTags*/ && numCamTags > 0 ) {
 		//! Create the XML cameras array
 		xmlCamsSettings = new ofxCameraBaseSettings*[numCamTags];
 

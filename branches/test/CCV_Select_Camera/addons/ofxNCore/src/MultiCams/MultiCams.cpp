@@ -59,6 +59,7 @@ MultiCams::MultiCams() {
 
 	currentCamera = new ofxCameraBase();
 	previewImage = new ofxGuiImage();
+	currentCameraSettings = NULL;
 }
 //--------------------------------------------------------------
 
@@ -442,7 +443,7 @@ void MultiCams::addPanels() {
 	addPanel( camerasDisplayPanel );
 	addPanel( devicesListPanel );
 	addPanel( gridSettingsPanel );
-	//addPanel( devicesSettingsPanel );
+	////addPanel( devicesSettingsPanel );
 	addPanel( calibrationPanel );
 	addPanel( generalSettingsPanel );
 
@@ -644,7 +645,8 @@ void MultiCams::updateInfoPanel(int rawId) {
 void MultiCams::addInfoPanel() {
 	ofxGuiPanel* pPanel;
 
-	switch( currentCameraSettings->cameraType ) {
+	if ( currentCameraSettings != NULL ) {
+		switch( currentCameraSettings->cameraType ) {
 		case PS3:
 			pPanel = controls->addPanel(
 				this->informationPanel, "Camera Settings",
@@ -658,83 +660,83 @@ void MultiCams::addInfoPanel() {
 			for ( int i = 0; i < currentCameraSettings->propertyType.size(); ++i ) {
 				switch( currentCameraSettings->propertyType[i] ) {
 					//! Flip
-					case BASE_HFLIP:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
-								OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-						}
-						break;
-					case BASE_VFLIP:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addButton( informationPanel_vflip, "Vertical Flip",
-								OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-						}
-						break;
+		case BASE_HFLIP:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+			}
+			break;
+		case BASE_VFLIP:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addButton( informationPanel_vflip, "Vertical Flip",
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+			}
+			break;
 
-					//! Gain
-					case BASE_AUTO_GAIN:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
-								OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-						}
-						break;
-					case BASE_GAIN:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addSlider( informationPanel_gain, "Gain",
-								RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-						}
-						break;
+			//! Gain
+		case BASE_AUTO_GAIN:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+			}
+			break;
+		case BASE_GAIN:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addSlider( informationPanel_gain, "Gain",
+					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+			}
+			break;
 
-					//! Exposure
-					case BASE_AUTO_EXPOSURE:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
-								OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-						}
-						break;
-					case BASE_EXPOSURE:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addSlider( informationPanel_exposure, "Exposure",
-								RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-						}
-						break;
+			//! Exposure
+		case BASE_AUTO_EXPOSURE:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+			}
+			break;
+		case BASE_EXPOSURE:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addSlider( informationPanel_exposure, "Exposure",
+					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+			}
+			break;
 
 
-						//! White balance
-					case BASE_AUTO_WHITE_BALANCE:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
-								OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-						}
-						break;
-					case BASE_WHITE_BALANCE_RED:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
-								RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-						}
-						break;
-					case BASE_WHITE_BALANCE_GREEN:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
-								RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-						}
-						break;
-					case BASE_WHITE_BALANCE_BLUE:
-						if ( currentCameraSettings->isPropertyOn[i] ) {
-							pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
-								RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-								currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-						}
-						break;
+			//! White balance
+		case BASE_AUTO_WHITE_BALANCE:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
+					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+			}
+			break;
+		case BASE_WHITE_BALANCE_RED:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
+					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+			}
+			break;
+		case BASE_WHITE_BALANCE_GREEN:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
+					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+			}
+			break;
+		case BASE_WHITE_BALANCE_BLUE:
+			if ( currentCameraSettings->isPropertyOn[i] ) {
+				pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
+					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+			}
+			break;
 				}
 			}
 
@@ -761,11 +763,21 @@ void MultiCams::addInfoPanel() {
 			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
 			pPanel->mObjHeight = 455;
 			break;
+		}
+	} else {
+		//! Blank panel
+		pPanel = controls->addPanel(
+			this->informationPanel, "Camera Settings",
+			RIGHT_PANEL_X, 105 + RIGHT_PANEL_Y_OFFSET,
+			OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+		//! Blank image box
+		previewImage = (ofxGuiImage*)pPanel->addImage( informationPanel, "Present",
+			RIGHT_PANEL_SLIDER_WIDTH,
+			(RIGHT_PANEL_SLIDER_WIDTH / GRID_WIDTH_SCALE) * GRID_HEIGHT_SCALE );
+
+		pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+		pPanel->mObjHeight = 455;
 	}
-
-
-
-
 }
 
 //--------------------------------------------------------------
