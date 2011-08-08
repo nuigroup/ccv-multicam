@@ -1007,6 +1007,22 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="ofxDShow"
+				>
+				<Filter
+					Name="src"
+					>
+					<File
+						RelativePath="..\..\..\addons\ofxDShow\src\ofxDShow.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\addons\ofxDShow\src\ofxDShow.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="res"
