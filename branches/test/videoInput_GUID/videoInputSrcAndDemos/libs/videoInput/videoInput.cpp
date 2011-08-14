@@ -779,10 +779,17 @@ int videoInput::listDevices(bool silent){
 					deviceNames[deviceCounter][count] = 0;
 			                          
 			        if(!silent)printf("SETUP: %i) %s \n",deviceCounter, deviceNames[deviceCounter]);
-
-					//hr = pPropBag->Read( L"DevicePath", &varName, 0 );
-					//varName.
 			    }
+
+				// ref: http://msdn.microsoft.com/en-us/library/dd377566%28VS.85%29.aspx
+				// added by: Yishi Guo (NUI Group)
+				hr = pPropBag->Read(L"DevicePath", &varName, 0);
+				if (SUCCEEDED(hr))
+				{
+					// The device path is not intended for display.
+					printf("Device path: %ls\n", varName.bstrVal);
+					VariantClear(&varName); 
+				}
 			    
 			    pPropBag->Release();
 			    pPropBag = NULL;
