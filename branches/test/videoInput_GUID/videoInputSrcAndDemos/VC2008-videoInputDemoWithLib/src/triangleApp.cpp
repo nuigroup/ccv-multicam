@@ -13,7 +13,17 @@ void triangleApp::init(){
 
 	//optional static function to list devices
 	//for silent listDevices use listDevices(true);
-	int numDevices = videoInput::listDevices();	
+	int numDevices = VI.listDevices();	
+
+
+	////////////////////
+	for ( int i = 0; i < numDevices; ++i ) {
+		char* path = VI.getDevicePath(i);
+		printf( "%d's path: \t %s\n", i, path );
+
+		int id = VI.devicePathToId( path );
+		printf( "%d's id: \t %d\n", i, id );
+	}
 
 	//uncomment for silent setup
 	//videoInput::setVerbose(false);

@@ -758,22 +758,23 @@ int videoInput::listDevices(bool silent){
 			        continue;  // Skip this one, maybe the next one will work.
 			    } 
 			    
+				int count, maxLen;
 			    
  				// Find the description or friendly name.
-			    VARIANT varName;
-			    VariantInit(&varName);
-			    hr = pPropBag->Read(L"Description", &varName, 0);
+			    VARIANT var;
+			    VariantInit(&var);
+			    hr = pPropBag->Read(L"Description", &var, 0);
 		    			    
-			    if (FAILED(hr)) hr = pPropBag->Read(L"FriendlyName", &varName, 0);
+			    if (FAILED(hr)) hr = pPropBag->Read(L"FriendlyName", &var, 0);
 			  
 			    if (SUCCEEDED(hr)){
 			    
-			    	hr = pPropBag->Read(L"FriendlyName", &varName, 0);
+			    	hr = pPropBag->Read(L"FriendlyName", &var, 0);
 			     	
-					int count = 0;
-					int maxLen = sizeof(deviceNames[0])/sizeof(deviceNames[0][0]) - 2;
-					while( varName.bstrVal[count] != 0x00 && count < maxLen) {
-						deviceNames[deviceCounter][count] = varName.bstrVal[count];
+					count = 0;
+					maxLen = sizeof(deviceNames[0])/sizeof(deviceNames[0][0]) - 2;
+					while( var.bstrVal[count] != 0x00 && count < maxLen) {
+						deviceNames[deviceCounter][count] = var.bstrVal[count];
 						count++;
 					}
 					deviceNames[deviceCounter][count] = 0;
@@ -781,14 +782,24 @@ int videoInput::listDevices(bool silent){
 			        if(!silent)printf("SETUP: %i) %s \n",deviceCounter, deviceNames[deviceCounter]);
 			    }
 
+
 				// ref: http://msdn.microsoft.com/en-us/library/dd377566%28VS.85%29.aspx
 				// added by: Yishi Guo (NUI Group)
-				hr = pPropBag->Read(L"DevicePath", &varName, 0);
+				hr = pPropBag->Read(L"DevicePath", &var, 0);
 				if (SUCCEEDED(hr))
 				{
-					// The device path is not intended for display.
-					printf("Device path: %ls\n", varName.bstrVal);
-					VariantClear(&varName); 
+					count = 0;
+					maxLen = sizeof(devicePaths[0])/sizeof(devicePaths[0][0]) - 2;
+					while ( var.bstrVal[count] != 0x00 && count < maxLen ) {
+						devicePaths[deviceCounter][count] = var.bstrVal[count];
+						count++;
+					}
+					devicePaths[deviceCounter][count] = 0x00;
+
+					if (!silent) printf("\tDevice Path: %s\n", devicePaths[deviceCounter]);
+					//// The device path is not intended for display.
+					//printf("Device path: %ls\n", var.bstrVal);
+					//VariantClear(&var); 
 				}
 			    
 			    pPropBag->Release();
@@ -2342,4 +2353,33 @@ HRESULT videoInput::routeCrossbar(ICaptureGraphBuilder2 **ppBuild, IBaseFilter *
 	
 	return hr;
 }
-   
+
+// ---------------------------------------------------------------------- 
+// Convert the device path to device id
+// 
+// ---------------------------------------------------------------------- 
+int videoInput::devicePathToId( char* devicePath ) {
+	for ( int i = 0; i < getDeviceCount(); ++i ) {
+		printf( "videoInput::devicePathToId()\n%s\n%s\n",devicePaths[i], devicePath );
+		if ( strcmp(devicePaths[i], devicePath) == 0
+			&& strcmp(devicePaths[i], "") != 0 ) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+// ---------------------------------------------------------------------- 
+// Convert the device id to device path
+// 
+// ----------------------------------------------------------------------
+char videoInput::devicePaths[VI_MAX_CAMERAS][255]={{0}};
+
+char* videoInput::getDevicePath( int id ) {
+	printf( "videoInput::getDevicePath()\nid = %d, deviceFound = %d\n", id, devicesFound );
+	if ( id < getDeviceCount() ) {
+		return devicePaths[id];
+	}
+
+	return NULL;
+}
