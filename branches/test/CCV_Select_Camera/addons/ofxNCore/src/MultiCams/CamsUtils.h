@@ -15,6 +15,7 @@
 
 #include "PS3.h"
 #include "ofxPS3.h"
+#include "ofxDShow.h"
 #include "ofxXmlSettings.h"
 #include "ofxCameraBase.h"
 #include "ofxCameraBaseSettings.h"
@@ -91,8 +92,9 @@ public:
 	int numCamTags;
 
 private:
-	int getDevicesCount( bool bAll = true, CAMERATYPE type = PS3 );
+	int getDevicesCount( bool bAll = true, CAMERATYPE type = PS3, bool bPure = false );
 	GUID getGUID( CAMERATYPE type, int camId );
+	char* getDevicePath( CAMERATYPE type, int camId );
 	void createDisplayCams( int x, int y);
 	
 	void resetCamsSelected();

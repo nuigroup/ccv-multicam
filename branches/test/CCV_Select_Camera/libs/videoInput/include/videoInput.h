@@ -226,6 +226,9 @@ class videoDevice{
 		
 		char 	nDeviceName[255];
 		WCHAR 	wDeviceName[255];
+
+		char	nDevicePath[1024];
+		WCHAR	wDevicePath[1024];
 		
 		unsigned char * pixels;
 		char * pBuffer;
@@ -319,6 +322,15 @@ class videoInput{
 		
 		//as above but then sets it up with same settings
 		bool restartDevice(int deviceID);
+
+		// convert the devicepath to id
+		int getDeviceId( char* devicepath );
+
+		// convert the device id to device path
+		char* getDevicePath( int id );
+
+		// get device count
+		int getDeviceCount( bool bPure = false );
 		
 		//number of devices available
 		int  devicesFound;
@@ -349,7 +361,7 @@ class videoInput{
 		bool setup(int deviceID);
 		void processPixels(unsigned char * src, unsigned char * dst, int width, int height, bool bRGB, bool bFlip);
 		int  start(int deviceID, videoDevice * VD);                   
-		int  getDeviceCount();
+		//int  getDeviceCount();
 		void getMediaSubtypeAsString(GUID type, char * typeAsString);
 		
 		HRESULT getDevice(IBaseFilter **pSrcFilter, int deviceID, WCHAR * wDeviceName, char * nDeviceName);
@@ -379,6 +391,8 @@ class videoInput{
 		static void __cdecl basicThread(void * objPtr);
 
 		static char deviceNames[VI_MAX_CAMERAS][255];
+
+		static char devicePaths[VI_MAX_CAMERAS][255];
 
 }; 
   

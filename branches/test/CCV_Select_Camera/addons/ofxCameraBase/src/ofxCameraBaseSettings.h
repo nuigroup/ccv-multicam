@@ -80,6 +80,7 @@ typedef struct ofxCameraBaseSettings
 	CAMERATYPE cameraType;
 	PIXEL_MODE pixelMode;
 	unsigned char cameraDepth;
+	char* devicePath;	// For DirectShow camera
 	int cameraX, cameraY;
 	int cameraWidth,cameraHeight,cameraLeft,cameraTop,cameraIndex,cameraFramerate;
 	bool videoPlayerOn,videoRecorderOn;

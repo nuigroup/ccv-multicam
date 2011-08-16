@@ -75,7 +75,7 @@ void CamsUtils::setup( CLEyeCameraColorMode colorMode, CLEyeCameraResolution cam
 
 void CamsUtils::setup() {
 	int i, j, index;
-	camCount = getDevicesCount();
+	camCount = getDevicesCount(true, PS3, true);
 	printf( "\nCamsUtils::setup()\n\tcamCount = %d\n", camCount );
 	if ( camCount <= 0 ) {
 		return;
@@ -158,6 +158,47 @@ void CamsUtils::start() {
 	//	}
 	//}
 	int i, j, index = 0;
+
+	//! DirectShow cameras settings apply
+	for ( i = 0; i < getDevicesCount( false, DIRECTSHOW ) && index < getDevicesCount(); ++i, ++index ) {
+		char* devicePath = getDevicePath( DIRECTSHOW, i );
+		if ( devicePath == NULL ) {
+			printf( "DEBUG\ndevicePath == NULL\n" );
+			index--;
+			continue;
+		}
+		printf( "%d, devicePath = %s\n", index, devicePath );
+
+		rawCams[index] = (ofxCameraBase*)(new ofxDShow());
+		rawCamsSettings[index] = new ofxCameraBaseSettings();
+		rawCamsSettings[index]->cameraType = DIRECTSHOW;
+		rawCamsSettings[index]->devicePath = devicePath;
+
+		setupCameraSettings( rawCamsSettings[index] );
+
+		if ( xmlCamsSettings != NULL ) {
+			for ( j = 0; j < numCamTags; ++j ) {
+				if ( xmlCamsSettings[j] != NULL
+					&& strcmp( devicePath, xmlCamsSettings[j]->devicePath) == 0 ) {
+						copySettingsFromXmlSettings( xmlCamsSettings[j], rawCamsSettings[index] );
+
+						setCam( xmlCamsSettings[j]->cameraX, xmlCamsSettings[j]->cameraY, rawCams[index] );
+						setSelected( index );
+				}
+			}
+		}
+
+		rawCams[index]->initializeWithDevicePath(
+			rawCamsSettings[index]->devicePath,
+			rawCamsSettings[index]->cameraWidth,
+			rawCamsSettings[index]->cameraHeight,
+			rawCamsSettings[index]->cameraLeft,
+			rawCamsSettings[index]->cameraTop,
+			rawCamsSettings[index]->cameraDepth,
+			rawCamsSettings[index]->cameraFramerate );
+
+		rawCamsSettings[index]->print();
+	}
 
 	//! PS3 cameras settings apply
 	for ( i = 0; i < getDevicesCount( false, PS3 ) && index < getDevicesCount(); ++i, ++index ) {
@@ -243,6 +284,7 @@ void CamsUtils::stop() {
 // ----------------------------------------------
 
 int CamsUtils::getCount() {
+	printf( "DEBUG CamsUtils::getCount() %d\n", camCount );
 	return camCount;
 }
 
@@ -533,6 +575,10 @@ void CamsUtils::saveXML( string filename ) {
 							// CMU
 							// FFMV
 							// DIRECTSHOW
+						case DIRECTSHOW:
+							XML.setValue( "CAMERA:TYPE", CameraTypeToStr( settings->cameraType ), index );
+							XML.setValue( "CAMERA:DEVICEPATH", string(settings->devicePath), index );
+							break;
 							// KINECT
 
 						default:
@@ -650,6 +696,7 @@ void CamsUtils::loadXML( string filename ) {
 
 			xmlCamsSettings[i]->cameraGuid = StringToGUID( XML.getValue( "CAMERA:GUID", "00000000-0000-0000-0000-000000000000", i ) );
 			// TODO check the guid validation
+			xmlCamsSettings[i]->devicePath = (char*)XML.getValue( "CAMERA:DEVICEPATH", "NULL", i ).c_str();
 			xmlCamsSettings[i]->cameraType = StrToCameraType( XML.getValue( "CAMERA:TYPE", "NULL", i ) );
 
 			xmlCamsSettings[i]->cameraX = XML.getValue( "CAMERA:X", -1, i );
@@ -784,7 +831,7 @@ void CamsUtils::loadXML( string filename ) {
 
 // ----------------------------------------------
 
-int CamsUtils::getDevicesCount( bool bAll, CAMERATYPE type ) {
+int CamsUtils::getDevicesCount( bool bAll, CAMERATYPE type, bool bPure ) {
 	// TODO
 	int count = 0;
 
@@ -800,6 +847,11 @@ int CamsUtils::getDevicesCount( bool bAll, CAMERATYPE type ) {
 	// FFMV
 
 	// DIRECTSHOW
+	if ( bAll || type == DIRECTSHOW ) {
+		videoInput* VI = new videoInput();
+		count += VI->getDeviceCount( bPure );
+		delete VI;	VI = NULL;
+	}
 
 	// KINECT
 
@@ -832,6 +884,28 @@ GUID CamsUtils::getGUID( CAMERATYPE type, int camId ) {
 	}
 
 	return guid;
+}
+
+// ----------------------------------------------
+
+char* CamsUtils::getDevicePath( CAMERATYPE type, int camId ) {
+	char* result = NULL;
+
+	switch( type ) {
+		case DIRECTSHOW:
+			{
+				videoInput* VI = new videoInput();
+				VI->listDevices( true );
+				result = VI->getDevicePath( camId );
+				delete VI; VI = NULL;
+			}
+			break;
+		default:
+			// TODO
+			break;
+	}
+
+	return result;
 }
 
 // ----------------------------------------------
@@ -969,7 +1043,13 @@ void CamsUtils::setupCameraSettings( ofxCameraBaseSettings *settings) {
 			// TODO
 			break;
 		case DIRECTSHOW:
-			// TODO
+			settings->cameraWidth = 320;
+			settings->cameraHeight = 240;
+			settings->cameraFramerate = 60;
+			settings->cameraDepth = 1;
+			settings->cameraLeft = 0;
+			settings->cameraTop = 0;
+
 			break;
 		case KINECT:
 			// TODO
