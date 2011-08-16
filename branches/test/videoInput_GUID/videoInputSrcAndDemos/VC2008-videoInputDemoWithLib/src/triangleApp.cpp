@@ -21,8 +21,14 @@ void triangleApp::init(){
 		char* path = VI.getDevicePath(i);
 		printf( "%d's path: \t %s\n", i, path );
 
-		int id = VI.devicePathToId( path );
+		int id = VI.getDeviceId( path );
 		printf( "%d's id: \t %d\n", i, id );
+
+		int pureCount = VI.getDeviceCount( true );
+		printf( "Pure count: %d\n", pureCount );
+
+		int notPureCount = VI.getDeviceCount( false );
+		printf( "Not pure count: %d\n", notPureCount );
 	}
 
 	//uncomment for silent setup

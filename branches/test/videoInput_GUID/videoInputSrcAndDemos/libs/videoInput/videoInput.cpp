@@ -720,57 +720,57 @@ char * videoInput::getDeviceName(int deviceID){
 
 int videoInput::listDevices(bool silent){  
 
-    //COM Library Intialization
+	//COM Library Intialization
 	comInit();
-	
-    if(!silent)printf("\nVIDEOINPUT SPY MODE!\n\n");   
-   
-  	
+
+	if(!silent)printf("\nVIDEOINPUT SPY MODE!\n\n");   
+
+
 	ICreateDevEnum *pDevEnum = NULL;
 	IEnumMoniker *pEnum = NULL;	
 	int deviceCounter = 0;
-	
+
 	HRESULT hr = CoCreateInstance(CLSID_SystemDeviceEnum, NULL,
-	    CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, 
-	    reinterpret_cast<void**>(&pDevEnum));
-	    
-	    
+		CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, 
+		reinterpret_cast<void**>(&pDevEnum));
+
+
 	if (SUCCEEDED(hr))
 	{
-	    // Create an enumerator for the video capture category.
-	    hr = pDevEnum->CreateClassEnumerator(
-	    	CLSID_VideoInputDeviceCategory,
-	        &pEnum, 0);
-	        
-	   if(hr == S_OK){
-	   
-			 if(!silent)printf("SETUP: Looking For Capture Devices\n");
+		// Create an enumerator for the video capture category.
+		hr = pDevEnum->CreateClassEnumerator(
+			CLSID_VideoInputDeviceCategory,
+			&pEnum, 0);
+
+		if(hr == S_OK){
+
+			if(!silent)printf("SETUP: Looking For Capture Devices\n");
 			IMoniker *pMoniker = NULL;
 
 			while (pEnum->Next(1, &pMoniker, NULL) == S_OK){
-			    
-			    IPropertyBag *pPropBag;
-			    hr = pMoniker->BindToStorage(0, 0, IID_IPropertyBag, 
-			        (void**)(&pPropBag));
-			        
-			    if (FAILED(hr)){
-			        pMoniker->Release();
-			        continue;  // Skip this one, maybe the next one will work.
-			    } 
-			    
+
+				IPropertyBag *pPropBag;
+				hr = pMoniker->BindToStorage(0, 0, IID_IPropertyBag, 
+					(void**)(&pPropBag));
+
+				if (FAILED(hr)){
+					pMoniker->Release();
+					continue;  // Skip this one, maybe the next one will work.
+				} 
+
 				int count, maxLen;
-			    
- 				// Find the description or friendly name.
-			    VARIANT var;
-			    VariantInit(&var);
-			    hr = pPropBag->Read(L"Description", &var, 0);
-		    			    
-			    if (FAILED(hr)) hr = pPropBag->Read(L"FriendlyName", &var, 0);
-			  
-			    if (SUCCEEDED(hr)){
-			    
-			    	hr = pPropBag->Read(L"FriendlyName", &var, 0);
-			     	
+
+				// Find the description or friendly name.
+				VARIANT var;
+				VariantInit(&var);
+				hr = pPropBag->Read(L"Description", &var, 0);
+
+				if (FAILED(hr)) hr = pPropBag->Read(L"FriendlyName", &var, 0);
+
+				if (SUCCEEDED(hr)){
+
+					hr = pPropBag->Read(L"FriendlyName", &var, 0);
+
 					count = 0;
 					maxLen = sizeof(deviceNames[0])/sizeof(deviceNames[0][0]) - 2;
 					while( var.bstrVal[count] != 0x00 && count < maxLen) {
@@ -778,9 +778,9 @@ int videoInput::listDevices(bool silent){
 						count++;
 					}
 					deviceNames[deviceCounter][count] = 0;
-			                          
-			        if(!silent)printf("SETUP: %i) %s \n",deviceCounter, deviceNames[deviceCounter]);
-			    }
+
+					if(!silent)printf("SETUP: %i) %s \n",deviceCounter, deviceNames[deviceCounter]);
+				}
 
 
 				// ref: http://msdn.microsoft.com/en-us/library/dd377566%28VS.85%29.aspx
@@ -800,29 +800,32 @@ int videoInput::listDevices(bool silent){
 					//// The device path is not intended for display.
 					//printf("Device path: %ls\n", var.bstrVal);
 					//VariantClear(&var); 
+				} else {
+					//continue;
+					devicePaths[deviceCounter][0] = 0x00;
 				}
-			    
-			    pPropBag->Release();
-			    pPropBag = NULL;
-			    
-			    pMoniker->Release();
-			    pMoniker = NULL;
-			    
-			    deviceCounter++;
+
+				pPropBag->Release();
+				pPropBag = NULL;
+
+				pMoniker->Release();
+				pMoniker = NULL;
+
+				deviceCounter++;
 			}   
-			
+
 			pDevEnum->Release();
 			pDevEnum = NULL;
-			
+
 			pEnum->Release();
 			pEnum = NULL;
 		}
-	
-		 if(!silent)printf("SETUP: %i Device(s) found\n\n", deviceCounter);
+
+		if(!silent)printf("SETUP: %i Device(s) found\n\n", deviceCounter);
 	}
-	
+
 	comUnInit();
-	
+
 	return deviceCounter;		
 }
 
@@ -2033,9 +2036,8 @@ int videoInput::start(int deviceID, videoDevice *VD){
 //                                    
 // ---------------------------------------------------------------------- 
 
-int videoInput::getDeviceCount(){  
-
-    	
+int videoInput::getDeviceCount( bool bPure ){  
+   	
 	ICreateDevEnum *pDevEnum = NULL;
 	IEnumMoniker *pEnum = NULL;	
 	int deviceCounter = 0;
@@ -2063,7 +2065,38 @@ int videoInput::getDeviceCount(){
 			    if (FAILED(hr)){
 			        pMoniker->Release();
 			        continue;  // Skip this one, maybe the next one will work.
-			    } 
+			    }
+
+				if ( bPure ) {
+					VARIANT var;
+					VariantInit(&var);
+
+					int count, maxLen;
+
+					hr = pPropBag->Read(L"DevicePath", &var, 0);
+					if (SUCCEEDED(hr))
+					{
+						if ( var.bstrVal[0] == 0x00 ) {
+							printf( "0x00\n" );
+							continue;
+						}
+						count = 0;
+						maxLen = sizeof(devicePaths[0])/sizeof(devicePaths[0][0]) - 2;
+						while ( var.bstrVal[count] != 0x00 && count < maxLen ) {
+							devicePaths[deviceCounter][count] = var.bstrVal[count];
+							count++;
+						}
+						devicePaths[deviceCounter][count] = 0x00;
+
+						//printf("\tDevice Path: %s\n", devicePaths[deviceCounter]);
+						//// The device path is not intended for display.
+						printf("Device path: %ls\n", var.bstrVal);
+						VariantClear(&var); 
+					} else {
+						printf( "FAILDNo Device Path Got!\n" );
+						continue;
+					}
+				}
 			 
 			    pPropBag->Release();
 			    pPropBag = NULL;
@@ -2358,7 +2391,10 @@ HRESULT videoInput::routeCrossbar(ICaptureGraphBuilder2 **ppBuild, IBaseFilter *
 // Convert the device path to device id
 // 
 // ---------------------------------------------------------------------- 
-int videoInput::devicePathToId( char* devicePath ) {
+int videoInput::getDeviceId( char* devicePath ) {
+	if ( devicePath == NULL ) {
+		return -1;
+	}
 	for ( int i = 0; i < getDeviceCount(); ++i ) {
 		printf( "videoInput::devicePathToId()\n%s\n%s\n",devicePaths[i], devicePath );
 		if ( strcmp(devicePaths[i], devicePath) == 0
@@ -2370,14 +2406,14 @@ int videoInput::devicePathToId( char* devicePath ) {
 }
 
 // ---------------------------------------------------------------------- 
-// Convert the device id to device path
+// Get the device path by device id
 // 
 // ----------------------------------------------------------------------
 char videoInput::devicePaths[VI_MAX_CAMERAS][255]={{0}};
 
 char* videoInput::getDevicePath( int id ) {
-	printf( "videoInput::getDevicePath()\nid = %d, deviceFound = %d\n", id, devicesFound );
-	if ( id < getDeviceCount() ) {
+	printf( "videoInput::getDevicePath()\nid = %d, deviceFound = %d\n", id, getDeviceCount() );
+	if ( id < getDeviceCount() && devicePaths[id][0] != 0x00 ) {
 		return devicePaths[id];
 	}
 
