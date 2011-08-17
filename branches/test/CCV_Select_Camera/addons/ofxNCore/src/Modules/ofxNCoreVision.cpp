@@ -144,7 +144,7 @@ void ofxNCoreVision::_setup(ofEventArgs &e)
 
 	#ifdef TARGET_WIN32
 		//get rid of the console window
-		FreeConsole();
+		//FreeConsole();
 	#endif
 
 	printf("Community Core Vision is setup!\n\n");

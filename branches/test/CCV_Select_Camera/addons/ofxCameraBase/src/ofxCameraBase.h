@@ -55,6 +55,7 @@ public:
 	// BEGIN
 	CAMERATYPE getCameraType() {return cameraType;}
 	unsigned int getCameraFramerate() {return framerate;}
+	char* getDevicePath() {return devicePath;}
 	// END
 	bool isCameraInitialized() { return isInitialized; }
 	ofxCameraBase()
@@ -72,11 +73,13 @@ public:
 		isVideoPlaying = false;
 		isVideoRecording = false;
 		videoPlayer = NULL;
+		devicePath = NULL;
 		//videoWriter = NULL;
 	}
 protected:
 	GUID guid;
 	CAMERATYPE cameraType;
+	char* devicePath;	// for directshow
 	unsigned int width,height,framerate;
 	int index,left,top;
 	unsigned char depth;

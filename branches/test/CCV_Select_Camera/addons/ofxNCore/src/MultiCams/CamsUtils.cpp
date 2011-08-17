@@ -163,30 +163,45 @@ void CamsUtils::start() {
 	for ( i = 0; i < getDevicesCount( false, DIRECTSHOW ) && index < getDevicesCount(); ++i, ++index ) {
 		char* devicePath = getDevicePath( DIRECTSHOW, i );
 		if ( devicePath == NULL ) {
-			printf( "DEBUG\ndevicePath == NULL\n" );
+			//printf( "DEBUG\ndevicePath == NULL\n" );
 			index--;
 			continue;
 		}
-		printf( "%d, devicePath = %s\n", index, devicePath );
+		//printf( "DEBUG %d, devicePath = %s\n", index, devicePath );
 
 		rawCams[index] = (ofxCameraBase*)(new ofxDShow());
 		rawCamsSettings[index] = new ofxCameraBaseSettings();
 		rawCamsSettings[index]->cameraType = DIRECTSHOW;
 		rawCamsSettings[index]->devicePath = devicePath;
 
+		//printf( "DEBUG directshow start\nrawCamsSettings[index]->devicePath=%s\n", rawCamsSettings[index]->devicePath );
+
 		setupCameraSettings( rawCamsSettings[index] );
+
+		//// DEBUG
+		//rawCamsSettings[index]->print();
 
 		if ( xmlCamsSettings != NULL ) {
 			for ( j = 0; j < numCamTags; ++j ) {
+				// DEBUG
+				//printf( "CMP\nraw:\n%s\nxml:\n%s\n", devicePath, xmlCamsSettings[j]->devicePath );
 				if ( xmlCamsSettings[j] != NULL
 					&& strcmp( devicePath, xmlCamsSettings[j]->devicePath) == 0 ) {
 						copySettingsFromXmlSettings( xmlCamsSettings[j], rawCamsSettings[index] );
+						//printf( "DEBUG\n" );
+						//printf( "========____=========\n" );
+						//rawCamsSettings[index]->print();
+						//printf( "________====_________\n" );
+						//xmlCamsSettings[j]->print();
+						//printf( "++++++++====+++++++++\n" );
 
 						setCam( xmlCamsSettings[j]->cameraX, xmlCamsSettings[j]->cameraY, rawCams[index] );
 						setSelected( index );
 				}
 			}
 		}
+
+		rawCamsSettings[index]->print();
 
 		rawCams[index]->initializeWithDevicePath(
 			rawCamsSettings[index]->devicePath,
@@ -197,7 +212,7 @@ void CamsUtils::start() {
 			rawCamsSettings[index]->cameraDepth,
 			rawCamsSettings[index]->cameraFramerate );
 
-		rawCamsSettings[index]->print();
+		//rawCamsSettings[index]->print();
 	}
 
 	//! PS3 cameras settings apply
@@ -244,8 +259,8 @@ void CamsUtils::start() {
 			rawCamsSettings[index]->cameraDepth,
 			rawCamsSettings[index]->cameraFramerate );
 
-		//! Print the setting for debug
-		rawCamsSettings[index]->print();
+		////! Print the setting for debug
+		//rawCamsSettings[index]->print();
 	}
 
 	//! CMU
@@ -284,7 +299,7 @@ void CamsUtils::stop() {
 // ----------------------------------------------
 
 int CamsUtils::getCount() {
-	printf( "DEBUG CamsUtils::getCount() %d\n", camCount );
+	//printf( "DEBUG CamsUtils::getCount() %d\n", camCount );
 	return camCount;
 }
 
@@ -323,8 +338,16 @@ int CamsUtils::getRawId( ofxCameraBase* cam ) {
 	}
 
 	for ( int i = 0; i < camCount; i++ ) {
-		if ( EqualGUID( cam->getCameraGUID(), rawCams[i]->getCameraGUID() ) ) {
-			return i;
+		if ( cam->getCameraType() == DIRECTSHOW && rawCams[i]->getCameraType() == cam->getCameraType() ) {
+			if ( cam->getDevicePath() != NULL 
+				&& rawCams[i]->getDevicePath() != NULL
+				&& strcmp( cam->getDevicePath(), rawCams[i]->getDevicePath() ) == 0 ) {
+				return i;
+			}
+		} else {
+			if ( EqualGUID( cam->getCameraGUID(), rawCams[i]->getCameraGUID() ) ) {
+				return i;
+			}
 		}
 	}
 
@@ -505,6 +528,11 @@ void CamsUtils::setCam( int index, ofxCameraBase* cam ) {
 
 	displayCams[index] = cam;
 	displayCamsSettings[index] = getRawCamSettings( getRawId( cam ) );
+	//printf( "==================\n" );
+	//if ( displayCamsSettings[index] != NULL ) {
+	//	displayCamsSettings[index]->print();
+	//}
+	//printf( "-----========-----\n" );
 	camsUsed[index] = cam == NULL ? false : true;
 }
 
@@ -567,6 +595,7 @@ void CamsUtils::saveXML( string filename ) {
 			if ( camCount > 0
 				&& displayCamsSettings[index] != NULL ) {
 					ofxCameraBaseSettings* settings = displayCamsSettings[index];
+					//settings->print();
 					switch( settings->cameraType ) {
 						case PS3:
 							XML.setValue( "CAMERA:TYPE", CameraTypeToStr( settings->cameraType ), index );
@@ -696,7 +725,13 @@ void CamsUtils::loadXML( string filename ) {
 
 			xmlCamsSettings[i]->cameraGuid = StringToGUID( XML.getValue( "CAMERA:GUID", "00000000-0000-0000-0000-000000000000", i ) );
 			// TODO check the guid validation
-			xmlCamsSettings[i]->devicePath = (char*)XML.getValue( "CAMERA:DEVICEPATH", "NULL", i ).c_str();
+			string devicePathStr = XML.getValue( "CAMERA:DEVICEPATH", "NULL", i );
+			char* devicePath = new char[devicePathStr.length()+1];
+			strcpy( devicePath, devicePathStr.c_str() );
+			xmlCamsSettings[i]->devicePath = devicePath;
+			//printf( "DEBUGxml\nxmlCamsSettings[%d]->devicePath=%s\n", i, xmlCamsSettings[i]->devicePath );
+			//std::cout << "DEBUG\t" << devicePath << endl;
+			//std::cout << XML.getValue( "CAMERA:DEVICEPATH", "NULL", i ).c_str() << endl;
 			xmlCamsSettings[i]->cameraType = StrToCameraType( XML.getValue( "CAMERA:TYPE", "NULL", i ) );
 
 			xmlCamsSettings[i]->cameraX = XML.getValue( "CAMERA:X", -1, i );
@@ -824,6 +859,11 @@ void CamsUtils::loadXML( string filename ) {
 			}
 			// TODO
 			// Others
+
+			//// DEBUG
+			//printf( ">>>>XML settings%d\n", i );
+			//xmlCamsSettings[i]->print();
+			//printf( ">>>XML path\n%s\n", xmlCamsSettings[i]->devicePath );
 		}
 	}
 }
@@ -840,6 +880,7 @@ int CamsUtils::getDevicesCount( bool bAll, CAMERATYPE type, bool bPure ) {
 		ofxPS3* ps3 = new ofxPS3();
 		count += ps3->getCameraBaseCount();
 		delete ps3;	ps3 = NULL;
+		//printf( "DEBUG\nPS3\tcount=%d\n", count );
 	}
 
 	// CMU
@@ -851,6 +892,7 @@ int CamsUtils::getDevicesCount( bool bAll, CAMERATYPE type, bool bPure ) {
 		videoInput* VI = new videoInput();
 		count += VI->getDeviceCount( bPure );
 		delete VI;	VI = NULL;
+		//printf( "DEBUG\nVI\tcount=%d\n", count );
 	}
 
 	// KINECT
@@ -1175,6 +1217,12 @@ void CamsUtils::copySettingsFromXmlSettings( ofxCameraBaseSettings *src, ofxCame
 void CamsUtils::startCameras() {
 	//for (int i=0;i<camCount;i++)
 	//	rawCams[i]->startCamera();
+	// DEBUG
+	//for ( int i = 0; i < camCount; ++i ) {
+	//	printf( "+++++++++++++++++\n" );
+	//	rawCamsSettings[i]->print();
+	//	printf( "-----------------\n" );
+	//}
 }
 
 // ----------------------------------------------

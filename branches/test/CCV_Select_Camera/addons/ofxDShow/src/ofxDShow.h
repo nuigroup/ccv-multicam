@@ -41,9 +41,6 @@ private:
 	// Save the device id
 	int deviceId;
 
-	// Device Path
-	char* devicePath;
-
 	videoInput* VI;
 
 };
