@@ -13,7 +13,7 @@
 
 // ----------------------------------------------
 
-#include "PS3.h"
+//#include "PS3.h"
 #include "ofxPS3.h"
 #include "ofxDShow.h"
 #include "ofxXmlSettings.h"

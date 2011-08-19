@@ -170,6 +170,8 @@ void CamsUtils::start() {
 		//printf( "DEBUG %d, devicePath = %s\n", index, devicePath );
 
 		rawCams[index] = (ofxCameraBase*)(new ofxDShow());
+		rawCams[index]->setDevicePath( devicePath );
+
 		rawCamsSettings[index] = new ofxCameraBaseSettings();
 		rawCamsSettings[index]->cameraType = DIRECTSHOW;
 		rawCamsSettings[index]->devicePath = devicePath;
@@ -338,7 +340,8 @@ int CamsUtils::getRawId( ofxCameraBase* cam ) {
 	}
 
 	for ( int i = 0; i < camCount; i++ ) {
-		if ( cam->getCameraType() == DIRECTSHOW && rawCams[i]->getCameraType() == cam->getCameraType() ) {
+		if ( cam->getCameraType() == DIRECTSHOW 
+			&& rawCams[i]->getCameraType() == DIRECTSHOW ) {
 			if ( cam->getDevicePath() != NULL 
 				&& rawCams[i]->getDevicePath() != NULL
 				&& strcmp( cam->getDevicePath(), rawCams[i]->getDevicePath() ) == 0 ) {
@@ -461,6 +464,7 @@ void CamsUtils::setRawCamFeature( int rawId, CAMERA_BASE_FEATURE feature, int fi
 
 	if ( camera != NULL ) {
 		camera->setCameraFeature( feature, firstValue, secondValue, isAuto, isEnable );
+		printf( "DEBUG\nCamsUtils::setRawCamFeature()\tfirstValue\n", firstValue );
 	}
 	if ( settings != NULL ) {
 		settings->setFeature( feature, firstValue, secondValue, isAuto, isEnable );
@@ -528,6 +532,8 @@ void CamsUtils::setCam( int index, ofxCameraBase* cam ) {
 
 	displayCams[index] = cam;
 	displayCamsSettings[index] = getRawCamSettings( getRawId( cam ) );
+	printf( "DEBUG\nCamsUtils::setCam()\ngetRawId() = %d\n", getRawId(cam) );
+	printf( "DEBUG\nCamsUtils::setCam()\ngetRawCamSettings() == NULL ? %d\n", getRawCamSettings(getRawId(cam)) == NULL ? true : false );
 	//printf( "==================\n" );
 	//if ( displayCamsSettings[index] != NULL ) {
 	//	displayCamsSettings[index]->print();
@@ -577,10 +583,23 @@ void CamsUtils::saveXML( string filename ) {
 	if ( camCount <= 0 ) {
 		return;
 	}
+	for ( int i = 0; i < xGrid*yGrid; ++i ) {
+		if ( displayCams[i] == NULL ) {
+			printf( "displayCams[%d] == NULL\n", i );
+			return;
+		}
+		if ( displayCamsSettings[i] == NULL ) {
+			printf( "displayCamsSettings[%d] == NULL\n", i );
+			return;
+		}
+	}
+	printf( "DEBUG\nCamsUtils::saveXML() before from raw settings()\n" );
 	//! Receive settings from rawCamsSettings
 	receiveSettingsFromRawSettings();
+	printf( "DEBUG\nCamsUtils::saveXML() after from raw settings()\n" );
 	//! Receive settings from current cameras
 	receiveSettingsFromCameras();
+	printf( "DEBUG\nCamsUtils::saveXML() after from cameras()\n" );
 
 	//! Clear previous data
 	XML.clear();
@@ -665,7 +684,19 @@ void CamsUtils::saveXML( string filename ) {
 								XML.setValue( "CAMERA:BRIGHTNESS", settings->propertyFirstValue[i], index );
 								break;
 							case BASE_SHARPNESS:
-								// TODO
+								XML.setValue( "CAMERA:SHARPNESS", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_GAMMA:
+								XML.setValue( "CAMERA:GAMMA", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_CONTRAST:
+								XML.setValue( "CAMERA:CONTRAST", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_HUE:
+								XML.setValue( "CAMERA:HUE", settings->propertyFirstValue[i], index );
+								break;
+							case BASE_SATURATION:
+								XML.setValue( "CAMERA:SATURATION", settings->propertyFirstValue[i], index );
 								break;
 								 //TODO other features
 							default:
@@ -674,25 +705,6 @@ void CamsUtils::saveXML( string filename ) {
 					}
 					// TODO
 			}
-			//if ( camCount > 0
-			//	&& displayCams[index] != NULL ) {
-			//	XML.setValue( "CAMERA:TYPE", "PS3", index );
-			//	XML.setValue( "CAMERA:X", x, index );
-			//	XML.setValue( "CAMERA:Y", y, index );
-			//	XML.setValue( "CAMERA:UUID", displayCams[index]->GetGUIDStr(), index );
-			//	XML.setValue( "CAMERA:WIDTH", displayCams[index]->GetWidth(), index );
-			//	XML.setValue( "CAMERA:HEIGHT", displayCams[index]->GetHeight(), index );
-			//	XML.setValue( "CAMERA:HFLIP", displayCams[index]->GetHFlip(), index );
-			//	XML.setValue( "CAMERA:VFLIP", displayCams[index]->GetVFlip(), index );
-			//	XML.setValue( "CAMERA:AUTOGAIN", displayCams[index]->GetAutoGain(), index );
-			//	XML.setValue( "CAMERA:GAIN", displayCams[index]->GetGainValue(), index );
-			//	XML.setValue( "CAMERA:AUTOEXPOSURE", displayCams[index]->GetAutoExposure(), index );
-			//	XML.setValue( "CAMERA:EXPOSURE", displayCams[index]->GetExposure(), index );
-			//	XML.setValue( "CAMERA:AUTOWHITEBALANCE", displayCams[index]->GetAutoWhiteBalance(), index );
-			//	XML.setValue( "CAMERA:WHITEBALANCE:RED", displayCams[index]->GetWhiteBalanceRed(), index );
-			//	XML.setValue( "CAMERA:WHITEBALANCE:GREEN", displayCams[index]->GetWhiteBalanceGreen(), index );
-			//	XML.setValue( "CAMERA:WHITEBALANCE:BLUE", displayCams[index]->GetWhiteBalanceBlue(), index );
-			//}
 		}
 	}
 	XML.saveFile( filename );
@@ -857,6 +869,63 @@ void CamsUtils::loadXML( string filename ) {
 				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
 				xmlCamsSettings[i]->isPropertyOn.push_back( true );
 			}
+
+			settingValue = XML.getValue( "CAMERA:BRIGHTNESS", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_BRIGHTNESS );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
+			settingValue = XML.getValue( "CAMERA:CONTRAST", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_CONTRAST );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
+			settingValue = XML.getValue( "CAMERA:HUE", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_HUE );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
+			settingValue = XML.getValue( "CAMERA:GAMMA", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_GAMMA );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
+			settingValue = XML.getValue( "CAMERA:SATURATION", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_SATURATION );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
+			settingValue = XML.getValue( "CAMERA:SHARPNESS", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_SHARPNESS );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
+			settingValue = XML.getValue( "CAMERA:WHITE_BALANCE", -1, i );
+
+				xmlCamsSettings[i]->propertyType.push_back( BASE_WHITE_BALANCE );
+				xmlCamsSettings[i]->propertyFirstValue.push_back( settingValue );
+				xmlCamsSettings[i]->propertySecondValue.push_back( 0 );
+				xmlCamsSettings[i]->isPropertyAuto.push_back( false );
+				xmlCamsSettings[i]->isPropertyOn.push_back( true );
+
 			// TODO
 			// Others
 
@@ -1092,6 +1161,54 @@ void CamsUtils::setupCameraSettings( ofxCameraBaseSettings *settings) {
 			settings->cameraLeft = 0;
 			settings->cameraTop = 0;
 
+			settings->propertyType.push_back( BASE_BRIGHTNESS );	// -10,000 ~ 10,000
+			settings->propertyFirstValue.push_back( 5000 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_CONTRAST );		// 0 ~ 10,000
+			settings->propertyFirstValue.push_back( 5000 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_HUE );			// -180,000 ~ 180,000
+			settings->propertyFirstValue.push_back( 0 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_GAMMA );			// 1 ~ 500
+			settings->propertyFirstValue.push_back( 0 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			//settings->propertyType.push_back( BASE_GAIN );			// depends
+			//settings->propertyFirstValue.push_back( 0 );
+			//settings->propertySecondValue.push_back( 0 );
+			//settings->isPropertyAuto.push_back( false );
+			//settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_SATURATION );	// 0 ~ 10,000
+			settings->propertyFirstValue.push_back( 0 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_SHARPNESS );		// 0 ~ 100
+			settings->propertyFirstValue.push_back( 0 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
+			settings->propertyType.push_back( BASE_WHITE_BALANCE );	// depends
+			settings->propertyFirstValue.push_back( 0 );
+			settings->propertySecondValue.push_back( 0 );
+			settings->isPropertyAuto.push_back( false );
+			settings->isPropertyOn.push_back( true );
+
 			break;
 		case KINECT:
 			// TODO
@@ -1144,15 +1261,37 @@ void CamsUtils::receiveSettingsFromCameras() {
 // ----------------------------------------------
 
 void CamsUtils::receiveSettingsFromRawSettings() {
+	if ( displayCams == NULL ) {
+		return;
+	}
 	for ( int x = 0; x < xGrid; ++x ) {
 		for ( int y = 0; y < yGrid; ++y ) {
 			int i = x + y * xGrid;
-			for ( int j = 0; j < camCount; ++j ) {
-				if ( EqualGUID( displayCams[i]->getCameraGUID(), rawCams[j]->getCameraGUID() ) ) {
-					displayCamsSettings[i]->cameraX				= x;
-					displayCamsSettings[i]->cameraY				= y;
-					displayCamsSettings[i]->cameraIndex			= i;
-					break;
+			bool bGot = false;
+			for ( int j = 0; j < camCount && !bGot; ++j ) {
+				switch( displayCams[i]->getCameraType() ) {
+					case DIRECTSHOW:
+						printf( "DEBUG\nDDDD\n" );
+						if ( strcmp( displayCams[i]->getDevicePath(), rawCams[j]->getDevicePath() ) == 0 ) {
+							displayCamsSettings[i]->cameraX		= x;
+							displayCamsSettings[i]->cameraY		= y;
+							displayCamsSettings[i]->cameraIndex	= i;
+							bGot = true;
+						}
+						break;
+					case PS3:
+					case FFMV:
+					case CMU:
+						if ( EqualGUID( displayCams[i]->getCameraGUID(), rawCams[j]->getCameraGUID() ) ) {
+							displayCamsSettings[i]->cameraX				= x;
+							displayCamsSettings[i]->cameraY				= y;
+							displayCamsSettings[i]->cameraIndex			= i;
+							bGot = true;
+							break;
+						}
+						break;
+					default:
+						break;
 				}
 			}
 		}

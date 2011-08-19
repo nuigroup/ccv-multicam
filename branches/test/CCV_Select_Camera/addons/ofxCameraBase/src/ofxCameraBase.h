@@ -56,6 +56,7 @@ public:
 	CAMERATYPE getCameraType() {return cameraType;}
 	unsigned int getCameraFramerate() {return framerate;}
 	char* getDevicePath() {return devicePath;}
+	void setDevicePath( char* devicePath ) {this->devicePath = devicePath;}
 	// END
 	bool isCameraInitialized() { return isInitialized; }
 	ofxCameraBase()

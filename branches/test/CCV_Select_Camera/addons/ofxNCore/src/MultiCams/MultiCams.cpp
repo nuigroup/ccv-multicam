@@ -420,6 +420,56 @@ void MultiCams::_handleGui( int parameterId, int task, void* data, int length ) 
 				}
 			}
 			break;
+		case informationPanel_gamma:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_GAMMA, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+		case informationPanel_brightness:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_BRIGHTNESS, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+		case informationPanel_contrast:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_CONTRAST, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+		case informationPanel_hue:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_HUE, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+		case informationPanel_saturation:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_SATURATION, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+		case informationPanel_sharpness:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_SHARPNESS, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+		case informationPanel_white_balance:
+			if ( length == sizeof( float ) ) {
+				if ( this->currentCamera != NULL ) {
+					utils->setRawCamFeature( rawCamId, BASE_WHITE_BALANCE, (int)(*(float*)data), 0, false, true );
+				}
+			}
+			break;
+
 			// STEPS PANEL REMOVED 07/21/2011
 		default:
 			break;
@@ -644,6 +694,9 @@ void MultiCams::updateInfoPanel(int rawId) {
 
 void MultiCams::addInfoPanel() {
 	ofxGuiPanel* pPanel;
+	int firstValue, secondValue, minValue, maxValue;
+	bool isAuto, isEnabled;
+	int currentValue;
 
 	if ( currentCameraSettings != NULL ) {
 		switch( currentCameraSettings->cameraType ) {
@@ -660,83 +713,83 @@ void MultiCams::addInfoPanel() {
 			for ( int i = 0; i < currentCameraSettings->propertyType.size(); ++i ) {
 				switch( currentCameraSettings->propertyType[i] ) {
 					//! Flip
-		case BASE_HFLIP:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
-					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-			}
-			break;
-		case BASE_VFLIP:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addButton( informationPanel_vflip, "Vertical Flip",
-					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-			}
-			break;
+				case BASE_HFLIP:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addButton( informationPanel_hflip, "Horizontal Flip",
+							OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+					}
+					break;
+				case BASE_VFLIP:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addButton( informationPanel_vflip, "Vertical Flip",
+							OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+					}
+					break;
 
-			//! Gain
-		case BASE_AUTO_GAIN:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
-					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-			}
-			break;
-		case BASE_GAIN:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addSlider( informationPanel_gain, "Gain",
-					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-			}
-			break;
+					//! Gain
+				case BASE_AUTO_GAIN:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addButton( informationPanel_auto_gain, "Auto Gain",
+							OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+					}
+					break;
+				case BASE_GAIN:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addSlider( informationPanel_gain, "Gain",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 79.0f,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+					}
+					break;
 
-			//! Exposure
-		case BASE_AUTO_EXPOSURE:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
-					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-			}
-			break;
-		case BASE_EXPOSURE:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addSlider( informationPanel_exposure, "Exposure",
-					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-			}
-			break;
+					//! Exposure
+				case BASE_AUTO_EXPOSURE:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addButton( informationPanel_auto_exposure, "Auto Exposure",
+							OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+					}
+					break;
+				case BASE_EXPOSURE:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addSlider( informationPanel_exposure, "Exposure",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 511.0f,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+					}
+					break;
 
 
-			//! White balance
-		case BASE_AUTO_WHITE_BALANCE:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
-					OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
-			}
-			break;
-		case BASE_WHITE_BALANCE_RED:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
-					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-			}
-			break;
-		case BASE_WHITE_BALANCE_GREEN:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
-					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-			}
-			break;
-		case BASE_WHITE_BALANCE_BLUE:
-			if ( currentCameraSettings->isPropertyOn[i] ) {
-				pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
-					RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
-					currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
-			}
-			break;
+					//! White balance
+				case BASE_AUTO_WHITE_BALANCE:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addButton( informationPanel_auto_whitebalance, "Auto Whitebalance",
+							OFXGUI_BUTTON_HEIGHT, OFXGUI_BUTTON_HEIGHT,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Button_Switch );
+					}
+					break;
+				case BASE_WHITE_BALANCE_RED:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addSlider( informationPanel_whitebalance_red, "Whitebalance Red",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_WHITE_BALANCE_GREEN:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addSlider( informationPanel_whitebalance_green, "Whitebalance Green",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_WHITE_BALANCE_BLUE:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						pPanel->addSlider( informationPanel_whitebalance_blue, "Whitebalance Blue",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, 0.0f, 255.0f,
+							currentCameraSettings->propertyFirstValue[i], kofxGui_Display_Int, 0 );
+					}
+					break;
 				}
 			}
 
@@ -748,6 +801,116 @@ void MultiCams::addInfoPanel() {
 			break;
 		case FFMV:
 			// TODO
+			break;
+		case DIRECTSHOW:
+			pPanel = controls->addPanel(
+				this->informationPanel, "Camera Settings",
+				RIGHT_PANEL_X, 105 + RIGHT_PANEL_Y_OFFSET,
+				OFXGUI_PANEL_BORDER, OFXGUI_PANEL_SPACING );
+			previewImage = (ofxGuiImage*)pPanel->addImage( informationPanel, "Present",
+				RIGHT_PANEL_SLIDER_WIDTH,
+				(RIGHT_PANEL_SLIDER_WIDTH / GRID_WIDTH_SCALE) * GRID_HEIGHT_SCALE );
+			previewImage->setCamera( currentCamera );
+
+			for ( int i = 0; i < currentCameraSettings->propertyType.size(); ++i ) {
+				switch( currentCameraSettings->propertyType[i] ) {
+					//! Gain
+				case BASE_GAIN:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_GAIN, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_gain, "Gain",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+
+					//! Gamma
+				case BASE_GAMMA:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_GAMMA, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_gamma, "Gamma",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_BRIGHTNESS:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_BRIGHTNESS, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_brightness, "Brightness",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_CONTRAST:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_CONTRAST, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_contrast, "Contrast",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_HUE:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_HUE, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_hue, "HUE",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_SATURATION:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_SATURATION, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_saturation, "Saturation",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_SHARPNESS:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_SHARPNESS, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_sharpness, "Sharpness",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+				case BASE_WHITE_BALANCE:
+					if ( currentCameraSettings->isPropertyOn[i] ) {
+						currentCamera->getCameraFeature(BASE_WHITE_BALANCE, &firstValue, &secondValue, &isAuto, &isEnabled, &minValue, &maxValue );
+						currentValue = currentCameraSettings->propertyFirstValue[i];
+						currentValue = currentValue < minValue ? minValue : currentValue;
+						currentValue = currentValue > maxValue ? maxValue : currentValue;
+						pPanel->addSlider( informationPanel_white_balance, "White balance",
+							RIGHT_PANEL_SLIDER_WIDTH, RIGHT_PANEL_SLIDER_HEIGHT, (float)minValue, (float)maxValue,
+							currentValue, kofxGui_Display_Int, 0 );
+					}
+					break;
+
+				}
+			}
+
+			pPanel->mObjWidth = RIGHT_PANEL_WIDTH;
+			pPanel->mObjHeight = 455;	// 450 -> 290
 			break;
 		default:
 			//! Blank panel

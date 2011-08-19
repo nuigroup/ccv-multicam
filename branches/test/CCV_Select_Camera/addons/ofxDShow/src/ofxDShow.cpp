@@ -162,7 +162,7 @@ void ofxDShow::getCameraFeature(CAMERA_BASE_FEATURE featureCode,int* firstValue,
 		}
 		if (deviceSettings>=0)
 		{
-			VI->getVideoSettingCamera(deviceId,filterSettings,MinValue,MaxValue,delta,CurrentValue,delta,defaultValue);
+			VI->getVideoSettingCamera(deviceId,deviceSettings,MinValue,MaxValue,delta,CurrentValue,delta,defaultValue);
 			*firstValue = CurrentValue;
 			*minValue = MinValue;
 			*maxValue = MaxValue;
